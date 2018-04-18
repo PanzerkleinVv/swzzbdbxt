@@ -10,6 +10,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.SubmissionMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
 
 @Service
@@ -51,6 +52,11 @@ public class SubmissionServiceImpl extends GenericServiceImpl<Submission, String
 	@Override
 	public GenericDao<Submission, String> getDao() {
 		return submissionMapper;
+	}
+
+	@Override
+	public List<Submission> selectByMsgExample(SubmissionExample example) {
+		return submissionMapper.selectByExample(example);
 	}
 
 }
