@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.UserMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserExample;
@@ -38,6 +39,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 
 	@Override
 	public User authentication(User user) {
+		user.setPassword(ApplicationUtils.sha256Hex(user.getPassword()));
 		return userMapper.authentication(user);
 	}
 

@@ -5,9 +5,9 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="msg_id" jdbcType="VARCHAR" property="msgId" />
     <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="situation" jdbcType="TEXT" property="situation" />
-    <result column="reason" jdbcType="TEXT" property="reason" />
-    <result column="measure" jdbcType="TEXT" property="measure" />
+    <result column="situation" jdbcType="LONGVARCHAR" property="situation" />
+    <result column="reason" jdbcType="LONGVARCHAR" property="reason" />
+    <result column="measure" jdbcType="LONGVARCHAR" property="measure" />
     <result column="owner_id" jdbcType="BIGINT" property="ownerId" />
     <result column="superior_verify_passed" jdbcType="INTEGER" property="superiorVerifyPassed" />
     <result column="superior_verifi_user_id" jdbcType="BIGINT" property="superiorVerifiUserId" />
@@ -112,7 +112,7 @@
       owner_id, superior_verify_passed, superior_verifi_user_id, 
       status, send_time)
     values (#{id,jdbcType=VARCHAR}, #{msgId,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
-      #{situation,jdbcType=TEXT}, #{reason,jdbcType=TEXT}, #{measure,jdbcType=TEXT}, 
+      #{situation,jdbcType=LONGVARCHAR}, #{reason,jdbcType=LONGVARCHAR}, #{measure,jdbcType=LONGVARCHAR}, 
       #{ownerId,jdbcType=BIGINT}, #{superiorVerifyPassed,jdbcType=INTEGER}, #{superiorVerifiUserId,jdbcType=BIGINT}, 
       #{status,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP})
   </insert>
@@ -164,13 +164,13 @@
         #{type,jdbcType=INTEGER},
       </if>
       <if test="situation != null">
-        #{situation,jdbcType=TEXT},
+        #{situation,jdbcType=LONGVARCHAR},
       </if>
       <if test="reason != null">
-        #{reason,jdbcType=TEXT},
+        #{reason,jdbcType=LONGVARCHAR},
       </if>
       <if test="measure != null">
-        #{measure,jdbcType=TEXT},
+        #{measure,jdbcType=LONGVARCHAR},
       </if>
       <if test="ownerId != null">
         #{ownerId,jdbcType=BIGINT},
@@ -208,13 +208,13 @@
         type = #{record.type,jdbcType=INTEGER},
       </if>
       <if test="record.situation != null">
-        situation = #{record.situation,jdbcType=TEXT},
+        situation = #{record.situation,jdbcType=LONGVARCHAR},
       </if>
       <if test="record.reason != null">
-        reason = #{record.reason,jdbcType=TEXT},
+        reason = #{record.reason,jdbcType=LONGVARCHAR},
       </if>
       <if test="record.measure != null">
-        measure = #{record.measure,jdbcType=TEXT},
+        measure = #{record.measure,jdbcType=LONGVARCHAR},
       </if>
       <if test="record.ownerId != null">
         owner_id = #{record.ownerId,jdbcType=BIGINT},
@@ -241,9 +241,9 @@
     set id = #{record.id,jdbcType=VARCHAR},
       msg_id = #{record.msgId,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=INTEGER},
-      situation = #{record.situation,jdbcType=TEXT},
-      reason = #{record.reason,jdbcType=TEXT},
-      measure = #{record.measure,jdbcType=TEXT},
+      situation = #{record.situation,jdbcType=LONGVARCHAR},
+      reason = #{record.reason,jdbcType=LONGVARCHAR},
+      measure = #{record.measure,jdbcType=LONGVARCHAR},
       owner_id = #{record.ownerId,jdbcType=BIGINT},
       superior_verify_passed = #{record.superiorVerifyPassed,jdbcType=INTEGER},
       superior_verifi_user_id = #{record.superiorVerifiUserId,jdbcType=BIGINT},
@@ -263,13 +263,13 @@
         type = #{type,jdbcType=INTEGER},
       </if>
       <if test="situation != null">
-        situation = #{situation,jdbcType=TEXT},
+        situation = #{situation,jdbcType=LONGVARCHAR},
       </if>
       <if test="reason != null">
-        reason = #{reason,jdbcType=TEXT},
+        reason = #{reason,jdbcType=LONGVARCHAR},
       </if>
       <if test="measure != null">
-        measure = #{measure,jdbcType=TEXT},
+        measure = #{measure,jdbcType=LONGVARCHAR},
       </if>
       <if test="ownerId != null">
         owner_id = #{ownerId,jdbcType=BIGINT},
@@ -293,9 +293,9 @@
     update submission
     set msg_id = #{msgId,jdbcType=VARCHAR},
       type = #{type,jdbcType=INTEGER},
-      situation = #{situation,jdbcType=TEXT},
-      reason = #{reason,jdbcType=TEXT},
-      measure = #{measure,jdbcType=TEXT},
+      situation = #{situation,jdbcType=LONGVARCHAR},
+      reason = #{reason,jdbcType=LONGVARCHAR},
+      measure = #{measure,jdbcType=LONGVARCHAR},
       owner_id = #{ownerId,jdbcType=BIGINT},
       superior_verify_passed = #{superiorVerifyPassed,jdbcType=INTEGER},
       superior_verifi_user_id = #{superiorVerifiUserId,jdbcType=BIGINT},

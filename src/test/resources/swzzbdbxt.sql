@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-04-18 10:12:49
+Date: 2018-04-18 18:43:26
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -45,7 +45,7 @@ CREATE TABLE `msg` (
   `content` mediumtext COMMENT '办理情况',
   `limit_time` datetime DEFAULT NULL COMMENT '办理期限',
   `end_time` datetime DEFAULT NULL COMMENT '办结日期',
-  `status` int(11) DEFAULT NULL COMMENT '办理状态 0--草稿 1--在办 2--办结 3--逾期 4--中止 5--阶段性办结',
+  `status` int(11) DEFAULT NULL COMMENT '办理状态 0--草稿 1--在办 2--逾期 3--阶段性办结 4--办结 5--中止 ',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -221,7 +221,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
   `username` varchar(50) DEFAULT NULL COMMENT '用户名 英文 用于大组工网关联',
-  `password` char(64) DEFAULT NULL COMMENT '密码',
+  `password` varchar(64) DEFAULT NULL COMMENT '密码',
   `userdesc` varchar(50) DEFAULT NULL COMMENT '用户姓名 用于中文名显示',
   `state` int(11) DEFAULT NULL COMMENT '状态 1--启用 0--停用',
   `permission_id` bigint(20) DEFAULT NULL COMMENT '职务id',

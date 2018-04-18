@@ -15,6 +15,17 @@
 		type="com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg">
 		<result column="content" jdbcType="LONGVARCHAR" property="content" />
 	</resultMap>
+		<resultMap id="ExtendResultMap" type="com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="sequence" jdbcType="INTEGER" property="sequence" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="basis" jdbcType="VARCHAR" property="basis" />
+		<result column="limit_time" jdbcType="TIMESTAMP" property="limitTime" />
+		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="content" jdbcType="LONGVARCHAR" property="content" />
+	</resultMap>
 	<sql id="Example_Where_Clause">
 		<where>
 			<foreach collection="oredCriteria" item="criteria" separator="or">
@@ -83,6 +94,9 @@
 	</sql>
 	<sql id="Blob_Column_List">
 		content
+	</sql>
+	<sql id="Extend_Column_List">
+		id, sequence, create_time, name, basis, limit_time, end_time, status, content
 	</sql>
 	<select id="selectByExampleWithBLOBs" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample"
 		resultMap="ResultMapWithBLOBs">
