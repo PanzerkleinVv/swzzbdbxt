@@ -51,7 +51,8 @@ public class RoleController {
 	@RequestMapping(value = "/openList")
 	@RequiresRoles(value = { RoleSign.GD, RoleSign.GZ, RoleSign.SZ, RoleSign.ZH, RoleSign.ST, RoleSign.FS, RoleSign.SG,
 			RoleSign.HY, RoleSign.MZ, RoleSign.HZ, RoleSign.SW, RoleSign.DG, RoleSign.ZS, RoleSign.JM, RoleSign.YJ,
-			RoleSign.ZJ, RoleSign.MM, RoleSign.ZQ, RoleSign.QY, RoleSign.CZ, RoleSign.JY, RoleSign.YF }, logical = Logical.OR)
+			RoleSign.ZJ, RoleSign.MM, RoleSign.ZQ, RoleSign.QY, RoleSign.CZ, RoleSign.JY,
+			RoleSign.YF }, logical = Logical.OR)
 	public String openList(@Valid Role role, Model model, HttpServletRequest request) {
 		if (role != null && role.getRoleId() != null) {
 			final List<Role> roles = roleService.selectListById(role.getRoleId());
@@ -69,7 +70,8 @@ public class RoleController {
 	@RequestMapping(value = "/addRole")
 	@RequiresRoles(value = { RoleSign.GD, RoleSign.GZ, RoleSign.SZ, RoleSign.ZH, RoleSign.ST, RoleSign.FS, RoleSign.SG,
 			RoleSign.HY, RoleSign.MZ, RoleSign.HZ, RoleSign.SW, RoleSign.DG, RoleSign.ZS, RoleSign.JM, RoleSign.YJ,
-			RoleSign.ZJ, RoleSign.MM, RoleSign.ZQ, RoleSign.QY, RoleSign.CZ, RoleSign.JY, RoleSign.YF }, logical = Logical.OR)
+			RoleSign.ZJ, RoleSign.MM, RoleSign.ZQ, RoleSign.QY, RoleSign.CZ, RoleSign.JY,
+			RoleSign.YF }, logical = Logical.OR)
 	public String addRole(Model model, HttpServletRequest request) {
 		final String pId = request.getParameter("pId");
 		if (pId != null && !"".equals(pId))
@@ -81,7 +83,8 @@ public class RoleController {
 	@RequestMapping(value = "/addRoleSubmit")
 	@RequiresRoles(value = { RoleSign.GD, RoleSign.GZ, RoleSign.SZ, RoleSign.ZH, RoleSign.ST, RoleSign.FS, RoleSign.SG,
 			RoleSign.HY, RoleSign.MZ, RoleSign.HZ, RoleSign.SW, RoleSign.DG, RoleSign.ZS, RoleSign.JM, RoleSign.YJ,
-			RoleSign.ZJ, RoleSign.MM, RoleSign.ZQ, RoleSign.QY, RoleSign.CZ, RoleSign.JY, RoleSign.YF }, logical = Logical.OR)
+			RoleSign.ZJ, RoleSign.MM, RoleSign.ZQ, RoleSign.QY, RoleSign.CZ, RoleSign.JY,
+			RoleSign.YF }, logical = Logical.OR)
 	public String addRoleSubmit(@Valid Role role, Model model, HttpServletRequest request, HttpSession session) {
 		final Integer pId = new Integer(request.getParameter("pId"));
 		final Integer myRoleId = (Integer) session.getAttribute("roleId");
@@ -102,7 +105,7 @@ public class RoleController {
 					throw new DaoException();
 				}
 				final int count3 = roleService.insertRolePermission(pId, myRoleId, role0.getRoleId());
-				if(count3 != 0) {
+				if (count3 != 0) {
 					throw new DaoException();
 				}
 			}

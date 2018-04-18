@@ -2,90 +2,114 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
 
 import java.util.Date;
 
-/**
- * 提请事项模型类
- * 
- * @author PanzerkleinVv
- *
- */
 public class Submission {
-	private String id;
+    private String id;
 
-	private String msgId;
+    private String msgId;
 
-	private Integer type;
+    private Integer type;
 
-	private Long ownerId;
+    private String situation;
 
-	private Integer superiorVerifyPassed;
+    private String reason;
 
-	private Long superiorVerifiUserId;
+    private String measure;
 
-	private Integer status;
+    private Long ownerId;
 
-	private Date sendTime;
+    private Integer superiorVerifyPassed;
 
-	public String getId() {
-		return id;
-	}
+    private Long superiorVerifiUserId;
 
-	public void setId(String id) {
-		this.id = id == null ? null : id.trim();
-	}
+    private Integer status;
 
-	public String getMsgId() {
-		return msgId;
-	}
+    private Date sendTime;
 
-	public void setMsgId(String msgId) {
-		this.msgId = msgId == null ? null : msgId.trim();
-	}
+    public String getId() {
+        return id;
+    }
 
-	public Integer getType() {
-		return type;
-	}
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
 
-	public void setType(Integer type) {
-		this.type = type;
-	}
+    public String getMsgId() {
+        return msgId;
+    }
 
-	public Long getOwnerId() {
-		return ownerId;
-	}
+    public void setMsgId(String msgId) {
+        this.msgId = msgId == null ? null : msgId.trim();
+    }
 
-	public void setOwnerId(Long ownerId) {
-		this.ownerId = ownerId;
-	}
+    public Integer getType() {
+        return type;
+    }
 
-	public Integer getSuperiorVerifyPassed() {
-		return superiorVerifyPassed;
-	}
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
-	public void setSuperiorVerifyPassed(Integer superiorVerifyPassed) {
-		this.superiorVerifyPassed = superiorVerifyPassed;
-	}
+    public String getSituation() {
+        return situation;
+    }
 
-	public Long getSuperiorVerifiUserId() {
-		return superiorVerifiUserId;
-	}
+    public void setSituation(String situation) {
+        this.situation = situation == null ? null : situation.trim();
+    }
 
-	public void setSuperiorVerifiUserId(Long superiorVerifiUserId) {
-		this.superiorVerifiUserId = superiorVerifiUserId;
-	}
+    public String getReason() {
+        return reason;
+    }
 
-	public Integer getStatus() {
-		return status;
-	}
+    public void setReason(String reason) {
+        this.reason = reason == null ? null : reason.trim();
+    }
 
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
+    public String getMeasure() {
+        return measure;
+    }
 
-	public Date getSendTime() {
-		return sendTime;
-	}
+    public void setMeasure(String measure) {
+        this.measure = measure == null ? null : measure.trim();
+    }
 
-	public void setSendTime(Date sendTime) {
-		this.sendTime = sendTime;
-	}
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public Integer getSuperiorVerifyPassed() {
+        return superiorVerifyPassed;
+    }
+
+    public void setSuperiorVerifyPassed(Integer superiorVerifyPassed) {
+        this.superiorVerifyPassed = superiorVerifyPassed;
+    }
+
+    public Long getSuperiorVerifiUserId() {
+        return superiorVerifiUserId;
+    }
+
+    public void setSuperiorVerifiUserId(Long superiorVerifiUserId) {
+        this.superiorVerifiUserId = superiorVerifiUserId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Date getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
+    }
 }

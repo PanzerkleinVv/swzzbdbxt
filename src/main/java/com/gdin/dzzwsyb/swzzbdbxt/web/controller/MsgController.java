@@ -32,10 +32,10 @@ public class MsgController {
 	public String query() {
 		return "query";
 	}
-	
+
 	@RequestMapping(value = "/msgList")
 	public String msgList(MsgQuery msgQuery, Model model, HttpSession session) {
-		if (msgQuery.getMsgAreaId() == null || msgQuery.getMsgAreaId() <1) {
+		if (msgQuery.getMsgAreaId() == null || msgQuery.getMsgAreaId() < 1) {
 			msgQuery.setMsgAreaId((Integer) session.getAttribute("roleId"));
 			msgQuery.setMsgAreaName("所有");
 		}
@@ -53,7 +53,7 @@ public class MsgController {
 
 	@RequestMapping(value = "/upload")
 	public String upload(Model model, HttpSession session) {
-		User user = (User)session.getAttribute("userInfo");
+		User user = (User) session.getAttribute("userInfo");
 		if (user != null) {
 			model.addAttribute("msgUserUnit", user.getUserUnit());
 			model.addAttribute("msgAttn", user.getUserAttn());
@@ -61,10 +61,10 @@ public class MsgController {
 		}
 		return "upload";
 	}
-	
+
 	@RequestMapping(value = "/uploadMsg")
 	public String uploadMsg(Msg msg, Model model, HttpSession session) {
-		User user = (User)session.getAttribute("userInfo");
+		User user = (User) session.getAttribute("userInfo");
 		if (user != null) {
 			String msgId = DigestUtils.sha1Hex(UUID.randomUUID().toString());
 			msg.setMsgId(msgId);
@@ -83,7 +83,7 @@ public class MsgController {
 		}
 		return "upload";
 	}
-	
+
 	@RequestMapping(value = "/deleteMsg")
 	public String msgDelete(Msg msg, Model model) {
 		msgService.delete(msg.getMsgId());
@@ -96,7 +96,7 @@ public class MsgController {
 		model.addAttribute("msg", msg0);
 		return "msg";
 	}
-	
+
 	@RequestMapping(value = "/changeMsgStatus")
 	@RequiresRoles(value = RoleSign.GD)
 	public String changeMsgStatus(Msg msg, Model model) {

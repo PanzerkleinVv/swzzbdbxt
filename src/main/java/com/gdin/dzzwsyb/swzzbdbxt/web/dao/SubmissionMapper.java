@@ -3,7 +3,6 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.dao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExample;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionWithBLOBs;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,27 +19,19 @@ public interface SubmissionMapper extends GenericDao<Submission, String> {
 
 	int deleteByPrimaryKey(String id);
 
-	int insert(SubmissionWithBLOBs record);
+    int insert(Submission record);
 
-	int insertSelective(SubmissionWithBLOBs record);
+    int insertSelective(Submission record);
 
-	List<SubmissionWithBLOBs> selectByExampleWithBLOBs(SubmissionExample example);
+    List<Submission> selectByExample(SubmissionExample example);
 
-	List<Submission> selectByExample(SubmissionExample example);
+    Submission selectByPrimaryKey(String id);
 
-	SubmissionWithBLOBs selectByPrimaryKey(String id);
+    int updateByExampleSelective(@Param("record") Submission record, @Param("example") SubmissionExample example);
 
-	int updateByExampleSelective(@Param("record") SubmissionWithBLOBs record,
-			@Param("example") SubmissionExample example);
+    int updateByExample(@Param("record") Submission record, @Param("example") SubmissionExample example);
 
-	int updateByExampleWithBLOBs(@Param("record") SubmissionWithBLOBs record,
-			@Param("example") SubmissionExample example);
+    int updateByPrimaryKeySelective(Submission record);
 
-	int updateByExample(@Param("record") Submission record, @Param("example") SubmissionExample example);
-
-	int updateByPrimaryKeySelective(SubmissionWithBLOBs record);
-
-	int updateByPrimaryKeyWithBLOBs(SubmissionWithBLOBs record);
-
-	int updateByPrimaryKey(Submission record);
+    int updateByPrimaryKey(Submission record);
 }

@@ -53,7 +53,7 @@ public class MsgServiceImpl extends GenericServiceImpl<Msg, String> implements M
 
 	@Override
 	public GenericDao<Msg, String> getDao() {
-		return null;
+		return msgMapper;
 	}
 
 	@Override
