@@ -19,6 +19,4 @@ public interface RoleService extends GenericService<Role, Long> {
 	 */
 	List<Role> selectRolesByUserId(Long userId);
 
-	List<Role> selectListById(Long roleId);
-
 }

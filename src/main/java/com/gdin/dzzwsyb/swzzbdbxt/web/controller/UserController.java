@@ -64,11 +64,15 @@ public class UserController {
 			subject.login(new UsernamePasswordToken(user.getUsername(), user.getPassword()));
 			// 验证成功在Session中保存用户信息
 			final User authUserInfo = userService.selectByUsername(user.getUsername());
-			final List<Role> roles = roleService.selectRolesByUserId(authUserInfo.getId());
-			final List<Permission> permissions = permissionService.selectPermissionsByUserId(authUserInfo.getId());
+			final List<Role> role = roleService.selectRolesByUserId(authUserInfo.getId());
+			final List<Permission> permission = permissionService.selectPermissionsByUserId(authUserInfo.getId());
 			request.getSession().setAttribute("userInfo", authUserInfo);
-			request.getSession().setAttribute("roleId", roles.get(0).getId());
-			request.getSession().setAttribute("permissionId", permissions.get(0).getId());
+			request.getSession().setAttribute("roleId", role.get(0).getId());
+			request.getSession().setAttribute("permissionId", permission.get(0).getId());
+			final List<Role> roles = roleService.selectList();
+			final List<Permission> permissions = permissionService.selectList();
+			request.getSession().setAttribute("roles", roles);
+			request.getSession().setAttribute("permissions", permissions);
 		} catch (AuthenticationException e) {
 			// 身份验证失败
 			model.addAttribute("error", "用户名或密码错误 ！");

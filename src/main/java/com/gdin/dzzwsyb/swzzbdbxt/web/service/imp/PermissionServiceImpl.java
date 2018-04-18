@@ -7,6 +7,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.PermissionMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Permission;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.PermissionExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.PermissionService;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +30,12 @@ public class PermissionServiceImpl extends GenericServiceImpl<Permission, Long> 
 	@Override
 	public List<Permission> selectPermissionsByUserId(Long userId) {
 		return permissionMapper.selectPermissionsByUserId(userId);
+	}
+	
+	public List<Permission> selectList() {
+		PermissionExample example = new PermissionExample();
+		example.createCriteria().andIdIsNotNull();
+		example.setOrderByClause("ID");
+		return permissionMapper.selectByExample(example);
 	}
 }

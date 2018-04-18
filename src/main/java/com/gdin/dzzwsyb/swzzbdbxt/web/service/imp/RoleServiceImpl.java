@@ -7,6 +7,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.RoleMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.RoleExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.RoleService;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +33,11 @@ public class RoleServiceImpl extends GenericServiceImpl<Role, Long> implements R
 	}
 
 	@Override
-	public List<Role> selectListById(Long roleId) {
-		return null;
+	public List<Role> selectList() {
+		final RoleExample example = new RoleExample();
+		example.createCriteria().andIdIsNotNull();
+		example.setOrderByClause("ID");
+		return roleMapper.selectByExample(example);
 	}
 
 }
