@@ -332,4 +332,19 @@
 		status = #{status,jdbcType=INTEGER}
 		where id = #{id,jdbcType=VARCHAR}
 	</update>
+		<select id="selectByExampleAndPage" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample"
+		resultMap="ExtendResultMap">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Extend_Column_List" />
+		from msg
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
 </mapper>

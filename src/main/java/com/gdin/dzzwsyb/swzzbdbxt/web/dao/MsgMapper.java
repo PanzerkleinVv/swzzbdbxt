@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.dao;
 
+import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
@@ -40,4 +41,6 @@ public interface MsgMapper extends GenericDao<Msg, String> {
 	int updateByPrimaryKeyWithBLOBs(Msg record);
 
 	int updateByPrimaryKey(Msg record);
+	
+	List<Msg> selectByExampleAndPage(MsgExample example, Page<Msg> page);
 }

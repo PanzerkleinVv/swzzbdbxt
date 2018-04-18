@@ -67,8 +67,8 @@ public class MsgServiceImpl extends GenericServiceImpl<Msg, String> implements M
 	public int deleteOldMsg() {
 		MsgExample example = new MsgExample();
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MONTH, -18);
-		example.createCriteria().andMsgDateLessThan(calendar.getTime());
+		calendar.add(Calendar.YEAR, -3);
+		example.createCriteria().andCreateTimeLessThan(calendar.getTime());
 		return msgMapper.deleteByExample(example);
 	}
 

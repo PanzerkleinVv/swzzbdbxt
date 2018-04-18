@@ -1,7 +1,5 @@
 package swzzbdbxt;
 
-import static org.junit.Assert.*;
-
 import javax.annotation.Resource;
 
 import org.junit.Test;
@@ -17,7 +15,7 @@ public class MsgServiceTest {
 	@Test
 	public void testQuery() {
 		MsgExample example = new MsgExample();
-		example.createCriteria().andMsgIdIsNotNull();
+		example.createCriteria().andIdIsNotNull();
 		service.selectByExampleAndPage(example, 1);
 	}
 
