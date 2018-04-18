@@ -40,7 +40,7 @@
         </javaClientGenerator>
 
         <!--对应数据库表名 -->
-        <table tableName="user">
+                <table tableName="user">
         </table>
         <table tableName="role">
         </table>
@@ -59,8 +59,9 @@
         <table tableName="msg_sponsor">
         </table>
         <table tableName="submission">
-        </table>
-        <table tableName="attach">
+        	<columnOverride column="situation" javaType="java.lang.String" jdbcType="TEXT" />
+        	<columnOverride column="reason" javaType="java.lang.String" jdbcType="TEXT" />
+        	<columnOverride column="measure" javaType="java.lang.String" jdbcType="TEXT" /> 
         </table>
     </context>
 </generatorConfiguration>
