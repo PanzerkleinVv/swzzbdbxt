@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+           http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
+	default-lazy-init="false">
+	<!-- 任务管理器 -->
+	<beans>
+		<!-- 要调用的工作类 -->
+		<bean id="msgTask" class="com.gdin.dzzwsyb.swzzbdbxt.web.job.MsgTask"></bean>
+		<!-- 定义调用对象和调用对象的方法 多个任务定义多个 -->
+		<bean id="jobtask1"
+			class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+			<!-- 调用的类 -->
+			<property name="targetObject">
+				<ref bean="msgTask" />
+			</property>
+			<!-- 调用类中的方法 -->
+			<property name="targetMethod">
+				<value>deleteMsgTask</value>
+			</property>
+		</bean>
+		<!-- 定义触发时间 -->
+		<bean id="doTime1"
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+			<property name="jobDetail">
+				<ref bean="jobtask1" />
+			</property>
+			<!-- cron表达式 每天24:00运行一次 -->
+			<property name="cronExpression" value="0 0 0 * * ?" />
+		</bean>
+		<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+		<bean id="startQuertz" lazy-init="false" autowire="no"
+			class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+			<property name="triggers">
+				<list>
+					<ref bean="doTime1" />
+				</list>
+			</property>
+		</bean>
+	</beans>
+</beans>
