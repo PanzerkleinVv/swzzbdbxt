@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Permission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
@@ -86,6 +87,7 @@ public class UserController {
 			request.getSession().setAttribute("permissions", permissions);
 			request.getSession().setAttribute("roleMap", roleMap);
 			request.getSession().setAttribute("permissionMap", permissionMap);
+			request.getSession().setAttribute("userState", SelectArray.getUserState());
 		} catch (AuthenticationException e) {
 			// 身份验证失败
 			model.addAttribute("error", "用户名或密码错误 ！");

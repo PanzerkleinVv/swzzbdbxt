@@ -26,7 +26,7 @@
 				<c:forEach var="role" items="${sessionScope.roles}"
 					varStatus="status">
 					<option value="${role.id}"
-						<c:if test="${user != null && user.roleId == role.id}">selected="selected"</c:if>>${role.roleName}</option>
+						<c:if test="${user != null && user.roleId == role.id}"> selected="selected"</c:if>>${role.roleName}</option>
 				</c:forEach>
 		</select></span><span id='msg2'></span>
 	</div>
@@ -37,25 +37,28 @@
 				<c:forEach var="permission" items="${sessionScope.permissions}"
 					varStatus="status">
 					<option value="${permission.id}"
-						<c:if test="${user != null && user.permissionId == permission.id}">selected="selected"</c:if>>${permission.permissionName}</option>
+						<c:if test="${user != null && user.permissionId == permission.id}"> selected="selected"</c:if>>${permission.permissionName}</option>
 				</c:forEach>
 		</select></span><span id='msg4'></span>
 	</div>
+	<c:if test="${method == '修改'}">
 	<div>
 		<span>帐号状态：</span> <span><select id=state name="state"
-			onblur="check(4)" class="form-control placeholder-no-fix">
-				<option></option>
-				<c:forEach var="permission" items="${sessionScope.permissions}"
-					varStatus="status">
-					<option value="${permission.id}"
-						<c:if test="${selectId == permission.id}">selected="selected"</c:if>>${role.permissionName}</option>
+			onblur="check(3)" class="form-control placeholder-no-fix">
+			<c:set var="i" value="0"/>
+				<c:forEach var="userState0" items="${sessionScope.userState}"
+					varStatus="status0">
+					<option value="${i}"
+						<c:if test="${user.state == i}"> selected="selected"</c:if>>${userState0}</option>
+					<c:set var="i" value="${i+1}"/>
 				</c:forEach>
 		</select></span><span id='msg3'></span>
 	</div>
+	</c:if>
 	<div class="infoButton">
 		<button id="saveBut" type="button" class="btn blue">保存</button>
-		<c:if test='${user != null && user.userId != null}'>
-			<button id="pswBut" type="button" class="btn blue">还原密码</button>
+		<c:if test='${user != null && user.id != null}'>
+			<button id="delete" type="button" class="btn blue">删除</button>
 		</c:if>
 	</div>
 	<script type="text/javascript">

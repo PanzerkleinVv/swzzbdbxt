@@ -272,7 +272,7 @@
 		from user
 		where username = #{record.username,jdbcType=VARCHAR} and
 		password =
-		#{record.password,jdbcType=VARCHAR}
+		#{record.password,jdbcType=VARCHAR} and state=1
 	</select>
 	<!-- 分页条件查询 -->
 	<select id="selectByExampleAndPage" resultMap="BaseResultMap"

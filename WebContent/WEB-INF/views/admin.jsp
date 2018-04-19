@@ -40,7 +40,7 @@
 				</span> <span class="userItem">${user.username}</span> <span
 					class="userItem">${sessionScope.roleMap[user.roleId]}</span> <span
 					class="userItem">${sessionScope.permissionMap[user.permissionId]}</span>
-				<span class="userItem">${user.state}</span> <span class="userItem">
+				<span class="userItem">${sessionScope.userState[user.state]}</span> <span class="userItem">
 					<button id="${status.index}" type="button" class="btn blue">修改</button>
 				</span>
 			</div>
