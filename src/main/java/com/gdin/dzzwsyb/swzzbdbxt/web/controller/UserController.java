@@ -1,6 +1,9 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -70,9 +73,19 @@ public class UserController {
 			request.getSession().setAttribute("roleId", role.get(0).getId());
 			request.getSession().setAttribute("permissionId", permission.get(0).getId());
 			final List<Role> roles = roleService.selectList();
+			final Map<Long, String> roleMap = new HashMap<Long, String>();
+			for (Role role0 : roles) {
+				roleMap.put(role0.getId(), role0.getRoleName());
+			}
 			final List<Permission> permissions = permissionService.selectList();
+			final Map<Long, String> permissionMap = new HashMap<Long, String>();
+			for (Permission permission0 : permissions) {
+				permissionMap.put(permission0.getId(), permission0.getPermissionName());
+			}
 			request.getSession().setAttribute("roles", roles);
 			request.getSession().setAttribute("permissions", permissions);
+			request.getSession().setAttribute("roleMap", roleMap);
+			request.getSession().setAttribute("permissionMap", permissionMap);
 		} catch (AuthenticationException e) {
 			// 身份验证失败
 			model.addAttribute("error", "用户名或密码错误 ！");
@@ -91,6 +104,11 @@ public class UserController {
 	public String logout(HttpSession session) {
 		session.removeAttribute("userInfo");
 		session.removeAttribute("roleId");
+		session.removeAttribute("permissionId");
+		session.removeAttribute("roles");
+		session.removeAttribute("permissions");
+		session.removeAttribute("roleMap");
+		session.removeAttribute("permissionMap");
 		// 登出操作
 		Subject subject = SecurityUtils.getSubject();
 		subject.logout();
@@ -106,39 +124,33 @@ public class UserController {
 		if (user == null || user.isEmpty()) {
 			final List<User> users = userService.selectList();
 			model.addAttribute("users", users);
+			model.addAttribute("selectId", 0);
 			model.addAttribute("navigationBar", "所有");
 			return "admin";
 		} else if (user.getUserdesc() != null && !"".equals(user.getUserdesc())) {
 			final List<User> users = userService.searchUser(user.getUserdesc().trim());
 			model.addAttribute("users", users);
-			model.addAttribute("navigationBar", user.getUserdesc().trim());
+			model.addAttribute("selectId", 0);
+			if (users.size() == 0) {
+				model.addAttribute("msg0", MessageColor.FAILURE.getColor());
+				model.addAttribute("msg", "未找到用户");
+			}
+			model.addAttribute("userdesc", user.getUserdesc().trim());
+			model.addAttribute("navigationBar", "“" + user.getUserdesc().trim() + "” 搜索结果");
 			return "admin";
 		} else if (user.getRoleId() != null && 0 != user.getRoleId()) {
 			final List<User> users = userService.selectByRoleId(user.getRoleId());
 			final Role role = roleService.selectById(user.getRoleId());
 			model.addAttribute("users", users);
+			model.addAttribute("selectId", role.getId());
 			model.addAttribute("navigationBar", role.getRoleName());
 			return "admin";
-		} else if (user.getId() != null && 0 != user.getId()) {
-			final User user0 = userService.selectById(user.getId());
-			if (user0 != null) {
-				model.addAttribute("user", user0);
-				model.addAttribute("method", "修改");
-				model.addAttribute("navigationBar", user0.getUserdesc() + " 用户信息");
-				return "info";
-			} else {
-				final List<User> users = userService.selectList();
-				model.addAttribute("msg0", MessageColor.FAILURE.getColor());
-				model.addAttribute("msg", "未找到该用户");
-				model.addAttribute("users", users);
-				model.addAttribute("navigationBar", "所有");
-				return "admin";
-			}
 		} else {
 			final List<User> users = userService.selectList();
 			model.addAttribute("msg0", MessageColor.FAILURE.getColor());
-			model.addAttribute("msg", "未找到该用户");
+			model.addAttribute("msg", "未找到用户");
 			model.addAttribute("users", users);
+			model.addAttribute("selectId", 0);
 			model.addAttribute("navigationBar", "所有");
 			return "admin";
 		}
@@ -179,6 +191,7 @@ public class UserController {
 				model.addAttribute("msg0", MessageColor.SUCCESS.getColor());
 				model.addAttribute("msg", "新增用户成功");
 				model.addAttribute("navigationBar", "所有");
+				model.addAttribute("selectId", 0);
 				return "admin";
 			} else {
 				model.addAttribute("user", user);
@@ -194,6 +207,7 @@ public class UserController {
 				model.addAttribute("msg0", MessageColor.SUCCESS.getColor());
 				model.addAttribute("msg", "修改用户成功");
 				model.addAttribute("navigationBar", "所有");
+				model.addAttribute("selectId", 0);
 				return "admin";
 			} else {
 				model.addAttribute("user", user);

@@ -95,28 +95,28 @@
 	width: 150px !important;
 	display: table-cell;
 	text-align: center;
-	border-left: 2px solid #FFFFFF; 
+	border-left: 2px solid #FFFFFF;
 }
 
 .msgItem3 {
 	width: 120px !important;
 	display: table-cell;
 	text-align: center;
-	border-left: 2px solid #FFFFFF; 
+	border-left: 2px solid #FFFFFF;
 }
 
 .msgItem4 {
 	width: 56px !important;
 	display: table-cell;
 	text-align: center;
-	border-left: 2px solid #FFFFFF; 
+	border-left: 2px solid #FFFFFF;
 }
 
 .msgItem5 {
 	width: 56px !important;
 	display: table-cell;
 	text-align: center;
-	border-left: 2px solid #FFFFFF; 
+	border-left: 2px solid #FFFFFF;
 }
 
 .msgHeader {
@@ -176,6 +176,29 @@
 	margin-right: 5%;
 }
 
+.navigationBar {
+	font-size: 12pt;
+	font-family: '微软雅黑';
+	color: #222222;
+	padding-left: 10px;
+	background-color: #DDDDDD;
+}
+
+.navigationBar>span {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.navigationItem {
+	background-color: #FFFFFF;
+	padding: 1px 5px 1px 5px;
+}
+
+.searchUser {
+	width: 50%;
+	display: inline;
+}
+
 .searchBox {
 	width: 90%;
 	display: inline;
@@ -206,22 +229,10 @@
 	background-color: #EEEEEE;
 }
 
-.userItem1 {
+.userItem {
 	display: table-cell;
-	border-left: 2px solid #FFFFFF; 
-}
-
-.userItem2 {
-	display: table-cell;
-	width: 150px;
-	border-left: 2px solid #FFFFFF; 
-}
-
-.userItem3 {
-	display: table-cell;
-	width: 56px;
+	border-left: 2px solid #FFFFFF;
 	text-align: center;
-	border-left: 2px solid #FFFFFF; 
 }
 
 .userHeader {

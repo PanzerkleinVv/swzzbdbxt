@@ -1,52 +1,62 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <div class="mainContent">
-	<div class="infoMethod">${method}用户
-		<input name="userId" id="userId" type="hidden"
-			value="<c:if test='${user != null}'>${user.userId}</c:if>" />
+	<div class="navigationBar">
+		<span style="cursor: pointer;" id="getAll" class="navigationItem">所有</span>
+		<span>>></span> <span class="navigationItem">${navigationBar}</span> <span
+			style="color:${msg0};">${msg}</span>
 	</div>
-	<div style="color:${msg0};">${msg}</div>
 	<div>
-		<span>单位名：</span> <span><input name="userUnit" id="userUnit"
-			type="text" onblur="check(0)"
-			value="<c:if test='${user != null}'>${user.userUnit}</c:if>"
+		<span>大组工网ID：</span> <span><input name="id" id="id"
+			type="hidden" value="<c:if test='${user != null}'>${user.id}</c:if>" /><input
+			name="username" id="username" type="text" onblur="check(0)"
+			value="<c:if test='${user != null}'>${user.username}</c:if>"
 			class="form-control placeholder-no-fix" /></span><span id='msg0'></span>
 	</div>
 	<div>
-		<span>系统名：</span> <span><input name="userName" id="userName"
+		<span>用户姓名：</span> <span><input name="userdesc" id="userdesc"
 			type="text" onblur="check(1)"
-			value="<c:if test='${user != null}'>${user.userName}</c:if>"
+			value="<c:if test='${user != null}'>${user.userdesc}</c:if>"
 			class="form-control placeholder-no-fix" /></span><span id='msg1'></span>
 	</div>
 	<div>
-		<span>所属地区：</span> <span><input name="userRoleName"
-			id="userRoleName" type="text" readonly="readonly" onblur="check(2)"
-			value="<c:if test='${userRole != null}'>${userRole.roleName}</c:if>"
-			style="cursor: default;" class="form-control placeholder-no-fix" /></span><span
-			id='msg2'></span><input name="userRoleId" id="userRoleId"
-			type="hidden"
-			value="<c:if test='${user != null}'>${user.userRoleId}</c:if>" /> <span>
-			<span><button id="roleSelectSubmit" type="button"
-					style="display: none;" class="btn blue" onclick="roleClose()">确定</button></span>
-		</span>
+		<span>所属处室：</span> <span><select id="roleId" name="roleId"
+			onblur="check(2)" class="form-control placeholder-no-fix">
+				<option></option>
+				<c:forEach var="role" items="${sessionScope.roles}"
+					varStatus="status">
+					<option value="${role.id}"
+						<c:if test="${user != null && user.roleId == role.id}">selected="selected"</c:if>>${role.roleName}</option>
+				</c:forEach>
+		</select></span><span id='msg2'></span>
 	</div>
 	<div>
-		<span>联系人：</span> <span><input name="userAttn" id="userAttn"
-			type="text" onblur="check(4)"
-			value="<c:if test='${user != null}'>${user.userAttn}</c:if>"
-			class="form-control placeholder-no-fix" /></span><span id='msg4'></span>
+		<span>权限类型：</span> <span><select id="permissionId" name="permissionId"
+			onblur="check(4)" class="form-control placeholder-no-fix">
+				<option></option>
+				<c:forEach var="permission" items="${sessionScope.permissions}"
+					varStatus="status">
+					<option value="${permission.id}"
+						<c:if test="${user != null && user.permissionId == permission.id}">selected="selected"</c:if>>${permission.permissionName}</option>
+				</c:forEach>
+		</select></span><span id='msg4'></span>
 	</div>
 	<div>
-		<span>联系电话：</span> <span><input name="userPhone" id="userPhone"
-			type="text" onblur="check(3)"
-			value="<c:if test='${user != null}'>${user.userPhone}</c:if>"
-			class="form-control placeholder-no-fix" /></span><span id='msg3'></span>
+		<span>帐号状态：</span> <span><select id=state name="state"
+			onblur="check(4)" class="form-control placeholder-no-fix">
+				<option></option>
+				<c:forEach var="permission" items="${sessionScope.permissions}"
+					varStatus="status">
+					<option value="${permission.id}"
+						<c:if test="${selectId == permission.id}">selected="selected"</c:if>>${role.permissionName}</option>
+				</c:forEach>
+		</select></span><span id='msg3'></span>
 	</div>
 	<div class="infoButton">
 		<button id="saveBut" type="button" class="btn blue">保存</button>
-	<c:if test='${user != null && user.userId != null}'>
-		<button id="pswBut" type="button" class="btn blue">还原密码</button>
-	</c:if>
+		<c:if test='${user != null && user.userId != null}'>
+			<button id="pswBut" type="button" class="btn blue">还原密码</button>
+		</c:if>
 	</div>
 	<script type="text/javascript">
 		function check(num) {

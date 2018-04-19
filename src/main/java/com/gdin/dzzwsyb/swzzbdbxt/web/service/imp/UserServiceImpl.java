@@ -64,7 +64,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 	@Override
 	public List<User> selectList() {
 		UserExample example = new UserExample();
-		example.createCriteria().andIdIsNotNull();
+		example.createCriteria().andIdIsNotNull().andStateNotEqualTo(0);
 		example.setOrderByClause("ID");
 		return userMapper.selectByExample(example);
 	}
@@ -72,7 +72,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 	@Override
 	public List<User> selectByRoleId(Long roleId) {
 		UserExample example = new UserExample();
-		example.createCriteria().andRoleIdEqualTo(roleId);
+		example.createCriteria().andRoleIdEqualTo(roleId).andStateNotEqualTo(0);
 		example.setOrderByClause("PERMISSION_ID");
 		return userMapper.selectByExample(example);
 	}

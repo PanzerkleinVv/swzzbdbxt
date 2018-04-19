@@ -17,7 +17,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta charset="utf-8" />
-<title>广东省组织工作信息资源库</title>
+<title>督查事项管理系统</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <meta content="" name="description" />
@@ -61,7 +61,7 @@
 		<!-- BEGIN TOP NAVIGATION BAR -->
 		<div class="header-inner">
 			<!-- BEGIN LOGO -->
-			<span class="navbar-brandText">广东省组织工作信息资源库
+			<span class="navbar-brandText">督查事项管理系统
 			</span>
 			<!-- END LOGO -->
 			<!-- BEGIN RESPONSIVE MENU TOGGLER -->
@@ -75,7 +75,7 @@
 				<li class="dropdown user"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" data-hover="dropdown"
 					data-close-others="true"> <span class="username">
-							${userInfo.userUnit} </span> <i class="fa fa-angle-down"></i>
+							${userInfo.userdesc} </span> <i class="fa fa-angle-down"></i>
 				</a>
 					<ul class="dropdown-menu">
 						<li><a href="javascript:;" id="trigger_fullscreen"> <i
@@ -124,7 +124,7 @@
 							class="title"> 回收站</span><span class="selected"> </span>
 					</a></li>
 						
-					<c:if test="${sessionScope.roleId == 1}">
+					<shiro:hasAnyRoles name="admin">
 					<li class=""><a href="javascript:;"> <i
 							class="fa fa-gears"></i><span class="title"> 系统管理 </span><span
 							class="arrow "> </span>
@@ -135,11 +135,7 @@
 							<li><a href="./rest/role/list"> 地区管理 </a></li>
 							<li><a href="./rest/code/menu"> 代码管理 </a></li>
 						</ul></li>
-					</c:if>
-					<li class=""><a href="./rest/user/mine"> <i class="fa fa-user"></i><span
-							class="title"> 个人信息 </span><span class="selected "> </span>
-					</a></li>
-
+					</shiro:hasAnyRoles>
 				</ul>
 				<!-- END SIDEBAR MENU -->
 			</div>

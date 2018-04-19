@@ -22,7 +22,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
 <head>
 <base href="<%=basePath%>">
 <meta charset="utf-8"/>
-<title>广东省委组织部督察事项管理系统</title>
+<title>督察事项管理系统</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="" name="description"/>
@@ -52,7 +52,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
 <body class="login">
 <!-- BEGIN LOGO -->
 <div class="logo logoText">
-	 广东省委组织部督察事项管理系统
+	督察事项管理系统
 </div>
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
