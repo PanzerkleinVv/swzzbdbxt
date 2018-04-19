@@ -26,4 +26,9 @@ public class AttachController {
 		return null;
 	}
 
+	@RequestMapping(value = "/test")
+	public String test(Model model, Attach attach) {
+		return null;
+	}
+	
 }
