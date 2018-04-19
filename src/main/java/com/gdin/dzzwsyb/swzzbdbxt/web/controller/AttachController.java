@@ -8,14 +8,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 
 @Controller
-@RequestMapping(value = "/role")
+@RequestMapping(value = "/attach")
 public class AttachController {
 
+	@RequestMapping(value = "/upload")
 	public String upload(Model model, HttpServletRequest request) {
 		return null;
 	}
 	
+	@RequestMapping(value = "/download")
 	public String download(Model model, Attach attach) {
+		return null;
+	}
+	
+	@RequestMapping(value = "/delete")
+	public String delete(Model model, Attach attach) {
 		return null;
 	}
 
