@@ -132,8 +132,6 @@
 						<ul class="sub-menu">
 							<li><a href="./rest/user/admin"> 用户管理 </a></li>
 							<li><a href="./rest/user/info"> 用户新增 </a></li>
-							<li><a href="./rest/role/list"> 地区管理 </a></li>
-							<li><a href="./rest/code/menu"> 代码管理 </a></li>
 						</ul></li>
 					</shiro:hasAnyRoles>
 				</ul>
