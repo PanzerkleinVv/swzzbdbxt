@@ -80,6 +80,7 @@ public class UserController {
 			final List<Permission> permissions = permissionService.selectList();
 			final Map<Long, String> permissionMap = new HashMap<Long, String>();
 			for (Permission permission0 : permissions) {
+				System.out.println("=========="+permission0.getPermissionName());
 				permissionMap.put(permission0.getId(), permission0.getPermissionName());
 			}
 			request.getSession().setAttribute("roles", roles);

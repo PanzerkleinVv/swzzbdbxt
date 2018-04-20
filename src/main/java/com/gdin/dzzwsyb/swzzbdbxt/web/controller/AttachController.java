@@ -22,25 +22,28 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 public class AttachController {
 
 	@RequestMapping(value = "/upload")
-	public String upload(Model model,   @RequestParam("file")MultipartFile multipartFile,HttpServletRequest request) throws IllegalStateException, IOException  {
-		
+	public String upload(Model model,   @RequestParam("file")MultipartFile[] multipartFiles,HttpServletRequest request) throws IllegalStateException, IOException  {
+		//多文件
+		for(MultipartFile multipartFile : multipartFiles) {
 			if(multipartFile.getSize()>0) {
 				String fileName = multipartFile.getOriginalFilename();
 				System.out.println(multipartFile.getOriginalFilename());
-				//保存的位置
+				//保存的位置临时文件
 				//String path = request.getSession().getServletContext().getRealPath("files/");
 				File filepath = new File("C://Users//Administrator//git//swzzbdbxt//WebContent//files",fileName);
 				 if (!filepath.getParentFile().exists()) { 
 					 filepath.getParentFile().mkdirs();
 		            } 	
 				multipartFile.transferTo(filepath);
+				//暂存
+				
 			}
 			//没有选中文件，返回错误页面
 			else {
 				System.out.println(multipartFile.getOriginalFilename());
 				return "/500";
 			}
-		
+		}
 		return "/401";
 	}
 	
@@ -95,6 +98,5 @@ public class AttachController {
 	public String delete(Model model, Attach attach) {
 		return null;
 	}
-
 }
 
