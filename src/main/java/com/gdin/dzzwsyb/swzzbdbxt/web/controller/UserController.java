@@ -222,4 +222,11 @@ public class UserController {
 		}
 	}
 
+	
+	@RequestMapping(value = "/modify")
+	@RequiresRoles(value = RoleSign.ADMIN)
+	public String test1(@Valid User user, Model model) { 
+		return null;
+	}
+	
 }
