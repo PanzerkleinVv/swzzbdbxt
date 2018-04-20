@@ -190,6 +190,8 @@ public class UserController {
 			user.setState(1);
 			final int count = userService.insert(user);
 			if (count > 0) {
+				final List<User> users = userService.selectList();
+				model.addAttribute("users", users);
 				model.addAttribute("msg0", MessageColor.SUCCESS.getColor());
 				model.addAttribute("msg", "新增用户成功");
 				model.addAttribute("navigationBar", "所有");
@@ -206,6 +208,8 @@ public class UserController {
 		} else {
 			final int count = userService.update(user);
 			if (count > 0) {
+				final List<User> users = userService.selectList();
+				model.addAttribute("users", users);
 				model.addAttribute("msg0", MessageColor.SUCCESS.getColor());
 				model.addAttribute("msg", "修改用户成功");
 				model.addAttribute("navigationBar", "所有");
@@ -222,11 +226,45 @@ public class UserController {
 		}
 	}
 
-	
-	@RequestMapping(value = "/modify")
+	@RequestMapping(value = "/delete")
 	@RequiresRoles(value = RoleSign.ADMIN)
-	public String test1(@Valid User user, Model model) { 
-		return null;
+	public String delete(@Valid User user, Model model) {
+		if (user == null || user.isEmpty()) {
+			final List<User> users = userService.selectList();
+			model.addAttribute("users", users);
+			model.addAttribute("msg0", MessageColor.FAILURE.getColor());
+			model.addAttribute("msg", "删除失败：找不到该用户");
+			model.addAttribute("navigationBar", "所有");
+			model.addAttribute("selectId", 0);
+			return "admin";
+		} else if (user.getId() == null || 0 == user.getId()) {
+			final List<User> users = userService.selectList();
+			model.addAttribute("users", users);
+			model.addAttribute("msg0", MessageColor.FAILURE.getColor());
+			model.addAttribute("msg", "删除失败：用户ID不存在");
+			model.addAttribute("navigationBar", "所有");
+			model.addAttribute("selectId", 0);
+			return "admin";
+		} else {
+			final int count = userService.delete(user.getId());
+			if (count > 0) {
+				final List<User> users = userService.selectList();
+				model.addAttribute("users", users);
+				model.addAttribute("msg0", MessageColor.SUCCESS.getColor());
+				model.addAttribute("msg", "删除用户成功");
+				model.addAttribute("navigationBar", "所有");
+				model.addAttribute("selectId", 0);
+				return "admin";
+			} else {
+				model.addAttribute("user", user);
+				model.addAttribute("method", "修改");
+				model.addAttribute("msg0", MessageColor.FAILURE.getColor());
+				model.addAttribute("msg", "删除失败：请确认用户信息是否正确");
+				model.addAttribute("navigationBar", user.getUserdesc() + " 用户信息");
+				return "info";
+			}
+		}
 	}
-	
+
+
 }

@@ -116,7 +116,7 @@
 						
 					<li class=""><a href="./rest/msg/upload"
 						id="btn-dashboard"> <i class="fa fa-upload"></i><span
-							class="title"> 信息上传</span><span class="selected"> </span>
+							class="title">督查上传</span><span class="selected"> </span>
 					</a></li>
 					
 					<li class=""><a href="./rest/msg/upload"
@@ -132,8 +132,6 @@
 						<ul class="sub-menu">
 							<li><a href="./rest/user/admin"> 用户管理 </a></li>
 							<li><a href="./rest/user/info"> 用户新增 </a></li>
-							<li><a href="./rest/role/list"> 地区管理 </a></li>
-							<li><a href="./rest/code/menu"> 代码管理 </a></li>
 						</ul></li>
 					</shiro:hasAnyRoles>
 				</ul>
