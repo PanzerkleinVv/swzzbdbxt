@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +192,7 @@ public class UserController {
 		} else if (user.getId() == null || 0 == user.getId()) {
 			user.setPassword(DigestUtils.sha256Hex("123456"));
 			user.setState(1);
+			user.setCreateTime(new Date());
 			final int count = userService.insert(user);
 			if (count > 0) {
 				final List<User> users = userService.selectList();
