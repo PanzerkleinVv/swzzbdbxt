@@ -41,7 +41,7 @@
 				<span class="uploadItem withInput">
 					<select id="role">
 						<c:forEach var="role" items="${sessionScope.roles}">
-							<option value="${roles.id}">${role.roleName}</option>
+							<option value="${role.id}">${role.roleName}</option>
 						</c:forEach>
 					</select>
 				</span>
@@ -55,7 +55,7 @@
 					<select id="assitrole">
 						<option selected="selected"></option>
 						<c:forEach var="role" items="${sessionScope.roles}">
-							<option value="${roles.id}">${role.roleName}</option>
+							<option value="${role.id}">${role.roleName}</option>
 						</c:forEach>
 					</select>
 				</span>
