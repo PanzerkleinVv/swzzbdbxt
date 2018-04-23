@@ -125,7 +125,7 @@
 							class="title"> 回收站</span><span class="selected"> </span>
 					</a></li>
 						
-					<shiro:hasAnyRoles name="admin">
+					<shiro:hasRole  name="admin">
 					<li class=""><a href="javascript:;"> <i
 							class="fa fa-gears"></i><span class="title"> 系统管理 </span><span
 							class="arrow "> </span>
@@ -134,7 +134,7 @@
 							<li><a href="./rest/user/admin"> 用户管理 </a></li>
 							<li><a href="./rest/user/info"> 用户新增 </a></li>
 						</ul></li>
-					</shiro:hasAnyRoles>
+					</shiro:hasRole >
 				</ul>
 				<!-- END SIDEBAR MENU -->
 			</div>

@@ -5,9 +5,8 @@
 }
 
 .toolbarBox {
-	position: absolute;
 	background-color: #EEEEEE;
-	border: 1px solid #1570a6;
+	width: 100%;
 }
 
 .closeQuery {
@@ -46,15 +45,18 @@
 	font-family: 微软雅黑;
 }
 
-.queryLine>div {
+.queryLine>.queryTitle {
 	margin-left: 5%;
 	width: 90%;
 	text-align: left;
 }
 
-.halfWidth {
-	width: 48%;
-	display: inline;
+.form_date {
+	cursor: text !important;
+}
+
+.input-long {
+	width: 200px;
 }
 
 .middleSpan {
@@ -87,36 +89,14 @@
 	border-collapse: collapse;
 }
 
-.msgItem1 {
-	display: table-cell;
-}
-
-.msgItem2 {
-	width: 150px !important;
+.msgItem {
 	display: table-cell;
 	text-align: center;
 	border-left: 2px solid #FFFFFF;
 }
 
-.msgItem3 {
-	width: 120px !important;
-	display: table-cell;
-	text-align: center;
-	border-left: 2px solid #FFFFFF;
-}
-
-.msgItem4 {
-	width: 56px !important;
-	display: table-cell;
-	text-align: center;
-	border-left: 2px solid #FFFFFF;
-}
-
-.msgItem5 {
-	width: 56px !important;
-	display: table-cell;
-	text-align: center;
-	border-left: 2px solid #FFFFFF;
+.msgItem:first-child {
+	border-left: 0 !important;
 }
 
 .msgHeader {
@@ -288,36 +268,4 @@
 
 .infoButton button {
 	display: inline;
-}
-
-.code {
-	background-color: #1570a6;
-	font-family: 微软雅黑;
-	font-size: 24px;
-	color: #FFFFFF;
-	text-align: center;
-	cursor: default;
-	margin-bottom: 20px;
-}
-
-.code .item {
-	text-align: left;
-	font-size: 18px;
-	line-height: 22px;
-	color: #000000;
-	margin-bottom: 0px;
-	padding-left: 5%;
-	padding-right: 5%;
-}
-
-.code .item:nth-child(even) {
-	background-color: #EEEEEE;
-}
-
-.code .item:nth-child(odd) {
-	background-color: #FFFFFF;
-}
-
-.code input {
-	height: 22px;
 }

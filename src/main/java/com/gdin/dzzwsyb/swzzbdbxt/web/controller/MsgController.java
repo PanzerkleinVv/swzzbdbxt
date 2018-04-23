@@ -2,6 +2,8 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
@@ -13,12 +15,15 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample.Criteria;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
 
 @Controller
 @RequestMapping(value = "/msg")
@@ -35,6 +40,12 @@ public class MsgController {
 
 	@Resource
 	private MsgContractorService msgContractorService;
+	
+	@Resource
+	private SubmissionService submissionService;
+	
+	@Resource
+	private AttachService attachService;
 
 	@RequestMapping(value = "/query")
 	public String query() {
@@ -61,14 +72,23 @@ public class MsgController {
 			criteria.andIdIn(msgId);
 		}
 		msgQuery.setExample(criteria);
-		example.setOrderByClause("status asc, create_time desc");
+		example.setOrderByClause("sequence asc");
 		List<Msg> msgs = null;
 		Page<Msg> page = null;
 		page = msgService.selectByExampleAndPage(example, msgQuery.getPageNo());
 		msgs = page.getResult();
-		model.addAttribute("msgQuery", msgQuery);
+		@SuppressWarnings("unchecked")
+		final Map<Long, String> roleMap = (Map<Long, String>)session.getAttribute("roleMap");
+		List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
+		for (Msg msg : msgs) {
+			msgExtends.add(new MsgExtend(msg));
+		}
+		msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap);
+		msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap);
+		List<List<String>> ids = submissionService.selectIdsByMsgList(msgs);
+		msgExtends = attachService.selectMsgExtendByMsgList(msgExtends, ids);
 		model.addAttribute("page", page);
-		model.addAttribute("msgs", msgs);
+		model.addAttribute("msgs", msgExtends);
 		return "msgList";
 	}
 

@@ -10,6 +10,8 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.AttachMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.AttachExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 
 @Service
@@ -54,27 +56,30 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	}
 
 	@Override
-	public List<Attach> selectByTargetId(String targerId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Attach>[] selectByTargetIds(String[] targerId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int deleteByTargetId(String target) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int deleteByTargetIds(String[] target) {
-		// TODO Auto-generated method stub
-		return 0;
+	public List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, List<List<String>> ids) {
+		if(msgs != null && msgs.size() > 0) {
+			MsgExtend msg = null;
+			List<Attach> attachList = null;
+			for (int i = 0; i < msgs.size(); i++) {
+				msg = msgs.get(i);
+				AttachExample example = new AttachExample();
+				example.createCriteria().andTargetIdIn(ids.get(i));
+				attachList = attachMapper.selectByExample(example);
+				String[] attachs = null;
+				String[] attachIds = null;
+				if (attachList != null && attachList.size() > 0) {
+					attachs = new String[attachList.size()];
+					attachIds = new String[attachList.size()];
+					for (int j = 0; j < attachList.size(); j++) {
+						attachIds[j] = attachList.get(j).getId();
+						attachs[j] = attachList.get(j).getAttachFileName();
+					}
+				}
+				msg.setAttachIds(attachIds);
+				msg.setAttachs(attachs);
+			}
+		}
+		return msgs;
 	}
 
 }

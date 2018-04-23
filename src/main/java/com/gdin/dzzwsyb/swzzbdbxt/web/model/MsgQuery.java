@@ -7,6 +7,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public class MsgQuery {
 
+	private Integer sequence;
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createTimeBegin;
 
@@ -20,6 +22,10 @@ public class MsgQuery {
 	private Integer status;
 
 	private Integer pageNo;
+
+	private Long roleId;
+
+	private Long userId;
 
 	public Date getCreateTimeBegin() {
 		return createTimeBegin;
@@ -69,7 +75,43 @@ public class MsgQuery {
 		this.pageNo = pageNo;
 	}
 
+	public Integer getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(Integer sequence) {
+		this.sequence = sequence;
+	}
+
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	public void setExample(Criteria criteria) {
+		if (userId != null && userId != 0L) {
+			String condition = " (id in (select msgId from msg_contractor where userId=" + userId + ")) ";
+			criteria.addCriterion(condition);
+		}
+		if (roleId != null && roleId != 0L) {
+			String condition = " (id in (select msgId from msg_sponsor where roleId=" + roleId
+					+ ") OR id in (select msgId from msg_co-sponsor where roleId=" + roleId + ")) ";
+			criteria.addCriterion(condition);
+		}
+		if (sequence != null && sequence != 0) {
+			criteria.andSequenceEqualTo(sequence);
+		}
 		if (name != null && name.length() > 0) {
 			String[] array = name.split("[\\s]+");
 			String condition = " (name LIKE '%" + array[0] + "%'";

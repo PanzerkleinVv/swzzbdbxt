@@ -2,6 +2,8 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * 附件表模型类
  * 
@@ -17,6 +19,7 @@ public class Attach {
 
 	private String attachFileName;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createTime;
 
 	public String getId() {

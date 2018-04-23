@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,13 +82,17 @@ public class UserController {
 			final List<Permission> permissions = permissionService.selectList();
 			final Map<Long, String> permissionMap = new HashMap<Long, String>();
 			for (Permission permission0 : permissions) {
+				System.out.println("=========="+permission0.getPermissionName());
 				permissionMap.put(permission0.getId(), permission0.getPermissionName());
 			}
-			request.getSession().setAttribute("roles", roles);
-			request.getSession().setAttribute("permissions", permissions);
-			request.getSession().setAttribute("roleMap", roleMap);
-			request.getSession().setAttribute("permissionMap", permissionMap);
-			request.getSession().setAttribute("userState", SelectArray.getUserState());
+			final List<User> roleUsers = userService.selectByRoleId(role.get(0).getId());
+			request.getSession().setAttribute("roles", roles); //处室下拉菜单
+			request.getSession().setAttribute("permissions", permissions); //权限下拉菜单
+			request.getSession().setAttribute("roleMap", roleMap); //处室名显示映射
+			request.getSession().setAttribute("permissionMap", permissionMap); //权限名显示映射
+			request.getSession().setAttribute("userState", SelectArray.getUserState()); //用户状态下拉菜单
+			request.getSession().setAttribute("roleUsers", roleUsers); //本处室用户下拉菜单
+			request.getSession().setAttribute("msgStatus", SelectArray.getMsgStatus()); //信息状态
 		} catch (AuthenticationException e) {
 			// 身份验证失败
 			model.addAttribute("error", "用户名或密码错误 ！");
@@ -188,6 +193,7 @@ public class UserController {
 		} else if (user.getId() == null || 0 == user.getId()) {
 			user.setPassword(DigestUtils.sha256Hex("123456"));
 			user.setState(1);
+			user.setCreateTime(new Date());
 			final int count = userService.insert(user);
 			if (count > 0) {
 				final List<User> users = userService.selectList();
@@ -265,5 +271,6 @@ public class UserController {
 			}
 		}
 	}
+
 
 }
