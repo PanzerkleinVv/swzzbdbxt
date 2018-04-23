@@ -18,6 +18,7 @@
 <base href="<%=basePath%>">
 <meta charset="utf-8" />
 <title>督查事项管理系统</title>
+<meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <meta content="" name="description" />
@@ -295,6 +296,11 @@
 	<script type="text/javascript"
 		src="assets/plugins/summernote/lang/summernote-zh-CN.js"
 		charset="UTF-8"></script>
+
+
+<script src="assets/plugins/bootstrap/js/bootstrap-multiselect.js"></script>
+<link href="assets/plugins/bootstrap/css/bootstrap-multiselect.css"
+	rel="stylesheet" type="text/css" />
 	<!-- <script data-main="app/js/main" src="app/lib/requirejs/require.js"></script> -->
 </body>
 </html>
