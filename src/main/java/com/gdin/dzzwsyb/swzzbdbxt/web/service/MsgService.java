@@ -16,5 +16,7 @@ public interface MsgService extends GenericService<Msg, String> {
 	public Page<Msg> selectByExampleAndPage(MsgExample example, int pageNo);
 
 	public int deleteOldMsg();
+	
+	public int  insertSelective(Msg record);
 
 }

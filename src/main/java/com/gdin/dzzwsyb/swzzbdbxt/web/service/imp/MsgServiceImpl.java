@@ -72,4 +72,10 @@ public class MsgServiceImpl extends GenericServiceImpl<Msg, String> implements M
 		return msgMapper.deleteByExample(example);
 	}
 
+	@Override
+	public int insertSelective(Msg record) {
+		// TODO Auto-generated method stub
+		return msgMapper.insertSelective(record);
+	}
+
 }
