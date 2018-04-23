@@ -92,6 +92,7 @@ public class UserController {
 			request.getSession().setAttribute("permissionMap", permissionMap); //权限名显示映射
 			request.getSession().setAttribute("userState", SelectArray.getUserState()); //用户状态下拉菜单
 			request.getSession().setAttribute("roleUsers", roleUsers); //本处室用户下拉菜单
+			request.getSession().setAttribute("msgStatus", SelectArray.getMsgStatus()); //信息状态
 		} catch (AuthenticationException e) {
 			// 身份验证失败
 			model.addAttribute("error", "用户名或密码错误 ！");
