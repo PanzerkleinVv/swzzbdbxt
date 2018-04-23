@@ -39,9 +39,9 @@
 			<div>
 				<span class="uploadTitle">主办处室：</span>
 				<span class="uploadItem withInput">
-					<select id="permission">
-						<c:forEach var="permission" items="${sessionScope.permissions}">
-							<option value="${permission.id}">${permission.permissionName}</option>
+					<select id="role">
+						<c:forEach var="role" items="${sessionScope.roles}">
+							<option value="${roles.id}">${role.roleName}</option>
 						</c:forEach>
 					</select>
 				</span>
@@ -52,10 +52,10 @@
 				<span class="uploadTitle">协办处室：</span>
 				<span class="uploadItem withInput">
 					<option selected="selected"></option>
-					<select id="assitpermission">
+					<select id="assitrole">
 						<option selected="selected"></option>
-						<c:forEach var="permission" items="${sessionScope.permissions}">
-							<option value="${permission.id}">${permission.permissionName}</option>
+						<c:forEach var="role" items="${sessionScope.roles}">
+							<option value="${roles.id}">${role.roleName}</option>
 						</c:forEach>
 					</select>
 				</span>
@@ -108,8 +108,8 @@
 		$.post(url, {
 			sequence : $("#sequence").val(),
 			name : $("#name").val(),
-			permission :document.getElementById("permission").value,
-			assitpermission : document.getElementById("assitpermission").value,
+			role :document.getElementById("role").value,
+			assitrole : document.getElementById("assitperrole").value,
 			limit_time : $("#limit_time").val(),
 		}, function(data) {
 			
