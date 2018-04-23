@@ -346,7 +346,7 @@
 		status = #{status,jdbcType=INTEGER}
 		where id = #{id,jdbcType=VARCHAR}
 	</update>
-		<select id="selectByExampleAndPage" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample"
+	<select id="selectByExampleAndPage" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample"
 		resultMap="ExtendResultMap">
 		select
 		<if test="distinct">
