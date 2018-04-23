@@ -14,14 +14,17 @@ public class Msg {
 	private String id;
 
 	private Integer sequence;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createTime;
 
 	private String name;
 
 	private String basis;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date limitTime;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date endTime;
 
