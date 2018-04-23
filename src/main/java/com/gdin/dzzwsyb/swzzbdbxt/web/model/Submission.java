@@ -2,6 +2,8 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Submission {
     private String id;
 
@@ -23,6 +25,7 @@ public class Submission {
 
     private Integer status;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date sendTime;
 
     public String getId() {

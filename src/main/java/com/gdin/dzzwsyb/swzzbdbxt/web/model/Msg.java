@@ -2,6 +2,8 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * 督办事项表模型类
  * 
@@ -13,19 +15,38 @@ public class Msg {
 
 	private Integer sequence;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createTime;
 
 	private String name;
 
 	private String basis;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date limitTime;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date endTime;
 
 	private Integer status;
 
 	private String content;
+	
+	public Msg() {
+		
+	}
+	
+	public Msg(Msg msg) {
+		basis = msg.getBasis();
+		content = msg.getContent();
+		createTime = msg.getCreateTime();
+		endTime = msg.getEndTime();
+		id = msg.getId();
+		limitTime = msg.getLimitTime();
+		name = msg.getName();
+		sequence = msg.getSequence();
+		status = msg.getStatus();
+	}
 
 	public String getId() {
 		return id;

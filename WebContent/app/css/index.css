@@ -89,36 +89,14 @@
 	border-collapse: collapse;
 }
 
-.msgItem1 {
-	display: table-cell;
-}
-
-.msgItem2 {
-	width: 150px !important;
+.msgItem {
 	display: table-cell;
 	text-align: center;
 	border-left: 2px solid #FFFFFF;
 }
 
-.msgItem3 {
-	width: 120px !important;
-	display: table-cell;
-	text-align: center;
-	border-left: 2px solid #FFFFFF;
-}
-
-.msgItem4 {
-	width: 56px !important;
-	display: table-cell;
-	text-align: center;
-	border-left: 2px solid #FFFFFF;
-}
-
-.msgItem5 {
-	width: 56px !important;
-	display: table-cell;
-	text-align: center;
-	border-left: 2px solid #FFFFFF;
+.msgItem:first-child {
+	border-left: 0 !important;
 }
 
 .msgHeader {

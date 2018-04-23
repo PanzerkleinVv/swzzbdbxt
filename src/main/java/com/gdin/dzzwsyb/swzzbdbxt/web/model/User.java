@@ -2,6 +2,8 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * 用户表模型类
  * 
@@ -21,6 +23,7 @@ public class User {
 
 	private Long permissionId;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createTime;
 
 	private Long roleId;

@@ -7,7 +7,7 @@
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="is_signed" jdbcType="INTEGER" property="isSigned" />
     <result column="is_assigned" jdbcType="INTEGER" property="isAssigned" />
-    <result column="content" jdbcType="TEXT" property="content" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -105,7 +105,7 @@
       is_signed, is_assigned, content
       )
     values (#{id,jdbcType=BIGINT}, #{msgId,jdbcType=VARCHAR}, #{roleId,jdbcType=BIGINT}, 
-      #{isSigned,jdbcType=INTEGER}, #{isAssigned,jdbcType=INTEGER}, #{content,jdbcType=TEXT}
+      #{isSigned,jdbcType=INTEGER}, #{isAssigned,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor">
@@ -147,7 +147,7 @@
         #{isAssigned,jdbcType=INTEGER},
       </if>
       <if test="content != null">
-        #{content,jdbcType=TEXT},
+        #{content,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -176,7 +176,7 @@
         is_assigned = #{record.isAssigned,jdbcType=INTEGER},
       </if>
       <if test="record.content != null">
-        content = #{record.content,jdbcType=TEXT},
+        content = #{record.content,jdbcType=LONGVARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -190,7 +190,7 @@
       role_id = #{record.roleId,jdbcType=BIGINT},
       is_signed = #{record.isSigned,jdbcType=INTEGER},
       is_assigned = #{record.isAssigned,jdbcType=INTEGER},
-      content = #{record.content,jdbcType=TEXT}
+      content = #{record.content,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -211,7 +211,7 @@
         is_assigned = #{isAssigned,jdbcType=INTEGER},
       </if>
       <if test="content != null">
-        content = #{content,jdbcType=TEXT},
+        content = #{content,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -222,7 +222,7 @@
       role_id = #{roleId,jdbcType=BIGINT},
       is_signed = #{isSigned,jdbcType=INTEGER},
       is_assigned = #{isAssigned,jdbcType=INTEGER},
-      content = #{content,jdbcType=TEXT}
+      content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

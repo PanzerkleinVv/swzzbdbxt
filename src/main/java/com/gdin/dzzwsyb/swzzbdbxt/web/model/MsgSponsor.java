@@ -58,4 +58,12 @@ public class MsgSponsor {
 	public void setIsAssigned(Integer isAssigned) {
 		this.isAssigned = isAssigned;
 	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 }

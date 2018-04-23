@@ -61,4 +61,22 @@ public class ApplicationUtils {
 		return sha1Hex(randomUUID().toString());
 	}
 
+	/**
+	 * 替换目标String为空字符串
+	 * @param string
+	 * @return
+	 */
+	public static String replaceNullToEmpty(String string) {
+		return (string == null ? "" : string);
+	}
+
+	/**
+	 * 替换目标String为&nbsp
+	 * @param string
+	 * @return
+	 */
+	public static String replaceNullToNbsp(String string) {
+		return (string == null ? "&nbsp;" : ("".equals(string) ? "&nbsp;" : string));
+	}
+
 }

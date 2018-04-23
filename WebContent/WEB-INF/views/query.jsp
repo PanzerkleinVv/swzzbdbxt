@@ -106,9 +106,7 @@
 
 	function openMsg(msgId) {
 		var url = 'rest/msg/openMsg';
-		$("#msgList").hide();
 		$("#openMsg").show();
-		$("#goback").show();
 		$.post(url, {
 			msgId : msgId
 		}, function(data) {

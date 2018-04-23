@@ -2,6 +2,8 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * 通知提醒表模型类
  * 
@@ -19,6 +21,7 @@ public class Notice {
 
 	private Integer targetType;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createTime;
 
 	private Integer isRead;

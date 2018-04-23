@@ -57,7 +57,7 @@ public class SequenceNumberServiceImpl extends GenericServiceImpl<SequenceNumber
 
 	@Override
 	public Integer next() {
-		return next(new Integer(Calendar.getInstance().get(Calendar.YEAR)));
+		return next(Calendar.getInstance().get(Calendar.YEAR));
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class SequenceNumberServiceImpl extends GenericServiceImpl<SequenceNumber
 			sequenceNumberMapper.insertSelective(sequenceNumber);
 		}
 		final String sequenceString = year.toString() + String.format("%04d", sequenceNumber.getCount());
-		return new Integer(sequenceString);
+		return Integer.getInteger(sequenceString);
 	}
 
 }

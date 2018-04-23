@@ -1,24 +1,33 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<div style="height: 20px"></div>
 <div class="msgTable">
 	<div class="msg msgHeader">
-		<span class="msgItem1">标 题</span> <span class="msgItem2">单 位</span> <span
-			class="msgItem3">时 间</span> <span class="msgItem4">状态</span> <span
-			class="msgItem5">操作</span>
+		<span class="msgItem">立项号</span> <span class="msgItem">督查事项</span> <span
+			class="msgItem">立项时间</span> <span class="msgItem">立项依据</span> <span
+			class="msgItem">主办处室</span><span class="msgItem">协办处室</span><span
+			class="msgItem">办结时限</span><span class="msgItem">办理情况</span><span
+			class="msgItem">附件资料</span><span class="msgItem">反馈时间</span><span
+			class="msgItem">办理状态</span>
 	</div>
 	<c:if test="${msgs != null}">
 		<c:forEach items="${msgs}" var="msg0">
-			<div class="msg" id="${msg0.msgId}">
-				<span class="msgItem1" onclick="openMsg('${msg0.msgId}')">${msg0.msgTitle}</span>
-				<span class="msgItem2" onclick="openMsg('${msg0.msgId}')">${msg0.msgUserUnit}</span>
-				<span class="msgItem3" onclick="openMsg('${msg0.msgId}')"> <fmt:formatDate
-						value='${msg0.msgDate}' type='DATE' pattern='yyyy-MM-dd' />
-				</span> <span class="msgItem4" onclick="openMsg('${msg0.msgId}')">${msg0.msgStatusName}</span>
-				<span class="msgItem5"><button id="deleteButton"
-						type="button" class="btn blue" onclick="msgDelete('${msg0.msgId}')">撤回</button></span>
+			<div class="msg" id="${msg0.id}" onclick="openMsg('${msg0.id}')">
+				<span class="msgItem">${msg0.sequence}</span> <span class="msgItem">${msg0.name}</span>
+				<span class="msgItem"> <fmt:formatDate
+						value='${msg0.createTime}' type='DATE' pattern='yyyy-MM-dd' />
+				</span> <span class="msgItem">${msg0.basis}</span> <span
+					class="msgItem sponsor">${msg0.sponsorRoleNames}</span> <span
+					class="msgItem co-sponsor">${msg0.coSponsorRoleNames}</span> <span
+					class="msgItem"> <fmt:formatDate value='${msg0.limitTime}'
+						type='DATE' pattern='yyyy-MM-dd' />
+				</span> <span class="msgItem content">${msg0.contents}</span> <span
+					class="msgItem attach">${msg0.attachs}</span> <span class="msgItem">
+					<fmt:formatDate value='${msg0.endTime}' type='DATE'
+						pattern='yyyy-MM-dd' />
+				</span> <span class="msgItem">${msg0.status}</span>
 			</div>
+			<input type="hidden" name="ids" value="${msg0.id}" />
 		</c:forEach>
 	</c:if>
 </div>
