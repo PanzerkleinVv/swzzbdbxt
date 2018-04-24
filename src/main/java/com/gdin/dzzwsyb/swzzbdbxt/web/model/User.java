@@ -27,6 +27,26 @@ public class User {
 	private Date createTime;
 
 	private Long roleId;
+	
+	private String msg0;
+	
+	private String msg;
+
+	public String getMsg0() {
+		return msg0;
+	}
+
+	public void setMsg0(String msg0) {
+		this.msg0 = msg0;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 
 	public User() {
 

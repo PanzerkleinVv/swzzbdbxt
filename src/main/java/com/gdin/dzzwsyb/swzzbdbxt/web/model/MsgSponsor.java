@@ -7,7 +7,7 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
  *
  */
 public class MsgSponsor {
-	private Long id;
+    private String id;
 
 	private String msgId;
 
@@ -19,13 +19,15 @@ public class MsgSponsor {
 
     private String content;
 
-    public Long getId() {
+    private Integer status;
+
+    public String getId() {
         return id;
     }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
 
 	public String getMsgId() {
 		return msgId;
@@ -63,7 +65,15 @@ public class MsgSponsor {
 		return content;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public void setContent(String content) {
+        this.content = content == null ? null : content.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

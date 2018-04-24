@@ -104,9 +104,18 @@ public class MsgQuery {
 			String condition = " (id in (select msgId from msg_contractor where userId=" + userId + ")) ";
 			criteria.addCriterion(condition);
 		}
-		if (roleId != null && roleId != 0L) {
+		if (roleId != null && roleId != 0L && status == null) {
 			String condition = " (id in (select msgId from msg_sponsor where roleId=" + roleId
 					+ ") OR id in (select msgId from msg_co-sponsor where roleId=" + roleId + ")) ";
+			criteria.addCriterion(condition);
+		} else if (roleId != null && roleId != 0L && status != null) {
+			String condition = " (id in (select msgId from msg_sponsor where roleId=" + roleId + " and status=" + status
+					+ ") OR id in (select msgId from msg_co-sponsor where roleId=" + roleId + " and status=" + status
+					+ ")) ";
+			criteria.addCriterion(condition);
+		} else if ((roleId == null || roleId == 0L) && status != null) {
+			String condition = " (id in (select msgId from msg_sponsor where status=" + status
+					+ ") OR id in (select msgId from msg_co-sponsor where status=" + status + ")) ";
 			criteria.addCriterion(condition);
 		}
 		if (sequence != null && sequence != 0) {
@@ -138,9 +147,6 @@ public class MsgQuery {
 			calendar.setTime(createTimeEnd);
 			calendar.add(Calendar.DAY_OF_MONTH, 1);
 			criteria.andCreateTimeLessThan(calendar.getTime());
-		}
-		if (status != null) {
-			criteria.andStatusEqualTo(status);
 		}
 	}
 }

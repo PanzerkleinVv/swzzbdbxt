@@ -58,7 +58,12 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 		UserExample example = new UserExample();
 		example.createCriteria().andUsernameEqualTo(username);
 		final List<User> list = userMapper.selectByExample(example);
-		return list.get(0);
+		if (list != null && list.size() >0 ) {
+			return list.get(0);
+		} else {
+			return null;
+		}
+		
 	}
 
 	@Override

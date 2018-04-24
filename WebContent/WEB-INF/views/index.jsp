@@ -114,10 +114,12 @@
 							class="title"> 信息查询 </span><span class="selected "> </span>
 					</a></li>
 						
+					<shiro:hasAnyRoles name="admin,1,2">
 					<li class=""><a href="./rest/msg/upload"
 						id="btn-dashboard"> <i class="fa fa-upload"></i><span
-							class="title">督查上传</span><span class="selected"> </span>
+							class="title"> 督查上传 </span><span class="selected"> </span>
 					</a></li>
+					</shiro:hasAnyRoles>
 					
 					<li class=""><a href="./rest/msg/upload"
 						id="btn-dashboard"> <i class="fa fa-recycle"></i><span
@@ -295,6 +297,11 @@
 	<script type="text/javascript"
 		src="assets/plugins/summernote/lang/summernote-zh-CN.js"
 		charset="UTF-8"></script>
+
+
+<script src="assets/plugins/bootstrap/js/bootstrap-multiselect.js"></script>
+<link href="assets/plugins/bootstrap/css/bootstrap-multiselect.css"
+	rel="stylesheet" type="text/css" />
 	<!-- <script data-main="app/js/main" src="app/lib/requirejs/require.js"></script> -->
 </body>
 </html>

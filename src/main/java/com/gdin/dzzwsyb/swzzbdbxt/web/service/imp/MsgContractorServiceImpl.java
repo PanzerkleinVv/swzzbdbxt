@@ -15,7 +15,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
 
 @Service
-public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, Long> implements MsgContractorService {
+public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, String> implements MsgContractorService {
 
 	@Resource
 	private MsgContractorMapper msgContractorMapper;
@@ -31,12 +31,12 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 	}
 
 	@Override
-	public int delete(Long id) {
+	public int delete(String id) {
 		return msgContractorMapper.deleteByPrimaryKey(id);
 	}
 
 	@Override
-	public MsgContractor selectById(Long id) {
+	public MsgContractor selectById(String id) {
 		return msgContractorMapper.selectByPrimaryKey(id);
 	}
 
@@ -51,7 +51,7 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 	}
 
 	@Override
-	public GenericDao<MsgContractor, Long> getDao() {
+	public GenericDao<MsgContractor, String> getDao() {
 		return msgContractorMapper;
 	}
 

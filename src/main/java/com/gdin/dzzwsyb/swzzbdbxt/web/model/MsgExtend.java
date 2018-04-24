@@ -12,6 +12,8 @@ public class MsgExtend extends Msg {
 	
 	private String attachIds[];
 	
+	private String status;
+	
 	public MsgExtend() {
 		
 	}
@@ -67,6 +69,14 @@ public class MsgExtend extends Msg {
 
 	public void setAttachIds(String[] attachIds) {
 		this.attachIds = attachIds;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

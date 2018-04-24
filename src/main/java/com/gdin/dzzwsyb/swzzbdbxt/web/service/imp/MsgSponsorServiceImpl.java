@@ -18,7 +18,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
 
 @Service
-public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, Long> implements MsgSponsorService {
+public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String> implements MsgSponsorService {
 
 	@Resource
 	private MsgSponsorMapper msgSponsorMapper;
@@ -34,12 +34,12 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, Long> 
 	}
 
 	@Override
-	public int delete(Long id) {
+	public int delete(String id) {
 		return msgSponsorMapper.deleteByPrimaryKey(id);
 	}
 
 	@Override
-	public MsgSponsor selectById(Long id) {
+	public MsgSponsor selectById(String id) {
 		return msgSponsorMapper.selectByPrimaryKey(id);
 	}
 
@@ -54,7 +54,7 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, Long> 
 	}
 
 	@Override
-	public GenericDao<MsgSponsor, Long> getDao() {
+	public GenericDao<MsgSponsor, String> getDao() {
 		return msgSponsorMapper;
 	}
 

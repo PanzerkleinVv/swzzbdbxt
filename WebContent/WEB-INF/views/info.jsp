@@ -89,9 +89,17 @@
 					msg.html('系统名只能是英文或数字');
 					return false;
 				} else {
-					msg.html("OK");
-					msg.css('color', '#00FF00');
-					return true;
+					var url = "rest/user/checkUsername";
+					var flag;
+					$.getJSON(url,{'username': value},function(data) {
+						msg.html(data.msg);
+						msg.css('color', data.msg0);
+					});
+					if (msg.html() != 'OK') {
+						return false;
+					} else {
+						return true
+					}
 				}
 			} else if (num == 1) {
 				value = $('#userdesc').val();
