@@ -12,12 +12,12 @@ import org.apache.ibatis.annotations.Param;
  * @author PanzerkleinVv
  *
  */
-public interface MsgContractorMapper extends GenericDao<MsgContractor, Long> {
+public interface MsgContractorMapper extends GenericDao<MsgContractor, String> {
 	long countByExample(MsgContractorExample example);
 
 	int deleteByExample(MsgContractorExample example);
 
-	int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(String id);
 
 	int insert(MsgContractor record);
 
@@ -25,7 +25,7 @@ public interface MsgContractorMapper extends GenericDao<MsgContractor, Long> {
 
 	List<MsgContractor> selectByExample(MsgContractorExample example);
 
-	MsgContractor selectByPrimaryKey(Long id);
+    MsgContractor selectByPrimaryKey(String id);
 
 	int updateByExampleSelective(@Param("record") MsgContractor record, @Param("example") MsgContractorExample example);
 

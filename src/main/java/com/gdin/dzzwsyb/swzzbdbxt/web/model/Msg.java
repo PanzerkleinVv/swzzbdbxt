@@ -24,18 +24,14 @@ public class Msg {
 
 	private String basis;
 
-
-
+    private String content;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date limitTime;
 
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date endTime;
-
-	private Integer status;
-
-	private String content;
 	
 	public Msg() {
 		
@@ -50,7 +46,6 @@ public class Msg {
 		limitTime = msg.getLimitTime();
 		name = msg.getName();
 		sequence = msg.getSequence();
-		status = msg.getStatus();
 	}
 
 	public String getId() {
@@ -93,9 +88,17 @@ public class Msg {
 		this.basis = basis == null ? null : basis.trim();
 	}
 
-	public Date getLimitTime() {
-		return limitTime;
-	}
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content == null ? null : content.trim();
+    }
+
+    public Date getLimitTime() {
+        return limitTime;
+    }
 
 	public void setLimitTime(Date limitTime) {
 		this.limitTime = limitTime;
@@ -105,23 +108,7 @@ public class Msg {
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content == null ? null : content.trim();
-	}
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 }

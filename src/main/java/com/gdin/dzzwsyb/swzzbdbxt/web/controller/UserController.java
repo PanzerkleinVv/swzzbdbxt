@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
@@ -82,7 +83,6 @@ public class UserController {
 			final List<Permission> permissions = permissionService.selectList();
 			final Map<Long, String> permissionMap = new HashMap<Long, String>();
 			for (Permission permission0 : permissions) {
-				System.out.println("=========="+permission0.getPermissionName());
 				permissionMap.put(permission0.getId(), permission0.getPermissionName());
 			}
 			final List<User> roleUsers = userService.selectByRoleId(role.get(0).getId());
@@ -272,5 +272,27 @@ public class UserController {
 		}
 	}
 
-
+	@RequestMapping(value = "/checkUsername")
+	@RequiresRoles(value = RoleSign.ADMIN)
+	@ResponseBody
+	public User checkUsername(@Valid User user, Model model) {
+		User user0 = null;
+		if (user == null || user.isEmpty()) {
+			user0 = new User();
+			user0.setMsg0(MessageColor.FAILURE.getColor());
+			user0.setMsg("大组工网ID不能为空");
+		} else {
+			user0 = userService.selectByUsername(user.getUsername());
+			if (user0 != null) {
+				user0 = new User();
+				user0.setMsg0(MessageColor.FAILURE.getColor());
+				user0.setMsg("大组工网ID已被占用");
+			} else {
+				user0 = new User();
+				user0.setMsg0(MessageColor.SUCCESS.getColor());
+				user0.setMsg("OK");
+			}
+		}
+		return user0;
+	}
 }

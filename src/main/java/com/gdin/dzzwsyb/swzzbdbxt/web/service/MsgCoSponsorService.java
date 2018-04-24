@@ -8,7 +8,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 
-public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, Long> {
+public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String> {
 
 	List<String> selectMsgIdByRoleId(Long roleId);
 

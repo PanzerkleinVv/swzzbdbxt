@@ -28,6 +28,7 @@
 						id=createTimeEnd value="" readonly
 						class="form_date input-sm form-inline">
 				</span>
+				<shiro:hasAnyRoles name="admin,1,2">
 				<span class="queryItem queryTitle">经办处室：</span>
 				<span>
 					<select id="roleId" class="input-sm form-inline">
@@ -37,6 +38,7 @@
 						</c:forEach>
 					</select>
 				</span>
+				</shiro:hasAnyRoles>
 				<span class="queryItem queryTitle">信息状态：</span>
 				<span>
 					<select id="status" class="input-sm form-inline">

@@ -12,12 +12,12 @@ import org.apache.ibatis.annotations.Param;
  * @author PanzerkleinVv
  *
  */
-public interface MsgCoSponsorMapper extends GenericDao<MsgCoSponsor, Long> {
+public interface MsgCoSponsorMapper extends GenericDao<MsgCoSponsor, String> {
 	long countByExample(MsgCoSponsorExample example);
 
 	int deleteByExample(MsgCoSponsorExample example);
 
-	int deleteByPrimaryKey(Long id);
+	int deleteByPrimaryKey(String id);
 
 	int insert(MsgCoSponsor record);
 
@@ -25,7 +25,7 @@ public interface MsgCoSponsorMapper extends GenericDao<MsgCoSponsor, Long> {
 
 	List<MsgCoSponsor> selectByExample(MsgCoSponsorExample example);
 
-	MsgCoSponsor selectByPrimaryKey(Long id);
+	MsgCoSponsor selectByPrimaryKey(String id);
 
 	int updateByExampleSelective(@Param("record") MsgCoSponsor record, @Param("example") MsgCoSponsorExample example);
 

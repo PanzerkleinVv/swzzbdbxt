@@ -7,19 +7,19 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
  *
  */
 public class MsgContractor {
-	private Long id;
+    private String id;
 
 	private String msgId;
 
 	private Long userId;
 
-	public Long getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
 
 	public String getMsgId() {
 		return msgId;

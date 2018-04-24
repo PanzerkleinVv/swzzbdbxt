@@ -18,7 +18,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 
 @Service
-public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, Long> implements MsgCoSponsorService {
+public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, String> implements MsgCoSponsorService {
 
 	@Resource
 	private MsgCoSponsorMapper msgCoSponsorMapper;
@@ -34,12 +34,12 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, Lo
 	}
 
 	@Override
-	public int delete(Long id) {
+	public int delete(String id) {
 		return msgCoSponsorMapper.deleteByPrimaryKey(id);
 	}
 
 	@Override
-	public MsgCoSponsor selectById(Long id) {
+	public MsgCoSponsor selectById(String id) {
 		return msgCoSponsorMapper.selectByPrimaryKey(id);
 	}
 
@@ -54,7 +54,7 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, Lo
 	}
 
 	@Override
-	public GenericDao<MsgCoSponsor, Long> getDao() {
+	public GenericDao<MsgCoSponsor, String> getDao() {
 		return msgCoSponsorMapper;
 	}
 

@@ -73,7 +73,7 @@ public class SequenceNumberServiceImpl extends GenericServiceImpl<SequenceNumber
 			sequenceNumberMapper.insertSelective(sequenceNumber);
 		}
 		final String sequenceString = year.toString() + String.format("%04d", sequenceNumber.getCount());
-		return Integer.getInteger(sequenceString);
+		return Integer.valueOf(sequenceString);
 	}
 
 }
