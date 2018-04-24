@@ -10,6 +10,12 @@
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="is_read" jdbcType="INTEGER" property="isRead" />
 	</resultMap>
+	<resultMap id="BaseCountResultMap" type="com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount">
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="onetype" jdbcType="INTEGER" property="oneType" />
+		<result column="unread" jdbcType="INTEGER" property="unRead" />
+	</resultMap>
+	
 	<sql id="Example_Where_Clause">
 		<where>
 			<foreach collection="oredCriteria" item="criteria" separator="or">
@@ -249,4 +255,15 @@
 		is_read = #{isRead,jdbcType=INTEGER}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+	
+	<!-- 页面上的提醒功能 -->
+	<select id="countNotice" parameterType="java.lang.Long" 
+		resultMap="BaseCountResultMap">
+			select t1.type,  onetype, unread from
+				(select type, count(1) onetype from notice where user_id = #{userId,jdbcType=BIGINT} GROUP BY type ) t1
+					LEFT OUTER JOIN
+						(select type, count(1) unread  from notice where user_id = #{userId,jdbcType=BIGINT} and is_read=1  GROUP BY type ) t2
+							on t1.type=t2.type    order by t1.type 			
+			
+	</select>
 </mapper>

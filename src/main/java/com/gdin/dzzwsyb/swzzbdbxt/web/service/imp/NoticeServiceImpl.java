@@ -10,6 +10,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.NoticeMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 
@@ -58,5 +59,12 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 	public List<Notice> selectByExample(NoticeExample example) {
 		return noticeMapper.selectByExample(example);
 	}
+
+	@Override
+	public List<NoticeCount> countNotice(Long userid) {
+		return noticeMapper.countNotice(userid);
+	}
+
+
 
 }

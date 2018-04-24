@@ -2,6 +2,7 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.dao;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
@@ -34,4 +35,8 @@ public interface NoticeMapper extends GenericDao<Notice, Long> {
 	int updateByPrimaryKeySelective(Notice record);
 
 	int updateByPrimaryKey(Notice record);
+
+	List<NoticeCount> countNotice(Long userid);
+
+
 }

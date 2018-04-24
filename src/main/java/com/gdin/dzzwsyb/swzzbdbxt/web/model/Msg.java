@@ -15,6 +15,8 @@ public class Msg {
 
 	private Integer sequence;
 
+
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createTime;
 
@@ -26,6 +28,7 @@ public class Msg {
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date limitTime;
+
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date endTime;
