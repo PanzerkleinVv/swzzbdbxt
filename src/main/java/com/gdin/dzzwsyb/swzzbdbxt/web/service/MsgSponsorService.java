@@ -11,6 +11,8 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
 public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 
 	List<String> selectMsgIdByRoleId(Long roleId);
+	
+	int insertSelective(MsgSponsor record);
 
 	List<MsgSponsor> selectByExample(MsgSponsorExample example);
 

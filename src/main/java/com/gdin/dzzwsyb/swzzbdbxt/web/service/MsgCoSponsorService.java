@@ -12,6 +12,8 @@ public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String
 
 	List<String> selectMsgIdByRoleId(Long roleId);
 
+	int insertSelective(MsgCoSponsor record);
+
 	List<MsgCoSponsor> selectByExample(MsgCoSponsorExample example);
 
 	List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgExtend, Map<Long, String> roleMap);

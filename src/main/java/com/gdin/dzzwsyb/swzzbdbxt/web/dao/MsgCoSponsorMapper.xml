@@ -77,7 +77,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from msg_co-sponsor
+    from `msg_co-sponsor`
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -88,21 +88,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from msg_co-sponsor
+    from `msg_co-sponsor`
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from msg_co-sponsor
+    delete from `msg_co-sponsor`
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample">
-    delete from msg_co-sponsor
+    delete from `msg_co-sponsor`
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor">
-    insert into msg_co-sponsor (id, msg_id, role_id, 
+    insert into `msg_co-sponsor` (id, msg_id, role_id, 
       is_signed, is_assigned, content, 
       status)
     values (#{id,jdbcType=VARCHAR}, #{msgId,jdbcType=VARCHAR}, #{roleId,jdbcType=BIGINT}, 
@@ -110,7 +110,7 @@
       #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor">
-    insert into msg_co-sponsor
+    insert into `msg_co-sponsor`
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -159,13 +159,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample" resultType="java.lang.Long">
-    select count(*) from msg_co-sponsor
+    select count(*) from `msg_co-sponsor`
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update msg_co-sponsor
+    update `msg_co-sponsor`
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=VARCHAR},
@@ -194,7 +194,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update msg_co-sponsor
+    update `msg_co-sponsor`
     set id = #{record.id,jdbcType=VARCHAR},
       msg_id = #{record.msgId,jdbcType=VARCHAR},
       role_id = #{record.roleId,jdbcType=BIGINT},
@@ -207,7 +207,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor">
-    update msg_co-sponsor
+    update `msg_co-sponsor`
     <set>
       <if test="msgId != null">
         msg_id = #{msgId,jdbcType=VARCHAR},
@@ -231,7 +231,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor">
-    update msg_co-sponsor
+    update `msg_co-sponsor`
     set msg_id = #{msgId,jdbcType=VARCHAR},
       role_id = #{roleId,jdbcType=BIGINT},
       is_signed = #{isSigned,jdbcType=INTEGER},

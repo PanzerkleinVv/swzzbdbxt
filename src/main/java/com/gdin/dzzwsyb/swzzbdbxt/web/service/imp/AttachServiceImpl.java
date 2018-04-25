@@ -1,10 +1,17 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
@@ -80,6 +87,44 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 			}
 		}
 		return msgs;
+	}
+
+	@Override
+	public void upload(Model model, MultipartFile[] file, HttpServletResponse resp, HttpServletRequest request){
+		//储存文件名
+				List<String> fileNameLists = new ArrayList<String>() ;
+				//多文件
+				for(MultipartFile multipartFile : file) {
+					if(multipartFile.getSize()>0) {
+						String fileName = multipartFile.getOriginalFilename();
+						fileNameLists.add(fileName);
+						System.out.println(multipartFile.getOriginalFilename());
+						//保存的位置临时文件
+						/*String path = request.getSession().getServletContext().getRealPath("files/");
+						File filepath=new File(path);*/
+						 File filepath = new File("C://Users//Administrator//git//swzzbdbxt//WebContent//files",fileName);
+						 if (!filepath.getParentFile().exists()) { 
+							 filepath.getParentFile().mkdirs();
+				            } 	
+						try {
+							multipartFile.transferTo(filepath);
+						} catch (IllegalStateException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+					//没有选中文件，返回错误页面
+					else {
+						
+					}
+				}
+				//保存文件名
+				request.getSession().setAttribute("fileNameLists", fileNameLists);
+		
 	}
 
 }

@@ -36,7 +36,7 @@
 			<div>
 				<span class="uploadTitle">主办处室：</span>
 				<span class="uploadItem withInput">
-					<select id="role" multiple="multiple" >
+					<select id="role" multiple="multiple" onblur="check(3)">
 						<c:forEach var="role" items="${sessionScope.roles}" begin="1">
       							<option value="${role.id}">${role.roleName}</option>
 						</c:forEach>
@@ -54,6 +54,7 @@
 						</c:forEach>
 					</select>
 				</span>
+				<span id='msg3'></span>
 			</div>
 		</div>
 		<div>
@@ -75,6 +76,9 @@
 		                <td>请选择文件:</td>
 		                <td><input id="excelFile" type="file" name="file" multiple/></td>
 		                <td><button type="button"  onclick="doUpload()" >上传</button></td>
+		            </tr>
+		            <tr>
+		            	<span id='successMsg'></span>
 		            </tr>
 		        </table>
     		</form>
@@ -101,7 +105,8 @@
 	});
 	function doUpload() {  
 		 //var File = $('#excelFile').get(0).files[0];  
-	     var data = new FormData($( "#uploadForm" )[0]);  
+	     var data = new FormData($( "#uploadForm" )[0]); 
+	     var successMsg = $('#successMsg');
 	     console.log(data); 
 	     $.ajax ({ 
 	          url: 'rest/attach/upload' ,  
@@ -114,14 +119,15 @@
 	          processData: false,  
 	          success: function (returndata) {
 	        	  console.log(returndata);
-	        	  alert("上传附件成功"); 
+	        	  successMsg.html("上传附件成功");
+	        	  successMsg.css('color', '#00FF00'); 
 	        	 
 	          },
 	    
 	     });  
 	} 
 	function upload(){
-		if (check(0) && check(1) && check(2) && check(4)) {
+		if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
 			 var roleId = "<%=session.getAttribute("roleId")%>";
 			 console.log($("#role").val()); 
 			 var form = new FormData(document.getElementById("form"));  
@@ -135,7 +141,7 @@
 			 form.append("id",roleId);
 			 
 		     $.ajax({  
-		     	url:'rest/attach/save',  
+		     	url:'rest/msg/save',  
 		      	type:"post",  
 			    data:form, 
 			    /* fileElementId: 'file', */
@@ -143,13 +149,9 @@
 			    processData: false,  
 			    contentType: false,  
 			    success:function(data){  
-			         alert("保存成功！"); 
-			        
+			         alert("保存成功！");
 			      },  
-			     error:function(e){  
-			         alert("保存失败！重新输入"); 
-			          
-			       }  
+			     
 		      });  
 		}
 		else{
@@ -210,11 +212,23 @@
 					msg.css('color', '#00FF00');
 					return true;
 				}
+			} else if (num == 3) {
+				value =$("#role").val();
+				msg = $('#msg3');
+				if (value == null || value.length < 1) {
+					msg.html("主办处室不能为空");
+					msg.css('color', '#FF0000');
+					return false;
+				} else {
+					msg.html("OK");
+					msg.css('color', '#00FF00');
+					return true;
+				}
 			} else if (num == 4) {
 				value = $("#limitTime").val();
 				msg = $('#msg4');
 				if (value == null || value.length < 1) {
-					msg.html("办结时限不能为空");
+					msg.html("办结期限不能为空");
 					msg.css('color', '#FF0000');
 					return false;
 				} else {
