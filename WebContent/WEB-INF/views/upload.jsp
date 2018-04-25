@@ -1,6 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<form id="from"  enctype="multipart/form-data" method="post">
+<!-- <form id="from" method="post"> -->
 <div class="mainContent">
 	<div id="uploadBox">
 		<div>
@@ -38,7 +38,7 @@
 				<span class="uploadItem withInput">
 					<select id="role" multiple="multiple" >
 						<c:forEach var="role" items="${sessionScope.roles}" begin="1">
-      							<option value="${role.roleName}">${role.roleName}</option>
+      							<option value="${role.id}">${role.roleName}</option>
 						</c:forEach>
 					</select>
 				</span>
@@ -50,7 +50,7 @@
 				<span class="uploadItem withInput">
 					<select id="assitrole" multiple="multiple">
 						<c:forEach var="role" items="${sessionScope.roles}" begin="1">
-							<option value="${role.roleName}">${role.roleName}</option>
+							<option value="${role.id}">${role.roleName}</option>
 						</c:forEach>
 					</select>
 				</span>
@@ -66,17 +66,19 @@
 				<span id='msg4'></span>
 			</div>
 		</div>
+	<!-- 	</form> -->
 		<div>
 			<div>
-			
+			<form id="uploadForm"  enctype="multipart/form-data" method="post">
 		        <table>
 		            <tr>
 		                <td>请选择文件:</td>
-		                <td><input type="file" name="file" multiple/></td>
+		                <td><input id="excelFile" type="file" name="file" multiple/></td>
+		                <td><button type="button"  onclick="doUpload()" >上传</button></td>
 		            </tr>
 		        </table>
-    		
-		</div>
+    		</form>
+			</div>
 		</div>
 		<div class="uploadButton">
 			<span>
@@ -91,45 +93,68 @@
 	</div>
 	
 </div>
-</form>
-<script type="text/javascript">
-	$(function() {
-		var num = 0;
-		while (num < 4) {
-			getCode(num);
-			num++;
-		}
-	});
 
+<script type="text/javascript">
 	$(".form_date").datepicker({
 		format : 'yyyy-mm-dd',
 		language : 'zh-CN'
 	});
+	function doUpload() {  
+		 //var File = $('#excelFile').get(0).files[0];  
+	     var data = new FormData($( "#uploadForm" )[0]);  
+	     console.log(data); 
+	     $.ajax ({ 
+	          url: 'rest/attach/upload' ,  
+	          type: 'POST',  
+	          data:data,
+	          fileElementId: 'excelFile', //文件上传域的ID(<input type="file">的id)    
+	          async: false,  
+	          cache: false,  
+	          contentType: false,  
+	          processData: false,  
+	          success: function (returndata) {
+	        	  console.log(returndata);
+	        	  alert("上传附件成功"); 
+	        	 
+	          },
+	    
+	     });  
+	} 
 	function upload(){
-		 var form = new FormData(document.getElementById("form"));  
-		 form.append("status",0);
-		 form.append("name",$("#name").val());
-		 form.append("basis",$("#basis").val());
-		 form.append("role",$("#role").val());
-		 form.append("assitrole",$("#assitrole").val());
-		 form.append("limitTime",$("#limitTime").val());
-		 form.append("createTime",$("#createTime").val());
-	      $.ajax({  
-	      url:'rest/attach/upload',  
-	      type:"post",  
-	      data:form,  
-	      cache: false,  
-	      processData: false,  
-	      contentType: false,  
-	      success:function(data){  
-	          alert("保存成功！"); 
-	          window.location.href = '/index.jsp'
-	      },  
-	      error:function(e){  
-	          alert("保存失败！重新输入"); 
-	          
-	       }  
-	      });          
+		if (check(0) && check(1) && check(2) && check(4)) {
+			 var roleId = "<%=session.getAttribute("roleId")%>";
+			 console.log($("#role").val()); 
+			 var form = new FormData(document.getElementById("form"));  
+			 form.append("status",0);
+			 form.append("name",$("#name").val());
+			 form.append("basis",$("#basis").val());
+			 form.append("role",$("#role").val());
+			 form.append("assitrole",$("#assitrole").val());
+			 form.append("limitTime",$("#limitTime").val());
+			 form.append("createTime",$("#createTime").val());
+			 form.append("id",roleId);
+			 
+		     $.ajax({  
+		     	url:'rest/attach/save',  
+		      	type:"post",  
+			    data:form, 
+			    /* fileElementId: 'file', */
+			    cache: false,  
+			    processData: false,  
+			    contentType: false,  
+			    success:function(data){  
+			         alert("保存成功！"); 
+			        
+			      },  
+			     error:function(e){  
+			         alert("保存失败！重新输入"); 
+			          
+			       }  
+		      });  
+		}
+		else{
+			 alert("必需字段不能为空"); 
+		}
 	};
 	//发布按钮
 	function send(){
@@ -146,7 +171,7 @@
 		});
 	};
 	//非空校验
-			function check(num) {
+		function check(num) {
 			var value;
 			var msg;
 			if (num == 0) {
