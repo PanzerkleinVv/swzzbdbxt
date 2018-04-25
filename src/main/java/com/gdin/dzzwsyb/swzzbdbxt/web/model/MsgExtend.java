@@ -12,7 +12,9 @@ public class MsgExtend extends Msg {
 	
 	private String attachIds[];
 	
-	private String status;
+	private Integer status;
+	
+	private String statusName;
 	
 	public MsgExtend() {
 		
@@ -71,12 +73,20 @@ public class MsgExtend extends Msg {
 		this.attachIds = attachIds;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 
 }

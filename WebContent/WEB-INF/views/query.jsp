@@ -64,6 +64,8 @@
 				<span class="queryTitle">
 					<button id="querySubmit" type="button" class="btn blue"
 						onclick="query(1)">检索</button>
+					<button id="resetSubmit" type="button" class="btn blue"
+						onclick="reset()">重置</button>
 				</span>
 			</div>
 		</div>
@@ -91,6 +93,17 @@
 		}, function(data) {
 			$('#msgList').html(data);
 		});
+	}
+	
+	function reset() {
+		$("#sequence").val("");
+		$("#basis").val("");
+		$("#name").val("");
+		$("#createTimeBegin").val("");
+		$("#createTimeEnd").val("");
+		$("#roleId").val("");
+		$("#status").val("");
+		$("#userId").val("");
 	}
 
 	function getCodeSelected(target) {

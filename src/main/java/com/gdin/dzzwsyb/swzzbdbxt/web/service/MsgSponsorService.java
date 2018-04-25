@@ -14,6 +14,6 @@ public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 
 	List<MsgSponsor> selectByExample(MsgSponsorExample example);
 
-	List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgExtends, Map<Long, String> roleMap);
+	List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgExtends, Map<Long, String> roleMap, Long roleId);
 
 }

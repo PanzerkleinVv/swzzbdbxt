@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.MsgCoSponsorMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample;
@@ -76,9 +77,10 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 	}
 
 	@Override
-	public List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, Map<Long, String> roleMap) {
+	public List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, Map<Long, String> roleMap, Long roleId) {
 		List<MsgCoSponsor> msgCoSponsors = null;
 		for (MsgExtend msg : msgs) {
+			Integer status = msg.getStatus();
 			final MsgCoSponsorExample example = new MsgCoSponsorExample();
 			example.createCriteria().andMsgIdEqualTo(msg.getId());
 			msgCoSponsors = msgCoSponsorMapper.selectByExample(example);
@@ -86,12 +88,26 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 			String contents = "";
 			for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 				coSponsorRoleNames = coSponsorRoleNames + roleMap.get(msgCoSponsor.getRoleId()) + "<br/>";
-				contents = contents + "<b>" + roleMap.get(msgCoSponsor.getRoleId()) + "：</b>" + "<br/>"
-						+ ApplicationUtils.replaceNullToEmpty(msgCoSponsor.getContent()) + "<br/>";
+				if (roleId < 4L || (roleId > 3L && roleId == msgCoSponsor.getRoleId())) {
+					contents = contents + "<b>" + roleMap.get(msgCoSponsor.getRoleId()) + "：</b>" + "<br/>"
+							+ ApplicationUtils.replaceNullToEmpty(msgCoSponsor.getContent()) + "<br/>";
+					if (status == null) {
+						status = msgCoSponsor.getStatus();
+					} else if (status > 2 && 3 > msgCoSponsor.getStatus()) {
+						status = msgCoSponsor.getStatus();
+					} else if (status == 1 && 2 == msgCoSponsor.getStatus()) {
+						status = msgCoSponsor.getStatus();
+					}
+				}
 			}
 			if (coSponsorRoleNames != null && coSponsorRoleNames.length() > 0) {
 				coSponsorRoleNames.substring(0, coSponsorRoleNames.lastIndexOf("<br/>"));
 				contents.substring(0, contents.lastIndexOf("<br/>"));
+			}
+			msg.setStatus(status);
+			final String[] msgStatus = SelectArray.getMsgStatus();
+			if (status != null) {
+				msg.setStatusName(msgStatus[status.intValue()]);
 			}
 			msg.setCoSponsorRoleNames(coSponsorRoleNames);
 			msg.setContents(ApplicationUtils.replaceNullToEmpty(msg.getContents()) + contents);

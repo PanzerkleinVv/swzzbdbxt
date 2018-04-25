@@ -57,8 +57,7 @@ public class MsgController {
 		final Long roleId = (Long)session.getAttribute("roleId");
 		final Long permissionId = (Long)session.getAttribute("permissionId");
 		final Long userId = (Long)session.getAttribute("currentUserId");
-		final
-		MsgExample example = new MsgExample();
+		final MsgExample example = new MsgExample();
 		Criteria criteria = example.createCriteria();
 		final List<String> msgId = new ArrayList<String>();
 		if (roleId < 4L && permissionId < 6L) {
@@ -83,9 +82,9 @@ public class MsgController {
 		for (Msg msg : msgs) {
 			msgExtends.add(new MsgExtend(msg));
 		}
-		msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap);
-		msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap);
-		List<List<String>> ids = submissionService.selectIdsByMsgList(msgs);
+		msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
+		msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
+		List<List<String>> ids = submissionService.selectIdsByMsgList(msgs, roleId);
 		msgExtends = attachService.selectMsgExtendByMsgList(msgExtends, ids);
 		model.addAttribute("page", page);
 		model.addAttribute("msgs", msgExtends);

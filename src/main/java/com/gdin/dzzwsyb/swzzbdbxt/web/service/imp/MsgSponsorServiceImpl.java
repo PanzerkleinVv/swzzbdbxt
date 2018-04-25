@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.MsgSponsorMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
@@ -76,9 +77,10 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 	}
 
 	@Override
-	public List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, Map<Long, String> roleMap) {
+	public List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, Map<Long, String> roleMap, Long roleId) {
 		List<MsgSponsor> msgSponsors = null;
 		for (MsgExtend msg : msgs) {
+			Integer status = msg.getStatus();
 			final MsgSponsorExample example = new MsgSponsorExample();
 			example.createCriteria().andMsgIdEqualTo(msg.getId());
 			msgSponsors = msgSponsorMapper.selectByExample(example);
@@ -86,14 +88,28 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 			String contents = "";
 			for (MsgSponsor msgSponsor : msgSponsors) {
 				sponsorRoleNames = sponsorRoleNames + roleMap.get(msgSponsor.getRoleId()) + "<br/>";
-				contents = contents + "<b>" + roleMap.get(msgSponsor.getRoleId()) + "：</b>" + "<br/>"
-						+ ApplicationUtils.replaceNullToEmpty(msgSponsor.getContent()) + "<br/>";
+				if (roleId < 4L || (roleId > 3L && roleId == msgSponsor.getRoleId())) {
+					contents = contents + "<b>" + roleMap.get(msgSponsor.getRoleId()) + "：</b>" + "<br/>"
+							+ ApplicationUtils.replaceNullToEmpty(msgSponsor.getContent()) + "<br/>";
+					if (status == null) {
+						status = msgSponsor.getStatus();
+					} else if (status > 2 && 3 > msgSponsor.getStatus()) {
+						status = msgSponsor.getStatus();
+					} else if (status == 1 && 2 == msgSponsor.getStatus()) {
+						status = msgSponsor.getStatus();
+					}
+				}
 			}
 			if (sponsorRoleNames != null && sponsorRoleNames.length() > 0) {
 				sponsorRoleNames.substring(0, sponsorRoleNames.lastIndexOf("<br/>"));
 				contents.substring(0, contents.lastIndexOf("<br/>"));
 			}
-			msg.setCoSponsorRoleNames(sponsorRoleNames);
+			msg.setStatus(status);
+			final String[] msgStatus = SelectArray.getMsgStatus();
+			if (status != null) {
+				msg.setStatusName(msgStatus[status.intValue()]);
+			}
+			msg.setSponsorRoleNames(sponsorRoleNames);
 			msg.setContents(ApplicationUtils.replaceNullToEmpty(msg.getContents()) + contents);
 		}
 		return msgs;

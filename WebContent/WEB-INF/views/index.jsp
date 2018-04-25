@@ -51,6 +51,8 @@
 	rel="stylesheet" type="text/css" />
 <link href="app/css/index.css" rel="stylesheet" type="text/css" />
 <link href="assets/plugins/summernote/summernote.css" rel="stylesheet" />
+<link href="assets/plugins/bootstrap/css/bootstrap-multiselect.css"
+	rel="stylesheet" type="text/css" />
 </head>
 <!-- END HEAD -->
 
@@ -121,9 +123,9 @@
 					</a></li>
 					</shiro:hasAnyRoles>
 					
-					<li class=""><a href="./rest/msg/upload"
+					<li class=""><a href="./rest/msg/msgList?status=0&pageNo=1"
 						id="btn-dashboard"> <i class="fa fa-recycle"></i><span
-							class="title"> 回收站</span><span class="selected"> </span>
+							class="title"> 草稿箱 </span><span class="selected"> </span>
 					</a></li>
 						
 					<shiro:hasRole  name="admin">
@@ -300,8 +302,6 @@
 
 
 <script src="assets/plugins/bootstrap/js/bootstrap-multiselect.js"></script>
-<link href="assets/plugins/bootstrap/css/bootstrap-multiselect.css"
-	rel="stylesheet" type="text/css" />
 	<!-- <script data-main="app/js/main" src="app/lib/requirejs/require.js"></script> -->
 </body>
 </html>

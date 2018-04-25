@@ -21,11 +21,15 @@
 					class="msgItem co-sponsor">${msg0.coSponsorRoleNames}</span> <span
 					class="msgItem"> <fmt:formatDate value='${msg0.limitTime}'
 						type='DATE' pattern='yyyy-MM-dd' />
-				</span> <span class="msgItem content">${msg0.contents}</span> <span
-					class="msgItem attach">${msg0.attachs}</span> <span class="msgItem">
+				</span> <span class="msgItem content">${msg0.contents}</span>
+				<span class="msgItem attach">
+					<c:forEach var="attachId" items="${msg0.attachIds}" varStatus="status0">
+						<a href="rest/attach/download?id=${attachId}">${msg0.attachs[status0.index]}</a>
+					</c:forEach>
+				</span> <span class="msgItem">
 					<fmt:formatDate value='${msg0.endTime}' type='DATE'
 						pattern='yyyy-MM-dd' />
-				</span> <span class="msgItem">${msg0.status}</span>
+				</span> <span class="msgItem">${msg0.statusName}</span>
 			</div>
 			<input type="hidden" name="ids" value="${msg0.id}" />
 		</c:forEach>
