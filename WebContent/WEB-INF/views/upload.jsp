@@ -39,7 +39,7 @@
 					<select id="basis" class="input-sm form-inline" onblur="check(2)" onchange="basisChange()">
 						<option></option>
 						<c:forEach var="basis"  items="${sessionScope.msgBasis}" varStatus="state">
-							<option value="${basis}">${basis}</option>
+							<option value="${basis}"<c:if test="${basis eq basisSelect}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${basis}</option>
 						</c:forEach>
 					</select>
 					</td>
@@ -152,7 +152,7 @@
 			 form.append("assitrole",$("#assitrole").val());
 			 form.append("limitTime",$("#limitTime").val());
 			 form.append("createTime",$("#createTime").val());
-			console.log($("#role").val());
+			console.log($("#basis").val());
 			$.ajax({
 				type: "POST",
 				url: 'rest/msg/gett', 

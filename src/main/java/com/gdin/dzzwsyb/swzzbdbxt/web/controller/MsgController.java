@@ -75,6 +75,8 @@ public class MsgController {
 	String msgSponsorId;//主办处室id
 	ArrayList<Long> msgSponsorSelect;//存储下拉框选中的主处室
 	ArrayList<Long> msgCoSponsorSelect;//存储下拉框选中的协助处室
+	List<MsgCoSponsor> msgCoSponsors;
+	List<MsgSponsor> msgSponsors;
 	
 	@RequestMapping(value = "/query")
 	public String query() {
@@ -163,6 +165,8 @@ public class MsgController {
 	public String save(@RequestParam("status")int status,@RequestParam("role")String role,@RequestParam("assitrole")String assitrole,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request) throws Exception  {
 		msgSponsorSelect = new ArrayList() ;
 		msgCoSponsorSelect = new ArrayList() ;
+		msgCoSponsors = new ArrayList();
+		msgSponsors = new ArrayList();
 		//录入msg类数据库
 		//System.out.println("===="+role+"====="+assitrole+"====="+sequenceNumberService.next());
 		msgId = ApplicationUtils.newUUID();
@@ -194,8 +198,9 @@ public class MsgController {
 			msgCoSponsor.setIsAssigned(0);
 			msgCoSponsor.setIsSigned(0);
 			msgCoSponsor.setStatus(status);
-			msgCoSponsorService.insertSelective(msgCoSponsor);
+			msgCoSponsors.add(msgCoSponsor);
 		}
+		msgCoSponsorService.modifyRoleId(msgId, msgCoSponsors);
 		//录入msg_sponsor数据库
 		if (assitrole.length()>0) {
 			String assitroldIdArr[] = assitrole.split(",");
@@ -209,11 +214,13 @@ public class MsgController {
 				msgSponsor.setIsAssigned(0);
 				msgSponsor.setIsSigned(0);
 				msgSponsor.setStatus(status);
-				msgSponsorService.insertSelective(msgSponsor);
+				msgSponsors.add(msgSponsor);
 			}
+			msgSponsorService.modifyRoleId(msgId, msgSponsors);
 			assitrole = null;
 		}
-		System.out.println("+++++"+msgSponsorSelect.size());
+		String basisSelect = msg.getBasis();
+		model.addAttribute("basisSelect",basisSelect);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
 		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 		return "upload";
@@ -221,6 +228,7 @@ public class MsgController {
 	@RequestMapping(value = "/gett")
 	@RequiresRoles(value = RoleSign.ADMIN)
 	public String get(@RequestParam("role")String role,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request){
+		String  basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList() ;
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
 		ArrayList<Long> roleList = null;
@@ -242,6 +250,9 @@ public class MsgController {
 			roleList = null;
 			msgSponsorSelect =null ;
 		}
+		System.out.println("-----"+msg.getBasis());
+		basisSelect = msg.getBasis();
+		model.addAttribute("basisSelect",basisSelect);
 		model.addAttribute("roleList",roleList);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
 		return "upload";
