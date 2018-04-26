@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
@@ -117,14 +118,35 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 
 	@Override
 	public int insertSelective(MsgCoSponsor record) {
-		// TODO Auto-generated method stub
 		return msgCoSponsorMapper.insertSelective(record);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public boolean modifyRoleId(List<MsgCoSponsor> msgCoSponsors) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean modifyRoleId(String msgId, List<MsgCoSponsor> msgCoSponsors) throws Exception {
+		boolean flag = false;
+		final MsgCoSponsorExample example = new MsgCoSponsorExample();
+		example.createCriteria().andMsgIdEqualTo(msgId);
+		final Long oldCount = msgCoSponsorMapper.countByExample(example);
+		final Integer deleteCount = msgCoSponsorMapper.deleteByExample(example);
+		if (oldCount != null && deleteCount != null && oldCount.longValue() == deleteCount.longValue()) {
+			if (msgCoSponsors != null && msgCoSponsors.size() > 0) {
+				int insertCount = 0;
+				for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
+					insertCount = insertCount + insertSelective(msgCoSponsor);
+				}
+				if (insertCount == msgCoSponsors.size()) {
+					flag = true;
+				} else {
+					throw new Exception("新增出错");
+				}
+			} else {
+				flag = true;
+			}
+		} else {
+			throw new Exception("删除出错");
+		}
+		return flag;
 	}
 
 }

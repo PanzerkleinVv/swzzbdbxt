@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
@@ -117,8 +118,34 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 
 	@Override
 	public int insertSelective(MsgSponsor record) {
-		// TODO Auto-generated method stub
 		return msgSponsorMapper.insertSelective(record);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public boolean modifyRoleId(String msgId, List<MsgSponsor> msgSponsors) throws Exception {
+		boolean flag = false;
+		final MsgSponsorExample example = new MsgSponsorExample();
+		example.createCriteria().andMsgIdEqualTo(msgId);
+		final Long oldCount = msgSponsorMapper.countByExample(example);
+		final Integer deleteCount = msgSponsorMapper.deleteByExample(example);
+		if (oldCount != null && deleteCount != null && oldCount.longValue() == deleteCount.longValue()) {
+			if (msgSponsors != null && msgSponsors.size() > 0) {
+				int insertCount = 0;
+				for (MsgSponsor msgSponsor : msgSponsors) {
+					insertCount = insertCount + insertSelective(msgSponsor);
+				}
+				if (insertCount == msgSponsors.size()) {
+					flag = true;
+				} else {
+					throw new Exception("新增出错");
+				}
+			} else {
+				flag = true;
+			}
+		} else {
+			throw new Exception("删除出错");
+		}
+		return flag;
+	}
 }

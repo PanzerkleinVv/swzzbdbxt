@@ -18,4 +18,12 @@ public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 
 	List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgExtends, Map<Long, String> roleMap, Long roleId);
 
+	/**
+	 * 更改信息主办处室
+	 * @param msgId 修改的msgId
+	 * @param msgSponsors 只要删除可以传入null或者长度为0的list
+	 * @return 操作是否成功，返回false会回滚
+	 * @throws Exception 
+	 */
+	boolean modifyRoleId(String msgId, List<MsgSponsor> msgSponsors) throws Exception;
 }
