@@ -174,13 +174,7 @@ public class MsgController {
 			attach = new Attach(attachId, msgId, status, fileName, ApplicationUtils.getTime());
 			attachService.insert(attach);
 		}
-		//录入msg_contractor数据库
-		msgContractor = new MsgContractor();
-		msgContractorId = ApplicationUtils.newUUID();
-		msgContractor.setId(msgContractorId);
-		msgContractor.setMsgId(msgId);
-		msgContractor.setUserId(user.getId());
-		final int msgContractorCount = msgContractorService.insert(msgContractor);
+		
 		//录入msg_co-sponsor数据库
 		msgCoSponsor = new MsgCoSponsor();
 		msgSponsor = new MsgSponsor();
@@ -225,14 +219,15 @@ public class MsgController {
 	@RequestMapping(value = "/gett")
 	@RequiresRoles(value = RoleSign.ADMIN)
 	public void get(@RequestParam("role")String role,Model model,HttpServletResponse resp,HttpServletRequest request) {
-		List<Role> roleList = (List<Role>) request.getSession().getAttribute("roles");
+		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
+		List<Role> roleList = null;
 		String roleIdArr[] = role.split(",");
 		for(int i = 0;i<roleIdArr.length;i++) {
-			for(Role role2 : roleList) {
+			for(Role role2 : roles) {
 				if(Long.parseLong(roleIdArr[i])==(role2.getId())) {
-					System.out.println(role2.getId());
-					roleList.remove(role2);
-					break;
+					roleList = new ArrayList<>();
+					roleList.add(role2);
+					
 				}
 			}
 		}

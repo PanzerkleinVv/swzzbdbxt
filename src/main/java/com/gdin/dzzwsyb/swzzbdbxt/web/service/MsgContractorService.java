@@ -11,5 +11,7 @@ public interface MsgContractorService extends GenericService<MsgContractor, Stri
 	List<String> selectMsgIdByUserId(Long userId);
 
 	List<MsgContractor> selectByExample(MsgContractorExample example);
+	
+	boolean modifyRoleId(List<MsgContractor> msgContractors);
 
 }
