@@ -29,8 +29,28 @@
 		<div>
 			<div>
 				<span class="uploadTitle">立项依据：</span>
-				<span class="uploadItem withInput">
+				<%-- <span class="uploadItem withInput">
 					<input type='text' id='basis' value="${msg.basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
+				</span> --%>
+				<span class="uploadItem withInput">
+					<table>
+					<tr>
+					<td>
+					<select id="basis" class="input-sm form-inline" onblur="check(2)" onchange="basisChange()">
+						<option></option>
+						<c:forEach var="basis"  items="${sessionScope.msgBasis}" varStatus="state">
+							<option value="${basis}"<c:if test="${basis eq basisSelect}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${basis}</option>
+						</c:forEach>
+					</select>
+					</td>
+					<td>
+					
+						<input type='text' style="display: none;" id='msgBasis' value="${msg.basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
+				
+					</td>
+					
+					</tr>
+					</table>
 				</span>
 				<span id='msg2'></span>
 			</div>
@@ -54,8 +74,11 @@
 				<span class="uploadItem withInput">
 					<select id="assitrole" multiple="multiple" ">
 						<c:set var='i' value="0"></c:set>
-							<c:forEach var="role" items="${roleList}" begin="1">
-		      					<option value="${role.id}" <c:if test="${msgCoSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
+						<c:set var='j' value="0"></c:set>
+							<c:forEach var="role" items="${sessionScope.roles}" begin="1">
+		      					<option value="${role.id}" <c:if test="${msgCoSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>
+		      						<c:if test="${roleList[j] eq role.id}"><c:set var="j" value="${j+1}" />disabled="disabled"</c:if>
+		      					>${role.roleName}</option>
 		      				</c:forEach> 
 					</select>
 				</span>
@@ -110,10 +133,26 @@
 		format : 'yyyy-mm-dd',
 		language : 'zh-CN'
 	});
+	function basisChange(){
+		console.log($("#basis").val());
+		var basis = $("#basis").val();
+		if(basis == "自定义"){
+			console.log($("#basis").val());
+			$("#msgBasis").show();
+		}
+		else{
+			$("#msgBasis").hide();
+		}
+	}
 	function getData(){
-			var form = new FormData(document.getElementById("form"));  
-			form.append("role",$("#role").val());
-			console.log($("#role").val());
+			var form = new FormData(document.getElementById("form")); 
+			 form.append("name",$("#name").val());
+			 form.append("basis",$("#basis").val());
+			 form.append("role",$("#role").val());
+			 form.append("assitrole",$("#assitrole").val());
+			 form.append("limitTime",$("#limitTime").val());
+			 form.append("createTime",$("#createTime").val());
+			console.log($("#basis").val());
 			$.ajax({
 				type: "POST",
 				url: 'rest/msg/gett', 
@@ -121,8 +160,8 @@
 				data: form,
 				contentType: false, 
 				processData:false,
-				success: function(response) {
-					
+				success: function(data) {
+					 $('#main-content').html(data);
 				},
 			});
 	
