@@ -173,7 +173,7 @@
 			    contentType: false,  
 			    success:function(data){  
 			         alert("保存成功！");
-			         $('#main-content').html(data);
+			         showData("#main-content",data);
 			      },  
 			     
 		      });  
@@ -207,7 +207,7 @@
 			    contentType: false,  
 			    success:function(data){  
 			         alert("发送成功！");
-			         $('#main-content').html(data);
+			         showData("#main-content",data);
 			      },  
 			     
 		      });  
@@ -283,6 +283,13 @@
 				} 
 			}
 		}
+	
+
+
+		$(function() {
+			$("#index-page-title").html("督查上传");
+			$("#current-page-title").html("督查上传");
+		});
 	</script>
 <script type="text/javascript">
     $(document).ready(function() {
