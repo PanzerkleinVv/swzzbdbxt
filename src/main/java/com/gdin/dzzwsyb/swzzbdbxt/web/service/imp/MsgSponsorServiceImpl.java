@@ -115,4 +115,10 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		return msgs;
 	}
 
+	@Override
+	public int insertSelective(MsgSponsor record) {
+		// TODO Auto-generated method stub
+		return msgSponsorMapper.insertSelective(record);
+	}
+
 }
