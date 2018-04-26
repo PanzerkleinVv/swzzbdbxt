@@ -121,4 +121,10 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		return msgCoSponsorMapper.insertSelective(record);
 	}
 
+	@Override
+	public boolean modifyRoleId(List<MsgCoSponsor> msgCoSponsors) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

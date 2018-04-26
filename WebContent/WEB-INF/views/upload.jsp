@@ -111,19 +111,19 @@
 		language : 'zh-CN'
 	});
 	function getData(){
-			 var tJson={
-					 role : $("#role").val()
-					 };
-			console.log(tJson);
+			var form = new FormData(document.getElementById("form"));  
+			form.append("role",$("#role").val());
+			console.log($("#role").val());
 			$.ajax({
 				type: "POST",
 				url: 'rest/msg/gett', 
 				async: false,
-				data:tJson,
+				data: form,
+				contentType: false, 
+				processData:false,
 				success: function(response) {
 					
 				},
-				dataType: "json"
 			});
 	
 		}

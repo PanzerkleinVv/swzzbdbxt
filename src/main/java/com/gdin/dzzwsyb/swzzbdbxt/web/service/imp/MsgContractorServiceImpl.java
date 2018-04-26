@@ -72,4 +72,10 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 		return msgContractorMapper.selectByExample(example);
 	}
 
+	@Override
+	public boolean modifyRoleId(List<MsgContractor> msgContractors) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
