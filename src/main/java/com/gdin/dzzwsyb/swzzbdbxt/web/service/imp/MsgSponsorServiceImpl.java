@@ -105,4 +105,10 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		return msgSponsorMapper.insertSelective(record);
 	}
 
+	@Override
+	public boolean modifyRoleId(List<MsgSponsor> msgSponsor) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

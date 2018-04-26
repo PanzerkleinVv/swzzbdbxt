@@ -111,22 +111,23 @@
 		language : 'zh-CN'
 	});
 	function getData(){
-			 var tJson={
-					 role : $("#role").val()
-					 };
-			console.log(tJson);
-			$.ajax({
-				type: "POST",
-				url: 'rest/msg/gett', 
-				async: false,
-				data:tJson,
-				success: function(response) {
-					
-				},
-				dataType: "json"
-			});
-	
-		}
+		var form = new FormData(document.getElementById("form"));
+		form.append("role",$("#role").val()); 
+		$.ajax ({ 
+	          url: 'rest/msg/gett' ,  
+	          type: 'POST',  
+	          data: form,
+	          async: false,  
+	          cache: false,  
+	          contentType: false,  
+	          processData: false,  
+	          success: function (returndata) {
+	        	 
+	          },
+	    
+	     });  
+	} 
+		
 	function doUpload() {  
 		 //var File = $('#excelFile').get(0).files[0];  
 	     var data = new FormData($( "#uploadForm" )[0]); 
