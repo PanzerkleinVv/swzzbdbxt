@@ -28,6 +28,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
@@ -63,13 +64,17 @@ public class MsgController {
 	@Resource
 	private SequenceNumberService sequenceNumberService;
 	
-	private int status;
-	public int getStatus() {
-		return status;
-	}
-	public void setStatus(int status) {
-		this.status = status;
-	}
+	MsgContractor msgContractor;
+	Attach attach;
+	MsgCoSponsor msgCoSponsor;
+	MsgSponsor msgSponsor;
+	String msgId;//督办事项id
+	String msgContractorId;//督办事项承办人表
+	String msgCoSponsorId;//协办处室id
+	String msgSponsorId;//主办处室id
+	ArrayList<Long> msgSponsorSelect;//存储下拉框选中的主处室
+	ArrayList<Long> msgCoSponsorSelect;//存储下拉框选中的协助处室
+	
 	@RequestMapping(value = "/query")
 	public String query() {
 		return "query";
@@ -154,17 +159,11 @@ public class MsgController {
 	
 	@RequestMapping(value = "/save")
 	@RequiresRoles(value = RoleSign.ADMIN)
-	public String save(@RequestParam("role")String role,@RequestParam("assitrole")String assitrole,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request) throws Exception  {
-		MsgContractor msgContractor;
-		Attach attach;
-		MsgCoSponsor msgCoSponsor;
-		MsgSponsor msgSponsor;
-		String msgId;//督办事项id
-		String msgContractorId;//督办事项承办人表
-		String msgCoSponsorId;//协办处室id
-		String msgSponsorId;//主办处室id
+	public String save(@RequestParam("status")int status,@RequestParam("role")String role,@RequestParam("assitrole")String assitrole,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request) throws Exception  {
+		msgSponsorSelect = new ArrayList() ;
+		msgCoSponsorSelect = new ArrayList() ;
 		//录入msg类数据库
-		System.out.println("===="+role+"====="+assitrole+"====="+sequenceNumberService.next());
+		//System.out.println("===="+role+"====="+assitrole+"====="+sequenceNumberService.next());
 		msgId = ApplicationUtils.newUUID();
 		msg.setId(msgId);
 		msg.setSequence(sequenceNumberService.next());
@@ -188,14 +187,17 @@ public class MsgController {
 		msgSponsor = new MsgSponsor();
 		String roleIdArr[] = role.split(",");
 		for(int i = 0;i<roleIdArr.length;i++) {
-			System.out.println("+++++++++++"+roleIdArr[i]);
+			//System.out.println("+++++++++++"+roleIdArr[i]);
+			
 			msgCoSponsorId = ApplicationUtils.newUUID();
 			msgCoSponsor.setId(msgCoSponsorId);
 			msgCoSponsor.setMsgId(msgId);
 			long roleId = Long.parseLong(roleIdArr[i]);
+			
+			msgCoSponsorSelect.add(roleId);
 			msgCoSponsor.setRoleId(roleId);
-			msgCoSponsor.setIsAssigned(status);
-			msgCoSponsor.setIsSigned(status);
+			msgCoSponsor.setIsAssigned(0);
+			msgCoSponsor.setIsSigned(0);
 			msgCoSponsor.setStatus(status);
 			msgCoSponsorService.insertSelective(msgCoSponsor);
 		}
@@ -207,16 +209,38 @@ public class MsgController {
 				msgSponsor.setId(msgSponsorId);
 				msgSponsor.setMsgId(msgId);
 				long assitRoldId = Long.parseLong(assitroldIdArr[i]);
+				msgSponsorSelect.add(assitRoldId);
 				msgSponsor.setRoleId(assitRoldId);
-				msgSponsor.setIsAssigned(status);
-				msgSponsor.setIsSigned(status);
+				msgSponsor.setIsAssigned(0);
+				msgSponsor.setIsSigned(0);
 				msgSponsor.setStatus(status);
 				msgSponsorService.insertSelective(msgSponsor);
 			}
 			assitrole = null;
 		}
-		return "success";
-		
+		System.out.println("+++++"+msgSponsorSelect.size());
+		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
+		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
+		return "upload";
+	}
+	@RequestMapping(value = "/gett")
+	@RequiresRoles(value = RoleSign.ADMIN)
+	public void get(@RequestParam("role")String role,Model model,HttpServletResponse resp,HttpServletRequest request) {
+		List<Role> roleList = (List<Role>) request.getSession().getAttribute("roles");
+		String roleIdArr[] = role.split(",");
+		for(int i = 0;i<roleIdArr.length;i++) {
+			for(Role role2 : roleList) {
+				if(Long.parseLong(roleIdArr[i])==(role2.getId())) {
+					System.out.println(role2.getId());
+					roleList.remove(role2);
+					break;
+				}
+			}
+		}
+		System.out.println("=============="+roleList.size());
+		model.addAttribute(roleList);
 		
 	}
+	
+	
 }

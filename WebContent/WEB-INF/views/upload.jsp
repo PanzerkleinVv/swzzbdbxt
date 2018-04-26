@@ -1,5 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!-- <form id="from" method="post"> -->
 <div class="mainContent">
 	<div id="uploadBox">
@@ -17,7 +19,8 @@
 			<div>
 				<span class="uploadTitle">立项时间：</span>
 				<span class="uploadItem withInput">
-					<input size="16" type="text" id="createTime" value="${msg.createTime}" readonly
+					<input size="16" type="text" id="createTime" value="<fmt:formatDate value='${msg.createTime}'
+						type='DATE' pattern='yyyy-MM-dd' />" readonly
 						class="form_date form-control placeholder-no-fix halfWidth" onblur="check(1)"> 
 				</span>
 				<span id='msg1'></span>
@@ -36,10 +39,11 @@
 			<div>
 				<span class="uploadTitle">主办处室：</span>
 				<span class="uploadItem withInput">
-					<select id="role" multiple="multiple" onblur="check(3)">
-						<c:forEach var="role" items="${sessionScope.roles}" begin="1">
-      							<option value="${role.id}">${role.roleName}</option>
-						</c:forEach>
+					<select id="role" multiple="multiple" onblur="check(3)" onchange="getData()">
+						<c:set var='i' value="0"></c:set>
+							<c:forEach var="role" items="${sessionScope.roles}" begin="1">
+		      					<option value="${role.id}" <c:if test="${msgSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
+		      				</c:forEach> 
 					</select>
 				</span>
 			</div>
@@ -48,10 +52,11 @@
 			<div>
 				<span class="uploadTitle">协办处室：</span>
 				<span class="uploadItem withInput">
-					<select id="assitrole" multiple="multiple">
-						<c:forEach var="role" items="${sessionScope.roles}" begin="1">
-							<option value="${role.id}">${role.roleName}</option>
-						</c:forEach>
+					<select id="assitrole" multiple="multiple" ">
+						<c:set var='i' value="0"></c:set>
+							<c:forEach var="role" items="${roleList}" begin="1">
+		      					<option value="${role.id}" <c:if test="${msgCoSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
+		      				</c:forEach> 
 					</select>
 				</span>
 				<span id='msg3'></span>
@@ -61,9 +66,11 @@
 			<div>
 				<span class="uploadTitle">办结时限：</span>
 				<span class="uploadItem withInput">
-					<input size="16" type="text" id="limitTime"  value="${msg.limitTime}" 	 readonly
+					<input size="16" type="text" id="limitTime"  value="<fmt:formatDate value='${msg.limitTime}'
+						type='DATE' pattern='yyyy-MM-dd' />" 	 readonly
 						class="form_date form-control placeholder-no-fix halfWidth" onblur="check(4)"/> 
 				</span>
+				
 				<span id='msg4'></span>
 			</div>
 		</div>
@@ -103,6 +110,23 @@
 		format : 'yyyy-mm-dd',
 		language : 'zh-CN'
 	});
+	function getData(){
+			 var tJson={
+					 role : $("#role").val()
+					 };
+			console.log(tJson);
+			$.ajax({
+				type: "POST",
+				url: 'rest/msg/gett', 
+				async: false,
+				data:tJson,
+				success: function(response) {
+					
+				},
+				dataType: "json"
+			});
+	
+		}
 	function doUpload() {  
 		 //var File = $('#excelFile').get(0).files[0];  
 	     var data = new FormData($( "#uploadForm" )[0]); 
@@ -121,7 +145,6 @@
 	        	  console.log(returndata);
 	        	  successMsg.html("上传附件成功");
 	        	  successMsg.css('color', '#00FF00'); 
-	        	 
 	          },
 	    
 	     });  
@@ -150,6 +173,7 @@
 			    contentType: false,  
 			    success:function(data){  
 			         alert("保存成功！");
+			         $('#main-content').html(data);
 			      },  
 			     
 		      });  
@@ -160,18 +184,39 @@
 	};
 	//发布按钮
 	function send(){
-		var url = 'rest/attach/upload';
-		$.post(url, {
-			status : 1,
-			name : $("#name").val(),
-			basis : $("#basis").val(),
-			role : $("#role").val(),
-			assitrole : $("#assitrole").val(),
-			limit_time : $("#limit_time").val(),
-		}, function(data) {
-			
-		});
+		if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
+			 var roleId = "<%=session.getAttribute("roleId")%>";
+			 console.log($("#role").val()); 
+			 var form = new FormData(document.getElementById("form"));  
+			 form.append("status",1);
+			 form.append("name",$("#name").val());
+			 form.append("basis",$("#basis").val());
+			 form.append("role",$("#role").val());
+			 form.append("assitrole",$("#assitrole").val());
+			 form.append("limitTime",$("#limitTime").val());
+			 form.append("createTime",$("#createTime").val());
+			 form.append("id",roleId);
+			 
+		     $.ajax({  
+		     	url:'rest/msg/save',  
+		      	type:"post",  
+			    data:form, 
+			    /* fileElementId: 'file', */
+			    cache: false,  
+			    processData: false,  
+			    contentType: false,  
+			    success:function(data){  
+			         alert("发送成功！");
+			         $('#main-content').html(data);
+			      },  
+			     
+		      });  
+		}
+		else{
+			 alert("必需字段不能为空"); 
+		}
 	};
+	
 	//非空校验
 		function check(num) {
 			var value;
@@ -188,7 +233,7 @@
 					msg.css('color', '#00FF00');
 					return true;
 				}
-			}  else if (num == 1) {
+			}   else if (num == 1) {
 				value = $("#createTime").val();
 				msg = $('#msg1');
 				if (value == null || value.length < 1) {
@@ -199,7 +244,7 @@
 					msg.html("OK");
 					msg.css('color', '#00FF00');
 					return true;
-				}
+				} 
 			}  else if (num == 2) {
 				value =$("#basis").val();
 				msg = $('#msg2');
@@ -224,7 +269,7 @@
 					msg.css('color', '#00FF00');
 					return true;
 				}
-			} else if (num == 4) {
+			}  else if (num == 4) {
 				value = $("#limitTime").val();
 				msg = $('#msg4');
 				if (value == null || value.length < 1) {
@@ -235,7 +280,7 @@
 					msg.html("OK");
 					msg.css('color', '#00FF00');
 					return true;
-				}
+				} 
 			}
 		}
 	</script>
