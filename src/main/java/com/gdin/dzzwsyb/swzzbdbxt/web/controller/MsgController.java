@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
@@ -122,6 +123,7 @@ public class MsgController {
 	@RequestMapping(value = "/upload")
 	public String upload(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("userInfo");
+		session.setAttribute("msgBasis", SelectArray.getMsgBasis()); //立法依据
 		if (user != null) {
 
 		}
@@ -218,22 +220,31 @@ public class MsgController {
 	}
 	@RequestMapping(value = "/gett")
 	@RequiresRoles(value = RoleSign.ADMIN)
-	public void get(@RequestParam("role")String role,Model model,HttpServletResponse resp,HttpServletRequest request) {
+	public String get(@RequestParam("role")String role,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request){
+		ArrayList<Long> msgSponsorSelect = new ArrayList() ;
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
-		List<Role> roleList = null;
-		String roleIdArr[] = role.split(",");
-		for(int i = 0;i<roleIdArr.length;i++) {
-			for(Role role2 : roles) {
-				if(Long.parseLong(roleIdArr[i])==(role2.getId())) {
-					roleList = new ArrayList<>();
-					roleList.add(role2);
+		ArrayList<Long> roleList = null;
+		roleList = new ArrayList();
+		if(role.length()>0) {
+			String roleIdArr[] = role.split(",");
+			for(int i = 0;i<roleIdArr.length;i++) {
+				for(Role role2 : roles) {
+					if(Long.parseLong(roleIdArr[i])==(role2.getId())) {
+						roleList.add(role2.getId());
+						msgSponsorSelect.add(role2.getId());
+						break;
+					}
 					
 				}
 			}
 		}
-		System.out.println("=============="+roleList.size());
-		model.addAttribute(roleList);
-		
+		else {
+			roleList = null;
+			msgSponsorSelect =null ;
+		}
+		model.addAttribute("roleList",roleList);
+		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
+		return "upload";
 	}
 	
 	
