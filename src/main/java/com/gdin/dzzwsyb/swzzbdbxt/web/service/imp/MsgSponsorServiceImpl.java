@@ -76,7 +76,7 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 	}
 
 	@Override
-	public List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, Map<Long, String> roleMap) {
+	public List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, Map<Long, String> roleMap, Long roleId) {
 		List<MsgSponsor> msgSponsors = null;
 		for (MsgExtend msg : msgs) {
 			final MsgSponsorExample example = new MsgSponsorExample();
@@ -110,5 +110,7 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
 
 }
