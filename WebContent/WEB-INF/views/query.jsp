@@ -71,11 +71,6 @@
 		</div>
 	</div>
 	<div id="msgList"></div>
-	<div id="openMsg"></div>
-	<div id="goback">
-		<button id="gobackButton" type="button" class="btn blue"
-			onclick="goback()">返回</button>
-	</div>
 </div>
 <script type="text/javascript">
 	function query(pageNo) {
@@ -118,16 +113,6 @@
 		format : 'yyyy-mm-dd',
 		language : 'zh-CN'
 	});
-
-	function openMsg(msgId) {
-		var url = 'rest/msg/openMsg';
-		$("#openMsg").show();
-		$.post(url, {
-			msgId : msgId
-		}, function(data) {
-			$('#openMsg').html(data);
-		});
-	}
 
 	$(function() {
 		$("#index-page-title").html("信息查询");

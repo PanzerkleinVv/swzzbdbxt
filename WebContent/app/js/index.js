@@ -22,7 +22,7 @@ $(function() {
                 var url = this.href;
                 if (url != null && url != 'javascript:;') {
                     $.get(url, function(data) {
-                        $('#main-content').html(data);
+                    	showData("#main-content", data);
                     });
                 }
             });
@@ -40,3 +40,18 @@ $(function() {
 
     $('#btn-dashboard').trigger("click");
 });
+
+function showData(target, data) {
+	switch (target) {
+	case "#main-content":
+		$("#main-content").show();
+		$("#main-content").html(data);
+		$("#msg-content").hide();
+		break;
+	case "#msg-content":
+		$("#msg-content").show();
+		$("#msg-content").html(data);
+		$("#main-content").hide();
+		break;
+	}
+}

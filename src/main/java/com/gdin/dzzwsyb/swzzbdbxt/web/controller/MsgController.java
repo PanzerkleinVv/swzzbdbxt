@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,21 +55,22 @@ public class MsgController {
 
 	@Resource
 	private MsgContractorService msgContractorService;
-	
+
 	@Resource
 	private SubmissionService submissionService;
-	
+
 	@Resource
 	private AttachService attachService;
-	
-	//立项号
+
+	// 立项号
 	@Resource
 	private SequenceNumberService sequenceNumberService;
-	
+
 	MsgContractor msgContractor;
 	Attach attach;
 	MsgCoSponsor msgCoSponsor;
 	MsgSponsor msgSponsor;
+
 	String msgId;//督办事项id
 	String msgContractorId;//督办事项承办人表
 	String msgCoSponsorId;//协办处室id
@@ -77,7 +79,7 @@ public class MsgController {
 	ArrayList<Long> msgCoSponsorSelect;//存储下拉框选中的协助处室
 	List<MsgCoSponsor> msgCoSponsors;
 	List<MsgSponsor> msgSponsors;
-	
+
 	@RequestMapping(value = "/query")
 	public String query() {
 		return "query";
@@ -85,9 +87,9 @@ public class MsgController {
 
 	@RequestMapping(value = "/msgList")
 	public String msgList(Model model, HttpSession session, MsgQuery msgQuery) {
-		final Long roleId = (Long)session.getAttribute("roleId");
-		final Long permissionId = (Long)session.getAttribute("permissionId");
-		final Long userId = (Long)session.getAttribute("currentUserId");
+		final Long roleId = (Long) session.getAttribute("roleId");
+		final Long permissionId = (Long) session.getAttribute("permissionId");
+		final Long userId = (Long) session.getAttribute("currentUserId");
 		final MsgExample example = new MsgExample();
 		Criteria criteria = example.createCriteria();
 		final List<String> msgId = new ArrayList<String>();
@@ -108,7 +110,7 @@ public class MsgController {
 		page = msgService.selectByExampleAndPage(example, msgQuery.getPageNo());
 		msgs = page.getResult();
 		@SuppressWarnings("unchecked")
-		final Map<Long, String> roleMap = (Map<Long, String>)session.getAttribute("roleMap");
+		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
 		List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
 		for (Msg msg : msgs) {
 			msgExtends.add(new MsgExtend(msg));
@@ -119,9 +121,13 @@ public class MsgController {
 		msgExtends = attachService.selectMsgExtendByMsgList(msgExtends, ids);
 		model.addAttribute("page", page);
 		model.addAttribute("msgs", msgExtends);
+		if (msgQuery != null && msgQuery.getStatus() != null && msgQuery.getStatus() == 0) {
+			model.addAttribute("titleName", "督查草稿");
+		}
 		return "msgList";
 	}
 
+	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	@RequestMapping(value = "/upload")
 	public String upload(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("userInfo");
@@ -159,7 +165,7 @@ public class MsgController {
 		msgService.update(msg);
 		return "msgStatusName";
 	}
-	
+
 	@RequestMapping(value = "/save")
 	@RequiresRoles(value = RoleSign.ADMIN)
 	public String save(@RequestParam("status")int status,@RequestParam("role")String role,@RequestParam("assitrole")String assitrole,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request) throws Exception  {
@@ -173,26 +179,26 @@ public class MsgController {
 		msg.setId(msgId);
 		msg.setSequence(sequenceNumberService.next());
 		final int msgCount = msgService.insertSelective(msg);
-		//录入attach数据库
+		// 录入attach数据库
 		List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
-		for(String fileName : fileNameLists) {
+		for (String fileName : fileNameLists) {
 			String attachId = ApplicationUtils.newUUID();
 			attach = new Attach(attachId, msgId, status, fileName, ApplicationUtils.getTime());
 			attachService.insert(attach);
 		}
-		
-		//录入msg_co-sponsor数据库
+
+		// 录入msg_co-sponsor数据库
 		msgCoSponsor = new MsgCoSponsor();
 		msgSponsor = new MsgSponsor();
 		String roleIdArr[] = role.split(",");
-		for(int i = 0;i<roleIdArr.length;i++) {
-			//System.out.println("+++++++++++"+roleIdArr[i]);
-			
+		for (int i = 0; i < roleIdArr.length; i++) {
+			// System.out.println("+++++++++++"+roleIdArr[i]);
+
 			msgCoSponsorId = ApplicationUtils.newUUID();
 			msgCoSponsor.setId(msgCoSponsorId);
 			msgCoSponsor.setMsgId(msgId);
 			long roleId = Long.parseLong(roleIdArr[i]);
-			
+
 			msgCoSponsorSelect.add(roleId);
 			msgCoSponsor.setRoleId(roleId);
 			msgCoSponsor.setIsAssigned(0);
@@ -204,7 +210,7 @@ public class MsgController {
 		//录入msg_sponsor数据库
 		if (assitrole.length()>0) {
 			String assitroldIdArr[] = assitrole.split(",");
-			for(int i = 0;i<assitroldIdArr.length;i++) {
+			for (int i = 0; i < assitroldIdArr.length; i++) {
 				msgSponsorId = ApplicationUtils.newUUID();
 				msgSponsor.setId(msgSponsorId);
 				msgSponsor.setMsgId(msgId);
@@ -225,8 +231,7 @@ public class MsgController {
 		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 		return "upload";
 	}
-	@RequestMapping(value = "/gett")
-	@RequiresRoles(value = RoleSign.ADMIN)
+
 	public String get(@RequestParam("role")String role,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request){
 		String  basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList() ;
@@ -257,6 +262,5 @@ public class MsgController {
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
 		return "upload";
 	}
-	
-	
+
 }

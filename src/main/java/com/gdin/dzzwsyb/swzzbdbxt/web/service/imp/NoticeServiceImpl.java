@@ -65,6 +65,24 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 		return noticeMapper.countNotice(userid);
 	}
 
+	@Override
+	public boolean addNotice(Notice notice) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeNotice(Notice notice) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean readNotice(Notice notice) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 
 }

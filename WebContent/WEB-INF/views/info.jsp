@@ -71,7 +71,7 @@
 		$("#getAll").click(function() {
 			var url = 'rest/user/admin';
 			$.get(url, function(data) {
-				$('#main-content').html(data);
+				showData("#main-content",data);
 			});
 		});
 		function check(num) {
@@ -162,7 +162,7 @@
 					permissionId : $('#permissionId').val(),
 					state : $('#state').val()
 				}, function(data) {
-					$('#main-content').html(data);
+					showData("#main-content",data);
 				});
 			}
 		});
@@ -171,7 +171,7 @@
 			$.post(url, {
 				id : $('#id').val()
 			}, function(data) {
-				$('#main-content').html(data);
+				showData("#main-content",data);
 			});
 		});
 		$('form').keypress(function(e) {

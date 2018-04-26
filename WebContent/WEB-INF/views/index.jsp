@@ -109,7 +109,7 @@
 
 					<li class="start active"><a href="rest/page/dashboard"
 						id="btn-dashboard"> <i class="fa fa-home"></i><span
-							class="title"> 首页</span><span class="selected"> </span>
+							class="title"> 首页 </span><span class="selected"> </span>
 					</a></li>
 
 					<li class=""><a href="./rest/msg/query"> <i class="fa fa-search"></i><span
@@ -121,12 +121,12 @@
 						id="btn-dashboard"> <i class="fa fa-upload"></i><span
 							class="title"> 督查上传 </span><span class="selected"> </span>
 					</a></li>
-					</shiro:hasAnyRoles>
 					
 					<li class=""><a href="./rest/msg/msgList?status=0&pageNo=1"
 						id="btn-dashboard"> <i class="fa fa-recycle"></i><span
-							class="title"> 草稿箱 </span><span class="selected"> </span>
+							class="title"> 督查草稿 </span><span class="selected"> </span>
 					</a></li>
+					</shiro:hasAnyRoles>
 						
 					<shiro:hasRole  name="admin">
 					<li class=""><a href="javascript:;"> <i
@@ -242,7 +242,7 @@
 
 				<!-- BEGIN DASHBOARD STATS -->
 				<div id="main-content"></div>
-
+				<div id="msg-content"></div>
 				<!-- END PORTLET-->
 			</div>
 		</div>
