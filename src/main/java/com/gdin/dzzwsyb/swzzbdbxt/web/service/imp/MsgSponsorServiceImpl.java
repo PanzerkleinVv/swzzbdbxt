@@ -148,4 +148,9 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		}
 		return flag;
 	}
+
+	@Override
+	public List<Long> selectRoleIdByMsgId(String msgId) {
+		return msgSponsorMapper.selectRoleIdByMsgId(msgId);
+	}
 }

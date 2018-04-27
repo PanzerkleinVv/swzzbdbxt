@@ -29,9 +29,9 @@
 				</span> <span class="msgItem"> <fmt:formatDate
 						value='${msg0.endTime}' type='DATE' pattern='yyyy-MM-dd' />
 				</span> <span class="msgItem">${msg0.statusName}</span>
+				<input type="hidden" name="ids" value="${msg0.id}" />
+				<input type="hidden" name="status" value="${msg0.status}" />
 			</div>
-			<input type="hidden" name="ids" value="${msg0.id}" />
-			<input type="hidden" name="status" value="${msg0.status}" />
 		</c:forEach>
 	</c:if>
 </div>
@@ -90,10 +90,9 @@
 <script type="text/javascript">
 	function openMsg(id) {
 		var url = 'rest/msg/openMsg';
-		$("#openMsg").show();
 		$.post(url, {
 			'id' : id,
-			'status' : $("#id ")
+			'status' : $("#"+id+" input[name='status']").val()
 		}, function(data) {
 			showData("#msg-content",data);
 		});
@@ -105,5 +104,5 @@
 		$("#index-page-title").html("督查草稿");
 		$("#current-page-title").html("督查草稿");
 	});
-</script>
+	</script>
 </c:if>

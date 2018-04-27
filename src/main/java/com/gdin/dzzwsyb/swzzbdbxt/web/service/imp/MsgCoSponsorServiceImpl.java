@@ -149,4 +149,9 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		return flag;
 	}
 
+	@Override
+	public List<Long> selectRoleIdByMsgId(String msgId) {
+		return msgCoSponsorMapper.selectRoleIdByMsgId(msgId);
+	}
+
 }
