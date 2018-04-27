@@ -150,9 +150,13 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 	}
 
 	@Override
+	public List<Long> selectRoleIdByMsgId(String msgId) {
+		return msgCoSponsorMapper.selectRoleIdByMsgId(msgId);
+	}
+
+	@Override
 	public void deleteByMgsId(String msgId) {
-		// TODO Auto-generated method stub
 		msgCoSponsorMapper.deleteByMgsId(msgId);
 	}
-	
+  
 }

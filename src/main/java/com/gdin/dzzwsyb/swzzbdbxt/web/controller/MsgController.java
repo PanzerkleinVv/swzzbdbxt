@@ -70,7 +70,7 @@ public class MsgController {
 	Attach attach;
 	MsgCoSponsor msgCoSponsor;
 	MsgSponsor msgSponsor;
-
+  
 	String id;//督办事项id
 
 	String msgContractorId;//督办事项承办人表
@@ -132,7 +132,7 @@ public class MsgController {
 	@RequestMapping(value = "/upload")
 	public String upload(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("userInfo");
-		session.setAttribute("msgBasis", SelectArray.getMsgBasis()); //立法依据
+		session.setAttribute("msgBasis", SelectArray.getMsgBasis()); // 立法依据
 		if (user != null) {
 
 		}
@@ -140,37 +140,33 @@ public class MsgController {
 		return "upload";
 	}
 
-	@RequestMapping(value = "/uploadMsg")
-	public String uploadMsg(Msg msg, Model model, HttpSession session) {
-		User user = (User) session.getAttribute("userInfo");
-		if (user != null) {
-
-		}
-		return "upload";
-	}
-
-	@RequestMapping(value = "/deleteMsg")
-	public String msgDelete(Msg msg, Model model) {
-		msgService.delete(msg.getId());
-		return "template";
-	}
-
 	@RequestMapping(value = "/openMsg")
-	public String openMsg(Msg msg, Model model) {
-		Msg msg0 = msgService.selectById(msg.getId());
-		model.addAttribute("msg", msg0);
-		return "msg";
-	}
-
-	@RequestMapping(value = "/changeMsgStatus")
-	public String changeMsgStatus(Msg msg, Model model) {
-		msgService.update(msg);
-		return "msgStatusName";
+	public String openMsg(MsgExtend msg, Model model) {
+		if (msg != null && msg.getId() != null && !"".equals(msg.getId()) && msg.getStatus() != null
+				&& 0 == msg.getStatus().intValue()) {
+			Msg msg0 = msgService.selectById(msg.getId());
+			model.addAttribute("msg", msg0);
+			String basisSelect = null;
+			if (msg0 != null) {
+				msgSponsorSelect = msgSponsorService.selectRoleIdByMsgId(msgId);
+				msgCoSponsorSelect = msgCoSponsorService.selectRoleIdByMsgId(msgId);
+				basisSelect = msg0.getBasis();
+			}
+			model.addAttribute("basisSelect", basisSelect);
+			model.addAttribute("msgSponsorSelect", msgSponsorSelect);
+			model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
+			return "upload";
+		} else if (msg != null && msg.getId() != null && !"".equals(msg.getId())) {
+			Msg msg0 = msgService.selectById(msg.getId());
+			model.addAttribute("msg", msg0);
+			return "msg"; 
+		} else {
+			return "404";
+		}
 	}
 
 	@RequestMapping(value = "/insert")
-
-	@RequiresRoles(value = RoleSign.ADMIN)
+	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String insert(@RequestParam("msgId")String id,@RequestParam("sequenceNumber")Integer sequenceNumbers,@RequestParam("status")int status,@RequestParam("role")String role,@RequestParam("assitrole")String assitrole,@Valid Msg msg,@Valid User user,Model model,HttpServletRequest request) throws Exception  {
 		System.out.println("msgid的值"+id.length());
 		//录入msg类数据库
@@ -293,35 +289,34 @@ public class MsgController {
 			}
 		}
 		String basisSelect = msg.getBasis();
-		model.addAttribute("basisSelect",basisSelect);
+		model.addAttribute("basisSelect", basisSelect);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
 		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 		return "upload";
 	}
 
 	@RequestMapping(value = "/gett")
-	@RequiresRoles(value = RoleSign.ADMIN)
+	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String get(@RequestParam("msgId")String id,@RequestParam("role")String role,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request){
 		String  basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList() ;
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
 		ArrayList<Long> roleList = null;
 		roleList = new ArrayList();
-		if(role.length()>0) {
+		if (role.length() > 0) {
 			String roleIdArr[] = role.split(",");
-			for(int i = 0;i<roleIdArr.length;i++) {
-				for(Role role2 : roles) {
-					if(Long.parseLong(roleIdArr[i])==(role2.getId())) {
+			for (int i = 0; i < roleIdArr.length; i++) {
+				for (Role role2 : roles) {
+					if (Long.parseLong(roleIdArr[i]) == (role2.getId())) {
 						roleList.add(role2.getId());
 						msgSponsorSelect.add(role2.getId());
 						break;
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			roleList = null;
-			msgSponsorSelect =null ;
+			msgSponsorSelect = null;
 		}
 		basisSelect = msg.getBasis();
 		model.addAttribute("id",id);
@@ -333,7 +328,7 @@ public class MsgController {
 
 	//删除
 	@RequestMapping(value = "/delete")
-	@RequiresRoles(value = RoleSign.ADMIN)
+	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String  delete(@RequestParam("id") String msgId,Model model,HttpServletResponse resp,HttpServletRequest request) {
 		msgService.delete(msgId);
 		attachService.deleteByMsgId(msgId);

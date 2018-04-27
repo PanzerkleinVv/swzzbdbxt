@@ -19,6 +19,9 @@ public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String
 	List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgExtend, Map<Long, String> roleMap, Long roleId);
 
 	boolean modifyRoleId(String msgId, List<MsgCoSponsor> msgCoSponsors) throws Exception;
+
+	List<Long> selectRoleIdByMsgId(String msgId);
 	
 	void deleteByMgsId(String msgId);
+
 }

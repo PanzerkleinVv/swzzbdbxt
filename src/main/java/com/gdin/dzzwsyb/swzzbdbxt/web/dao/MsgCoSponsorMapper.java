@@ -34,6 +34,9 @@ public interface MsgCoSponsorMapper extends GenericDao<MsgCoSponsor, String> {
 	int updateByPrimaryKeySelective(MsgCoSponsor record);
 
 	int updateByPrimaryKey(MsgCoSponsor record);
-	
+
+	List<Long> selectRoleIdByMsgId(String msgId);
+
 	void deleteByMgsId(String msgId);
+
 }
