@@ -76,8 +76,8 @@ public class MsgController {
 	String msgContractorId;//督办事项承办人表
 	String msgCoSponsorId;//协办处室id
 	String msgSponsorId;//主办处室id
-	ArrayList<Long> msgSponsorSelect;//存储下拉框选中的主处室
-	ArrayList<Long> msgCoSponsorSelect;//存储下拉框选中的协助处室
+	List<Long> msgSponsorSelect;//存储下拉框选中的主处室
+	List<Long> msgCoSponsorSelect;//存储下拉框选中的协助处室
 	List<MsgCoSponsor> msgCoSponsors;
 	List<MsgSponsor> msgSponsors;
 
@@ -148,8 +148,8 @@ public class MsgController {
 			model.addAttribute("msg", msg0);
 			String basisSelect = null;
 			if (msg0 != null) {
-				msgSponsorSelect = msgSponsorService.selectRoleIdByMsgId(msgId);
-				msgCoSponsorSelect = msgCoSponsorService.selectRoleIdByMsgId(msgId);
+				msgSponsorSelect = msgSponsorService.selectRoleIdByMsgId(msg0.getId());
+				msgCoSponsorSelect = msgCoSponsorService.selectRoleIdByMsgId(msg0.getId());
 				basisSelect = msg0.getBasis();
 			}
 			model.addAttribute("basisSelect", basisSelect);
@@ -172,8 +172,8 @@ public class MsgController {
 		//录入msg类数据库
 		//是否有id来判断是保存还是修改
 		if(id.isEmpty()) {
-			msgSponsorSelect = new  ArrayList() ;
-			msgCoSponsorSelect = new ArrayList() ;
+			msgSponsorSelect = new  ArrayList<Long>();
+			msgCoSponsorSelect = new ArrayList<Long>();
 			String msgId = ApplicationUtils.newUUID();
 			Integer sequenceNumber = sequenceNumberService.next();
 			msg.setId(msgId);
@@ -228,8 +228,8 @@ public class MsgController {
 			request.getSession().removeAttribute("fileNameLists");
 		}
 		else {
-			msgSponsorSelect = new  ArrayList() ;
-			msgCoSponsorSelect = new ArrayList() ;
+			msgSponsorSelect = new  ArrayList<Long>() ;
+			msgCoSponsorSelect = new ArrayList<Long>() ;
 			msg.setId(id);
 			msg.setSequence(sequenceNumbers);
 			final int msgCount = msgService.update(msg);
@@ -246,7 +246,7 @@ public class MsgController {
 			}
 			
 			//录入msg_co-sponsor数据库
-			msgSponsors = new ArrayList();
+			msgSponsors = new ArrayList<MsgSponsor>();
 			String roleIdArr[] = role.split(",");
 			for(int i = 0;i<roleIdArr.length;i++) {
 				System.out.println("+++++++++++"+roleIdArr[i]);
@@ -271,7 +271,7 @@ public class MsgController {
 			}
 			else {
 				String assitroldIdArr[] = assitrole.split(",");
-				msgCoSponsors = new ArrayList();
+				msgCoSponsors = new ArrayList<MsgCoSponsor>();
 				for(int i = 0;i<assitroldIdArr.length;i++) {
 					msgCoSponsor = new MsgCoSponsor();
 					msgCoSponsorId = ApplicationUtils.newUUID();
@@ -299,10 +299,10 @@ public class MsgController {
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String get(@RequestParam("msgId")String id,@RequestParam("role")String role,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request){
 		String  basisSelect;
-		ArrayList<Long> msgSponsorSelect = new ArrayList() ;
+		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>() ;
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
 		ArrayList<Long> roleList = null;
-		roleList = new ArrayList();
+		roleList = new ArrayList<Long>();
 		if (role.length() > 0) {
 			String roleIdArr[] = role.split(",");
 			for (int i = 0; i < roleIdArr.length; i++) {
