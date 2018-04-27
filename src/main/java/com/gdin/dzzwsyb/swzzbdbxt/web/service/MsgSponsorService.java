@@ -26,4 +26,6 @@ public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 	 * @throws Exception 
 	 */
 	boolean modifyRoleId(String msgId, List<MsgSponsor> msgSponsors) throws Exception;
+	
+	void deleteByMgsId(String msgId);
 }
