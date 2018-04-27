@@ -20,5 +20,6 @@ public interface AttachService extends GenericService<Attach, String> {
 	List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, List<List<String>> ids);
 	
 	void upload(Model model,MultipartFile[] file,HttpServletResponse resp,HttpServletRequest request) ;
-		
+	
+	void deleteByMsgId(String targetId);
 }

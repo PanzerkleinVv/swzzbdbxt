@@ -217,4 +217,8 @@
 		create_time = #{createTime,jdbcType=TIMESTAMP}
 		where id = #{id,jdbcType=VARCHAR}
 	</update>
+	<delete id="deleteByMsgId" parameterType="java.lang.String">
+		delete from attach
+		where target_id = #{targetId,jdbcType=VARCHAR}
+	</delete>
 </mapper>

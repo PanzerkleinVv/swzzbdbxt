@@ -245,4 +245,8 @@
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <delete id="deleteByMgsId" parameterType="java.lang.String">
+    delete from `msg_co-sponsor`
+    where msg_id = #{msgId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

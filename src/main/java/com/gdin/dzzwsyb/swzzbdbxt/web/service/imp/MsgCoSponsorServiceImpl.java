@@ -154,4 +154,9 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		return msgCoSponsorMapper.selectRoleIdByMsgId(msgId);
 	}
 
+	@Override
+	public void deleteByMgsId(String msgId) {
+		msgCoSponsorMapper.deleteByMgsId(msgId);
+	}
+  
 }

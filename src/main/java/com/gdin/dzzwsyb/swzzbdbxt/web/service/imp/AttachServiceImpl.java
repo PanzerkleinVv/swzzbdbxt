@@ -124,7 +124,13 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 				}
 				//保存文件名
 				request.getSession().setAttribute("fileNameLists", fileNameLists);
-		
+				
+	}
+
+	@Override
+	public void deleteByMsgId(String targetId) {
+		// TODO Auto-generated method stub
+		attachMapper.deleteByMsgId(targetId);
 	}
 
 }

@@ -5,6 +5,10 @@
 <!-- <form id="from" method="post"> -->
 <div class="mainContent">
 	<div id="uploadBox">
+	<input type='text' id='msgId' value="${id}" style="display:none"
+						class="form-control placeholder-no-fix uploadInput" />
+	<input type='text' id='sequenceNumber' value="${sequenceNumber}" style="display:none"
+						class="form-control placeholder-no-fix uploadInput" />
 		<div>
 			<div>
 				<span class="uploadTitle">督查事项：</span>
@@ -45,7 +49,7 @@
 					</td>
 					<td>
 					
-						<input type='text' style="display: none;" id='msgBasis' value="${msg.basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
+						<input type='text' style="display: none;" id='basis' value="${basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
 				
 					</td>
 					
@@ -104,23 +108,30 @@
 		        <table>
 		            <tr>
 		                <td>请选择文件:</td>
-		                <td><input id="excelFile" type="file" name="file" multiple/></td>
+		                <td><input id="fileID" type="file" name="file" multiple/></td>
 		                <td><button type="button"  onclick="doUpload()" >上传</button></td>
 		            </tr>
 		            <tr>
 		            	<span id='successMsg'></span>
 		            </tr>
+		            <tr>
+		            	<c:forEach var="fileName" items="${fileName}" >
+		            		<span id='tagMsg' style="color:#F00">${fileName}</span>
+		            	</c:forEach>
+		            <tr>
 		        </table>
     		</form>
 			</div>
 		</div>
 		<div class="uploadButton">
 			<span>
-				<button id="uploadSubmit" type="button" class="btn blue"
-					onclick="upload()">保存</button>
+				<button id="insert"  type="button" class="btn blue" 
+					onclick="insert()">保存</button>
+				<button id="delete"   type="button" class="btn blue"
+					onclick="delete()">删除</button>
 			</span>
 			<span>
-				<button id="uploadSubmit" type="button" class="btn blue"
+				<button id="send" type="button" class="btn blue"
 					onclick="send()">发布</button>
 			</span>
 		</div>
@@ -153,6 +164,7 @@
 			 form.append("limitTime",$("#limitTime").val());
 			 form.append("createTime",$("#createTime").val());
 			console.log($("#basis").val());
+			 form.append("msgId",$("#msgId").val());
 			$.ajax({
 				type: "POST",
 				url: 'rest/msg/gett', 
@@ -188,76 +200,101 @@
 	    
 	     });  
 	} 
-	function upload(){
-		if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
-			 var roleId = "<%=session.getAttribute("roleId")%>";
-			 console.log($("#role").val()); 
-			 var form = new FormData(document.getElementById("form"));  
-			 form.append("status",0);
-			 form.append("name",$("#name").val());
-			 form.append("basis",$("#basis").val());
-			 form.append("role",$("#role").val());
-			 form.append("assitrole",$("#assitrole").val());
-			 form.append("limitTime",$("#limitTime").val());
-			 form.append("createTime",$("#createTime").val());
-			 form.append("id",roleId);
-			 
-		     $.ajax({  
-		     	url:'rest/msg/save',  
-		      	type:"post",  
-			    data:form, 
-			    /* fileElementId: 'file', */
-			    cache: false,  
-			    processData: false,  
-			    contentType: false,  
-			    success:function(data){  
-			         alert("保存成功！");
-			         showData("#main-content",data);
-			      },  
-			     
-		      });  
+
+	function insert(){
+	 	console.log($("#msgId").val());
+	 	if(document.getElementById("fileID").value==""){
+				alert("请上传附件");
 		}
 		else{
-			 alert("必需字段不能为空"); 
+			if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
+				 var form = new FormData(document.getElementById("form"));  
+				 form.append("status",0);
+				 form.append("name",$("#name").val());
+				 form.append("basis",$("#basis").val());
+				 form.append("role",$("#role").val());
+				 form.append("assitrole",$("#assitrole").val());
+				 form.append("limitTime",$("#limitTime").val());
+				 form.append("createTime",$("#createTime").val());
+				 form.append("msgId",$("#msgId").val());
+				 form.append("sequenceNumber",$("#sequenceNumber").val());
+			     $.ajax({  
+			     	url:'rest/msg/insert',  
+			      	type:"post",  
+				    data:form, 
+				    /* fileElementId: 'file', */
+				    cache: false,  
+				    processData: false,  
+				    contentType: false,  
+				    success:function(data){ 
+				    	 if($("#msgId").val()==""){ 
+				         	alert("保存成功！");
+				         	$('#main-content').html(data);
+				         	}
+				         else{
+				         	 window.location.href = './rest/msg/upload';
+				         }
+				      },  
+				     
+			      });  
+			}
+			else{
+				 alert("必需字段不能为空"); 
+			}
 		}
 	};
+	//删除按钮
+	function detele(){
+			 var url = "rest/msg/detele";
+			 $.post(url, {
+			 	id:$("#msgId").val()
+			 }, function(data) {
+					$('#main-content').html(data);
+				});
+	}
 	//发布按钮
 	function send(){
-		if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
-			 var roleId = "<%=session.getAttribute("roleId")%>";
-			 console.log($("#role").val()); 
-			 var form = new FormData(document.getElementById("form"));  
-			 form.append("status",1);
-			 form.append("name",$("#name").val());
-			 form.append("basis",$("#basis").val());
-			 form.append("role",$("#role").val());
-			 form.append("assitrole",$("#assitrole").val());
-			 form.append("limitTime",$("#limitTime").val());
-			 form.append("createTime",$("#createTime").val());
-			 form.append("id",roleId);
-			 
-		     $.ajax({  
-		     	url:'rest/msg/save',  
-		      	type:"post",  
-			    data:form, 
-			    /* fileElementId: 'file', */
-			    cache: false,  
-			    processData: false,  
-			    contentType: false,  
-			    success:function(data){  
-			         alert("发送成功！");
-			         showData("#main-content",data);
-			      },  
-			     
-		      });  
-		}
+
+		console.log($("#msgId").val());
+	 	if(document.getElementById("fileID").value==""){
+				alert("请上传附件");
+	}
 		else{
-			 alert("必需字段不能为空"); 
+			if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
+				 var form = new FormData(document.getElementById("form"));  
+				 form.append("status",1);
+				 form.append("name",$("#name").val());
+				 form.append("basis",$("#basis").val());
+				 form.append("role",$("#role").val());
+				 form.append("assitrole",$("#assitrole").val());
+				 form.append("limitTime",$("#limitTime").val());
+				 form.append("createTime",$("#createTime").val());
+				 form.append("msgId",$("#msgId").val());
+				 form.append("sequenceNumber",$("#sequenceNumber").val());
+			     $.ajax({  
+			     	url:'rest/msg/insert',  
+			      	type:"post",  
+				    data:form, 
+				    /* fileElementId: 'file', */
+				    cache: false,  
+				    processData: false,  
+				    contentType: false,  
+				    success:function(data){ 
+				    		 alert("发布成功"); 
+				         	 window.location.href = './rest/msg/upload';
+				         }
+				        
+				     
+			      });  
+			}
+			else{
+				 alert("必需字段不能为空"); 
+			}
 		}
 	};
 	
 	//非空校验
-		function check(num) {
+	function check(num) {
 			var value;
 			var msg;
 			if (num == 0) {
@@ -276,12 +313,8 @@
 				value = $("#createTime").val();
 				msg = $('#msg1');
 				if (value == null || value.length < 1) {
-					msg.html("立项时间不能为空");
-					msg.css('color', '#FF0000');
 					return false;
 				} else {
-					msg.html("OK");
-					msg.css('color', '#00FF00');
 					return true;
 				} 
 			}  else if (num == 2) {
@@ -312,24 +345,24 @@
 				value = $("#limitTime").val();
 				msg = $('#msg4');
 				if (value == null || value.length < 1) {
-					msg.html("办结期限不能为空");
-					msg.css('color', '#FF0000');
 					return false;
 				} else {
-					msg.html("OK");
-					msg.css('color', '#00FF00');
 					return true;
 				} 
 			}
 		}
-	
 
+</script>
+
+	
+<script type="text/javascript">
 
 		$(function() {
 			$("#index-page-title").html("督查上传");
 			$("#current-page-title").html("督查上传");
 		});
 	</script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $('#role').multiselect({
@@ -352,6 +385,7 @@
         	allSelectedText:'已选中所有协办处室',
         	maxHeight:300
         });
+	
     });
 
 </script>
