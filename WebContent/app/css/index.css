@@ -90,6 +90,7 @@
 }
 
 .msgItem {
+	font-size: 12pt;
 	display: table-cell;
 	text-align: center;
 	border-left: 2px solid #FFFFFF;

@@ -51,7 +51,7 @@
 		$("#getAll").click(function() {
 			var url = 'rest/user/admin';
 			$.get(url, function(data) {
-				$('#main-content').html(data);
+				showData("#main-content",data);
 			});
 		});
 		$("#roleSelect").change(function() {
@@ -59,7 +59,7 @@
 			$.get(url, {
 				roleId : $("#roleSelect").val()
 			}, function(data) {
-				$('#main-content').html(data);
+				showData("#main-content",data);
 			});
 		});
 		$('button').click(function() {
@@ -69,7 +69,7 @@
 				$.post(url, {
 					userdesc : $('#userdesc').val()
 				}, function(data) {
-					$('#main-content').html(data);
+					showData("#main-content",data);
 				});
 			} else {
 				var dataId = "userId" + butId;
@@ -77,7 +77,7 @@
 				$.post(url, {
 					id : $('#' + dataId).val()
 				}, function(data) {
-					$('#main-content').html(data);
+					showData("#main-content",data);
 				});
 			}
 		});

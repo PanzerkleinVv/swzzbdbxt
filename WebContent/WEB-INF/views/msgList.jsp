@@ -21,17 +21,17 @@
 					class="msgItem co-sponsor">${msg0.coSponsorRoleNames}</span> <span
 					class="msgItem"> <fmt:formatDate value='${msg0.limitTime}'
 						type='DATE' pattern='yyyy-MM-dd' />
-				</span> <span class="msgItem content">${msg0.contents}</span>
-				<span class="msgItem attach">
-					<c:forEach var="attachId" items="${msg0.attachIds}" varStatus="status0">
+				</span> <span class="msgItem content">${msg0.contents}</span> <span
+					class="msgItem attach"> <c:forEach var="attachId"
+						items="${msg0.attachIds}" varStatus="status0">
 						<a href="rest/attach/download?id=${attachId}">${msg0.attachs[status0.index]}</a>
 					</c:forEach>
-				</span> <span class="msgItem">
-					<fmt:formatDate value='${msg0.endTime}' type='DATE'
-						pattern='yyyy-MM-dd' />
+				</span> <span class="msgItem"> <fmt:formatDate
+						value='${msg0.endTime}' type='DATE' pattern='yyyy-MM-dd' />
 				</span> <span class="msgItem">${msg0.statusName}</span>
 			</div>
 			<input type="hidden" name="ids" value="${msg0.id}" />
+			<input type="hidden" name="status" value="${msg0.status}" />
 		</c:forEach>
 	</c:if>
 </div>
@@ -87,3 +87,23 @@
 		<span class="page lastP" onclick="query(${page.totalPages})">尾页</span>
 	</c:if>
 </div>
+<script type="text/javascript">
+	function openMsg(id) {
+		var url = 'rest/msg/openMsg';
+		$("#openMsg").show();
+		$.post(url, {
+			'id' : id,
+			'status' : $("#id ")
+		}, function(data) {
+			showData("#msg-content",data);
+		});
+	}
+</script>
+<c:if test="${titleName == '督查草稿'}">
+	<script type="text/javascript">
+	$(function() {
+		$("#index-page-title").html("督查草稿");
+		$("#current-page-title").html("督查草稿");
+	});
+</script>
+</c:if>
