@@ -76,7 +76,7 @@ public class AttachController {
 		attachService.upload(model, file, resp, request);
 	}
 	@RequestMapping(value = "/download")
-	public String download(Model model, Attach attach,HttpServletRequest request,HttpServletResponse response) throws IOException {
+	public void download(Model model, Attach attach,HttpServletRequest request,HttpServletResponse response) throws IOException {
 		String filename = attach.getAttachFileName(); 
 		 if (filename != null) {
 			 File filepath = new File("C://Users//Administrator//git//swzzbdbxt//WebContent//files",filename);
@@ -119,7 +119,6 @@ public class AttachController {
 			                  }
 			              }
 			         }
-		return "/500";  
 	}
 	
 	@RequestMapping(value = "/delete")

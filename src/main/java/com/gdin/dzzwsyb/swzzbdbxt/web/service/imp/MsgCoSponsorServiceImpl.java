@@ -149,4 +149,10 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		return flag;
 	}
 
+	@Override
+	public void deleteByMgsId(String msgId) {
+		// TODO Auto-generated method stub
+		msgCoSponsorMapper.deleteByMgsId(msgId);
+	}
+	
 }

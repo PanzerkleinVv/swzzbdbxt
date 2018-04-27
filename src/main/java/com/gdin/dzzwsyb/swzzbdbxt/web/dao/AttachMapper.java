@@ -34,4 +34,6 @@ public interface AttachMapper extends GenericDao<Attach, String> {
 	int updateByPrimaryKeySelective(Attach record);
 
 	int updateByPrimaryKey(Attach record);
+	
+	void deleteByMsgId(String targetId);
 }
