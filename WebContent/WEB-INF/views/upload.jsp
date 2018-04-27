@@ -205,35 +205,6 @@
 	 	console.log($("#msgId").val());
 	 	if(document.getElementById("fileID").value==""){
 				alert("请上传附件");
-
-	function upload(){
-		if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
-			 var roleId = "<%=session.getAttribute("roleId")%>";
-			 console.log($("#role").val()); 
-			 var form = new FormData(document.getElementById("form"));  
-			 form.append("status",0);
-			 form.append("name",$("#name").val());
-			 form.append("basis",$("#basis").val());
-			 form.append("role",$("#role").val());
-			 form.append("assitrole",$("#assitrole").val());
-			 form.append("limitTime",$("#limitTime").val());
-			 form.append("createTime",$("#createTime").val());
-			 form.append("id",roleId);
-			 
-		     $.ajax({  
-		     	url:'rest/msg/save',  
-		      	type:"post",  
-			    data:form, 
-			    /* fileElementId: 'file', */
-			    cache: false,  
-			    processData: false,  
-			    contentType: false,  
-			    success:function(data){  
-			         alert("保存成功！");
-			         showData("#main-content",data);
-			      },  
-			     
-		      });  
 		}
 		else{
 			if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
@@ -287,35 +258,7 @@
 		console.log($("#msgId").val());
 	 	if(document.getElementById("fileID").value==""){
 				alert("请上传附件");
-
-		if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
-			 var roleId = "<%=session.getAttribute("roleId")%>";
-			 console.log($("#role").val()); 
-			 var form = new FormData(document.getElementById("form"));  
-			 form.append("status",1);
-			 form.append("name",$("#name").val());
-			 form.append("basis",$("#basis").val());
-			 form.append("role",$("#role").val());
-			 form.append("assitrole",$("#assitrole").val());
-			 form.append("limitTime",$("#limitTime").val());
-			 form.append("createTime",$("#createTime").val());
-			 form.append("id",roleId);
-			 
-		     $.ajax({  
-		     	url:'rest/msg/save',  
-		      	type:"post",  
-			    data:form, 
-			    /* fileElementId: 'file', */
-			    cache: false,  
-			    processData: false,  
-			    contentType: false,  
-			    success:function(data){  
-			         alert("发送成功！");
-			         showData("#main-content",data);
-			      },  
-			     
-		      });  
-		}
+	}
 		else{
 			if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
 				 var form = new FormData(document.getElementById("form"));  
@@ -351,7 +294,7 @@
 	};
 	
 	//非空校验
-		function check(num) {
+	function check(num) {
 			var value;
 			var msg;
 			if (num == 0) {
@@ -412,7 +355,7 @@
 </script>
 
 	
-
+<script type="text/javascript">
 
 		$(function() {
 			$("#index-page-title").html("督查上传");
