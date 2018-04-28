@@ -76,4 +76,17 @@ public class MsgSponsor {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+	public MsgSponsor(String id, String msgId, Long roleId, Integer isSigned, Integer isAssigned, String content,
+			Integer status) {
+		super();
+		this.id = id;
+		this.msgId = msgId;
+		this.roleId = roleId;
+		this.isSigned = isSigned;
+		this.isAssigned = isAssigned;
+		this.content = content;
+		this.status = status;
+	}
+    
 }
