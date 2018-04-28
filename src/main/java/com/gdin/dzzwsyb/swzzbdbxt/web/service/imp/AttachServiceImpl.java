@@ -119,7 +119,7 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 					}
 					//没有选中文件，返回错误页面
 					else {
-						
+						fileNameLists.add(null);
 					}
 				}
 				//保存文件名

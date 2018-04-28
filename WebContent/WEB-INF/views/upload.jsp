@@ -35,7 +35,6 @@
 				<span class="uploadTitle">主办处室：</span>
 				<span class="uploadItem withInput">
 					<select id="role" multiple="multiple" onblur="check(3)" onchange="getData()">
-						<option>请选择主办处室</option>
 						<c:set var='i' value="0"></c:set>
 							<c:forEach var="role" items="${sessionScope.roles}" begin="1">
 		      					<option value="${role.id}" <c:if test="${msgSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
@@ -72,16 +71,15 @@
 					<tr>
 					<td>
 					<select id="basis" class="input-sm form-inline" onblur="check(2)" onchange="basisChange()">
-						<option></option>
+						<option selected="selected"></option>
 						<c:forEach var="basis"  items="${sessionScope.msgBasis}" varStatus="state">
 							<option value="${basis}"<c:if test="${basis eq basisSelect}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${basis}</option>
 						</c:forEach>
 					</select>
+					</tr>
 					</td>
-					<td>
+					<tr>
 						<input type='text' style="display: none; border: 1px solid ;" id='msgBasis' value="${basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
-					</td>
-					
 					</tr>
 					</table>
 				</span>
@@ -128,7 +126,7 @@
 					onclick="insert()">保存</button>
 			</span>
 			<span>
-				<button id="delete"   type="button" class="btn blue"
+				<button id="delete"  type="button" class="btn blue"
 					onclick="dd()" >删除</button>
 			</span>
 			<span>
@@ -156,17 +154,17 @@
 			$("#msgBasis").hide();
 		}
 	}
-	function getData(){
-			var form = new FormData(document.getElementById("form")); 
-			 form.append("name",$("#name").val());
-			 form.append("basis",$("#basis").val());
-			 form.append("role",$("#role").val());
-			 form.append("assitrole",$("#assitrole").val());
-			 form.append("limitTime",$("#limitTime").val());
-			 form.append("createTime",$("#createTime").val());
-			 form.append("msgId",$("#msgId").val());
-			 form.append("sequenceNumber",$("#sequenceNumber").val());
-			 console.log($("#basis").val());
+function getData(){
+		var form = new FormData(document.getElementById("form")); 
+		form.append("name",$("#name").val());
+		form.append("basis",$("#basis").val());
+		form.append("role",$("#role").val());
+		form.append("assitrole",$("#assitrole").val());
+		form.append("limitTime",$("#limitTime").val());
+		form.append("createTime",$("#createTime").val());
+		form.append("msgId",$("#msgId").val());
+		form.append("sequenceNumber",$("#sequenceNumber").val());
+		console.log($("#basis").val());
 			$.ajax({
 				type: "POST",
 				url: 'rest/msg/gett', 
@@ -176,11 +174,8 @@
 				processData:false,
 				success: function(data) {
 					$('#main-content').html(data);
-					
-					
 				},
 			});
-	
 		}
 	function doUpload() {  
 		 //var File = $('#excelFile').get(0).files[0];  
@@ -200,17 +195,13 @@
 	        	  console.log(returndata);
 	        	  successMsg.html("上传附件成功");
 	        	  successMsg.css('color', '#00FF00'); 
+	        	 // document.getElementById("insert").disabled = false;
+				 //document.getElementById("send").disabled = false;
 	          },
-	    
 	     });  
 	} 
-
 	function insert(){
 	 	console.log($("#msgId").val());
-	 	if(document.getElementById("fileID").value==""){
-				alert("请上传附件");
-		}
-		else{
 			if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
 				 var form = new FormData(document.getElementById("form"));  
 				 form.append("status",0);
@@ -222,7 +213,7 @@
 				 form.append("createTime",$("#createTime").val());
 				 form.append("msgId",$("#msgId").val());
 				 form.append("sequenceNumber",$("#sequenceNumber").val());
-				 form.append("basis",$("#msgBasis").val());
+				 form.append("msgBasis",$("#msgBasis").val());
 			     $.ajax({  
 			     	url:'rest/msg/insert',  
 			      	type:"post",  
@@ -233,22 +224,19 @@
 				    contentType: false,  
 				    success:function(data){ 
 				    	 if($("#msgId").val()==""){ 
-				         	alert("保存成功！");
-				         	//document.getElementById("delete").disabled = true;
-				         	//$("#insert").attr({"disabled":"disabled"});
-				         	$('#main-content').html(data);
+				         		alert("保存成功！");
+				         		showData('#main-content', data);
 				         	}
 				         else{
 				         	//第二次保存跳
+				         	showData('#main-content', data);
 				         }
-				      },  
-				     
+				      },
 			      });  
 			}
 			else{
 				 alert("必需字段不能为空"); 
 			}
-		}
 	};
 	//删除按钮
 	function dd(){
@@ -273,12 +261,7 @@
 	}
 	//发布按钮
 	function send(){
-
 		console.log($("#msgId").val());
-	 	if(document.getElementById("fileID").value==""){
-				alert("请上传附件");
-	}
-		else{
 			if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
 				 var form = new FormData(document.getElementById("form"));  
 				 form.append("status",1);
@@ -301,16 +284,12 @@
 				    contentType: false,  
 				    success:function(data){ 
 				    		 alert("发布成功"); 
-				         	 window.location.href = './rest/msg/upload';
 				         }
-				        
-				     
 			      });  
 			}
 			else{
 				 alert("必需字段不能为空"); 
 			}
-		}
 	};
 	
 	//非空校验
@@ -373,8 +352,6 @@
 		}
 
 </script>
-
-	
 <script type="text/javascript">
 
 		$(function() {
@@ -405,7 +382,6 @@
         	allSelectedText:'已选中所有协办处室',
         	maxHeight:300
         });
-	
     });
 
 </script>
