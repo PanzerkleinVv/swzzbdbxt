@@ -29,41 +29,13 @@
 				</span>
 				<span id='msg1'></span>
 			</div>
-		</div>	 
-		<div>
-			<div>
-				<span class="uploadTitle">立项依据：</span>
-				<%-- <span class="uploadItem withInput">
-					<input type='text' id='basis' value="${msg.basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
-				</span> --%>
-				<span class="uploadItem withInput">
-					<table>
-					<tr>
-					<td>
-					<select id="basis" class="input-sm form-inline" onblur="check(2)" onchange="basisChange()">
-						<option></option>
-						<c:forEach var="basis"  items="${sessionScope.msgBasis}" varStatus="state">
-							<option value="${basis}"<c:if test="${basis eq basisSelect}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${basis}</option>
-						</c:forEach>
-					</select>
-					</td>
-					<td>
-					
-						<input type='text' style="display: none;" id='basis' value="${basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
-				
-					</td>
-					
-					</tr>
-					</table>
-				</span>
-				<span id='msg2'></span>
-			</div>
 		</div>
 		<div>
 			<div>
 				<span class="uploadTitle">主办处室：</span>
 				<span class="uploadItem withInput">
 					<select id="role" multiple="multiple" onblur="check(3)" onchange="getData()">
+						<option>请选择主办处室</option>
 						<c:set var='i' value="0"></c:set>
 							<c:forEach var="role" items="${sessionScope.roles}" begin="1">
 		      					<option value="${role.id}" <c:if test="${msgSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
@@ -87,6 +59,33 @@
 					</select>
 				</span>
 				<span id='msg3'></span>
+			</div>
+		</div>
+		<div>
+			<div>
+				<span class="uploadTitle">立项依据：</span>
+				<%-- <span class="uploadItem withInput">
+					<input type='text' id='basis' value="${msg.basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
+				</span> --%>
+				<span class="uploadItem withInput">
+					<table>
+					<tr>
+					<td>
+					<select id="basis" class="input-sm form-inline" onblur="check(2)" onchange="basisChange()">
+						<option></option>
+						<c:forEach var="basis"  items="${sessionScope.msgBasis}" varStatus="state">
+							<option value="${basis}"<c:if test="${basis eq basisSelect}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${basis}</option>
+						</c:forEach>
+					</select>
+					</td>
+					<td>
+						<input type='text' style="display: none; border: 1px solid ;" id='msgBasis' value="${basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
+					</td>
+					
+					</tr>
+					</table>
+				</span>
+				<span id='msg2'></span>
 			</div>
 		</div>
 		<div>
@@ -127,8 +126,10 @@
 			<span>
 				<button id="insert"  type="button" class="btn blue" 
 					onclick="insert()">保存</button>
+			</span>
+			<span>
 				<button id="delete"   type="button" class="btn blue"
-					onclick="delete()">删除</button>
+					onclick="dd()" >删除</button>
 			</span>
 			<span>
 				<button id="send" type="button" class="btn blue"
@@ -163,8 +164,9 @@
 			 form.append("assitrole",$("#assitrole").val());
 			 form.append("limitTime",$("#limitTime").val());
 			 form.append("createTime",$("#createTime").val());
-			console.log($("#basis").val());
 			 form.append("msgId",$("#msgId").val());
+			 form.append("sequenceNumber",$("#sequenceNumber").val());
+			 console.log($("#basis").val());
 			$.ajax({
 				type: "POST",
 				url: 'rest/msg/gett', 
@@ -173,7 +175,9 @@
 				contentType: false, 
 				processData:false,
 				success: function(data) {
-					 $('#main-content').html(data);
+					$('#main-content').html(data);
+					
+					
 				},
 			});
 	
@@ -218,6 +222,7 @@
 				 form.append("createTime",$("#createTime").val());
 				 form.append("msgId",$("#msgId").val());
 				 form.append("sequenceNumber",$("#sequenceNumber").val());
+				 form.append("basis",$("#msgBasis").val());
 			     $.ajax({  
 			     	url:'rest/msg/insert',  
 			      	type:"post",  
@@ -229,10 +234,12 @@
 				    success:function(data){ 
 				    	 if($("#msgId").val()==""){ 
 				         	alert("保存成功！");
+				         	//document.getElementById("delete").disabled = true;
+				         	//$("#insert").attr({"disabled":"disabled"});
 				         	$('#main-content').html(data);
 				         	}
 				         else{
-				         	 window.location.href = './rest/msg/upload';
+				         	//第二次保存跳
 				         }
 				      },  
 				     
@@ -244,13 +251,25 @@
 		}
 	};
 	//删除按钮
-	function detele(){
-			 var url = "rest/msg/detele";
+	function dd(){
+		if($("#msgId").val()==""){
+			var obj = document.getElementById('fileID') ; 
+			obj.outerHTML=obj.outerHTML;
+			$("#name").val("");
+			$("#basis").val("");
+			$("#msgBasis").val("");
+			$("#createTime").val("");
+			$("#limitTime").val("");
+		}
+		else{
+			 var url = 'rest/msg/detele';
 			 $.post(url, {
 			 	id:$("#msgId").val()
 			 }, function(data) {
+			 		alert("删除成功，重新上传");
 					$('#main-content').html(data);
 				});
+	}
 	}
 	//发布按钮
 	function send(){
@@ -271,6 +290,7 @@
 				 form.append("createTime",$("#createTime").val());
 				 form.append("msgId",$("#msgId").val());
 				 form.append("sequenceNumber",$("#sequenceNumber").val());
+				 form.append("msgBasis",$("#msgBasis").val());
 			     $.ajax({  
 			     	url:'rest/msg/insert',  
 			      	type:"post",  
@@ -389,5 +409,6 @@
     });
 
 </script>
+
 
   

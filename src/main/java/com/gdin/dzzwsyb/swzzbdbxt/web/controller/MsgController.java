@@ -43,7 +43,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
 @Controller
 @RequestMapping(value = "/msg")
 public class MsgController {
-
+	
 	@Resource
 	private MsgService msgService;
 
@@ -134,9 +134,9 @@ public class MsgController {
 		User user = (User) session.getAttribute("userInfo");
 		session.setAttribute("msgBasis", SelectArray.getMsgBasis()); // 立法依据
 		if (user != null) {
-
+			model.addAttribute("titleName", "督查上传");
 		}
-		model.addAttribute("insertOrUpadateChange","update");
+		
 		return "upload";
 	}
 
@@ -167,8 +167,8 @@ public class MsgController {
 
 	@RequestMapping(value = "/insert")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String insert(@RequestParam("msgId")String id,@RequestParam("sequenceNumber")Integer sequenceNumbers,@RequestParam("status")int status,@RequestParam("role")String role,@RequestParam("assitrole")String assitrole,@Valid Msg msg,@Valid User user,Model model,HttpServletRequest request) throws Exception  {
-		System.out.println("msgid的值"+id.length());
+	public String insert(@RequestParam("msgId")String id,@RequestParam("sequenceNumber")Integer sequenceNumbers,@RequestParam("status")int status,@RequestParam("role")String role,@RequestParam("assitrole")String assitrole,@Valid Msg msg,@Valid User user,Model model,HttpServletRequest request) throws Exception  {	
+		//String basisSelect =null; 
 		//录入msg类数据库
 		//是否有id来判断是保存还是修改
 		if(id.isEmpty()) {
@@ -176,6 +176,11 @@ public class MsgController {
 			msgCoSponsorSelect = new ArrayList<Long>();
 			String msgId = ApplicationUtils.newUUID();
 			Integer sequenceNumber = sequenceNumberService.next();
+			/*String basis = msg.getBasis();
+			while (basis.contains("自定义")) {
+				basisSelect = "自定义";
+				msg.setBasis(basis.replace("自定义", ""));
+			}*/
 			msg.setId(msgId);
 			msg.setSequence(sequenceNumber);
 			msgService.insertSelective(msg);
@@ -190,7 +195,6 @@ public class MsgController {
 			msgSponsor = new MsgSponsor();
 			String roleIdArr[] = role.split(",");
 			for(int i = 0;i<roleIdArr.length;i++) {
-				//System.out.println("+++++++++++"+roleIdArr[i]);
 				msgSponsorId = ApplicationUtils.newUUID();
 				msgSponsor.setId(msgSponsorId);
 				msgSponsor.setMsgId(msgId);
@@ -203,9 +207,7 @@ public class MsgController {
 				msgSponsorService.insertSelective(msgSponsor);
 			}
 			//录入msg_sponsor数据库
-			System.out.println(assitrole.equals("null"));
 			if (assitrole.equals("null")) {
-				
 			}
 			else {
 				String assitroldIdArr[] = assitrole.split(",");
@@ -235,7 +237,6 @@ public class MsgController {
 			final int msgCount = msgService.update(msg);
 			//录入attach数据库
 			List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
-			System.out.println("=====fileNameLists的值"+fileNameLists);
 			if(fileNameLists.size()>0) {
 				for(String fileName : fileNameLists) {
 					attachService.deleteByMsgId(id);
@@ -249,9 +250,7 @@ public class MsgController {
 			msgSponsors = new ArrayList<MsgSponsor>();
 			String roleIdArr[] = role.split(",");
 			for(int i = 0;i<roleIdArr.length;i++) {
-				System.out.println("+++++++++++"+roleIdArr[i]);
 				msgSponsor = new MsgSponsor();
-		
 				msgSponsorId = ApplicationUtils.newUUID();
 				msgSponsor.setId(msgSponsorId);
 				msgSponsor.setMsgId(id);
@@ -264,7 +263,6 @@ public class MsgController {
 				msgSponsors.add(msgSponsor);
 			}
 			boolean msgSponsorFlag = msgSponsorService.modifyRoleId(id, msgSponsors);
-			
 			//录入msg_sponsor数据库
 			if (assitrole.equals("null")) {
 				msgCoSponsorService.deleteByMgsId(id);
@@ -297,7 +295,7 @@ public class MsgController {
 
 	@RequestMapping(value = "/gett")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String get(@RequestParam("msgId")String id,@RequestParam("role")String role,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request){
+	public String get(@RequestParam("msgId")String id,@RequestParam("sequenceNumber")Integer sequenceNumbers,@RequestParam("role")String role,@Valid Msg msg,@Valid User user,Model model,HttpServletResponse resp,HttpServletRequest request){
 		String  basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>() ;
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
@@ -320,6 +318,7 @@ public class MsgController {
 		}
 		basisSelect = msg.getBasis();
 		model.addAttribute("id",id);
+		model.addAttribute("sequenceNumber",sequenceNumbers);
 		model.addAttribute("basisSelect",basisSelect);
 		model.addAttribute("roleList",roleList);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
@@ -327,9 +326,9 @@ public class MsgController {
 	}
 
 	//删除
-	@RequestMapping(value = "/delete")
+	@RequestMapping(value = "/detele")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String  delete(@RequestParam("id") String msgId,Model model,HttpServletResponse resp,HttpServletRequest request) {
+	public String  detele(@RequestParam("id") String msgId,Model model,HttpServletResponse resp,HttpServletRequest request) {
 		msgService.delete(msgId);
 		attachService.deleteByMsgId(msgId);
 		msgCoSponsorService.deleteByMgsId(msgId);
