@@ -185,9 +185,7 @@ public class MsgController {
 		String msgCoSponsorId;//协办处室id
 		String msgSponsorId;//主办处室id
 		List<Long> msgSponsorSelect = null;//存储下拉框选中的主处室
-		List<Long> msgCoSponsorSelect = null;//存储下拉框选中的协助处室
-		msgSponsorSelect = new  ArrayList<Long>() ;
-		msgCoSponsorSelect = new ArrayList<Long>() ;
+		List<Long> msgCoSponsorSelect = null;//存储下拉框选中的协助处
 		List<MsgCoSponsor> msgCoSponsors;
 		List<MsgSponsor> msgSponsors;
 		
@@ -234,7 +232,6 @@ public class MsgController {
 					msgCoSponsorService.insertSelective(msgCoSponsor);
 				}
 			}
-			System.out.println("==========msgBasis的值是"+msgBasis);
 			model.addAttribute("msgBasis",msgBasis);
 			model.addAttribute("sequenceNumber",sequenceNumber);
 			model.addAttribute("id",msgId);
