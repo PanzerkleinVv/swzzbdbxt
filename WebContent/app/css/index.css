@@ -129,6 +129,7 @@
 
 .msgTitle {
 	font-family: 微软雅黑;
+	line-height: 22px;
 }
 
 #goback {
@@ -269,4 +270,8 @@
 
 .infoButton button {
 	display: inline;
+}
+
+.clickable {
+	cursor: pointer;
 }
