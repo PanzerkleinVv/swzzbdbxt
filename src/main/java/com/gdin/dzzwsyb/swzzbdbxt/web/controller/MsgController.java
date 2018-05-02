@@ -234,7 +234,6 @@ public class MsgController {
 					msgCoSponsorService.insertSelective(msgCoSponsor);
 				}
 			}
-			
 		} else {
 			msg.setId(id);
 			msg.setSequence(sequenceNumbers);

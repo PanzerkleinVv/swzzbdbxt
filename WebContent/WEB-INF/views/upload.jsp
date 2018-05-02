@@ -97,23 +97,32 @@
 		<!-- 	</form> -->
 		<div>
 			<div>
-				<form id="uploadForm" enctype="multipart/form-data" method="post">
-					<table>
-						<tr>
-							<td>请选择文件:</td>
-							<td><input id="fileID" type="file" name="file" multiple /></td>
-							<td><button type="button" onclick="doUpload()">上传</button></td>
-						</tr>
-						<tr>
-							<td><span id='successMsg'></span></td>
-						</tr>
-						<tr>
-							<c:forEach var="fileName" items="${fileName}">
-								<span id='tagMsg' style="color: #F00">${fileName}</span>
-							</c:forEach>
-						<tr>
-					</table>
-				</form>
+			<form id="uploadForm"  enctype="multipart/form-data" method="post">
+		        <table>
+		            <tr>
+		                <td>请选择文件:</td>
+		                <td><input id="fileID" type="file" name="file" multiple/></td>
+		                <td><button type="button"  onclick="doUpload()" >上传</button></td>
+		            </tr>
+		            <tr>
+		            	<td>
+		            		<span id='tagMsg'></span>
+		             	</td>
+		             </tr>
+		             <tr>
+		             	<td>
+		            		<span id='successMsg'></span><br/>
+		            	</td>
+		            </tr>
+		            <tr>
+		            	<td>
+			            	<c:forEach var="fileName" items="${fileName}" >
+			            		<span id='tagMsg' style="color:#00FF00">${fileName}</span>
+			            	</c:forEach>
+			            </td>
+		            <tr>
+		        </table>
+    		</form>
 			</div>
 		</div>
 		<div class="uploadButton">
@@ -160,6 +169,7 @@
 			$("#msgBasis").hide();
 		}
 	}
+
 	function getData() {
 		var form = new FormData(document.getElementById("form"));
 		form.append("name", $("#name").val());
@@ -244,6 +254,7 @@
 			alert("必需字段不能为空");
 			enabledAll();
 		}
+
 	};
 	//删除按钮
 	function dd() {
@@ -268,6 +279,7 @@
 		}
 	}
 	//发布按钮
+
 	function send() {
 		disabledAll();
 		if (check(0) && check(1) && check(2) && check(3) && check(4)) {
