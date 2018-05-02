@@ -79,7 +79,7 @@
 					</tr>
 					</td>
 					<tr>
-						<input type='text' style="display: none; border: 1px solid ;" id='msgBasis' value="${basis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
+						<input type='text' style="display: none; border: 1px solid ;" id='msgBasis' value="${msgBasis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
 					</tr>
 					</table>
 				</span>
@@ -228,8 +228,12 @@ function getData(){
 				         		showData('#main-content', data);
 				         	}
 				         else{
+				         	alert("更改保存成功！");
 				         	//第二次保存跳
-				         	showData('#main-content', data);
+				         	var url = 'rest/msg/upload';
+							$.post(url, function(data) {
+								showData("#main-content",data);
+							});
 				         }
 				      },
 			      });  
@@ -283,7 +287,11 @@ function getData(){
 				    processData: false,  
 				    contentType: false,  
 				    success:function(data){ 
-				    		 alert("发布成功"); 
+				    		 alert("发布成功");
+				    		 var url = 'rest/msg/upload';
+							 $.post(url, function(data) {
+									showData("#main-content",data);
+							}); 
 				         }
 			      });  
 			}

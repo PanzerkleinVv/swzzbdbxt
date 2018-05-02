@@ -253,14 +253,13 @@ public class MsgController {
 				msgCoSponsors = new ArrayList<MsgCoSponsor>();
 				for(int i = 0;i<assitroldIdArr.length;i++) {
 					long assitRoldId = Long.parseLong(assitroldIdArr[i]);
-					
 					msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), id, assitRoldId, 0, 0, "", status);
 					msgCoSponsors.add(msgCoSponsor);
 				}
 				boolean msgCoSponsorFlag = msgCoSponsorService.modifyRoleId(id, msgCoSponsors);
 			}
 			model.addAttribute("basisSelect", basisSelect);
-			return "success";
+			return "upload";
 		}
 		
 		

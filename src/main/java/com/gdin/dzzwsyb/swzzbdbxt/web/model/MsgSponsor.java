@@ -88,5 +88,6 @@ public class MsgSponsor {
 		this.content = content;
 		this.status = status;
 	}
+	public MsgSponsor() {};
     
 }
