@@ -109,12 +109,21 @@
 		                <td><button type="button"  onclick="doUpload()" >上传</button></td>
 		            </tr>
 		            <tr>
-		            	<span id='successMsg'></span>
+		            	<td>
+		            		<span id='tagMsg'></span>
+		             	</td>
+		             </tr>
+		             <tr>
+		             	<td>
+		            		<span id='successMsg'></span><br/>
+		            	</td>
 		            </tr>
 		            <tr>
-		            	<c:forEach var="fileName" items="${fileName}" >
-		            		<span id='tagMsg' style="color:#F00">${fileName}</span>
-		            	</c:forEach>
+		            	<td>
+			            	<c:forEach var="fileName" items="${fileName}" >
+			            		<span id='tagMsg' style="color:#00FF00">${fileName}</span>
+			            	</c:forEach>
+			            </td>
 		            <tr>
 		        </table>
     		</form>
@@ -162,7 +171,7 @@ function getData(){
 		form.append("createTime",$("#createTime").val());
 		form.append("msgId",$("#msgId").val());
 		form.append("sequenceNumber",$("#sequenceNumber").val());
-		form.append("basis",$("#msgBasis").val());
+		form.append("msgBasis",$("#msgBasis").val());
 			$.ajax({
 				type: "POST",
 				url: 'rest/msg/gett', 
@@ -221,6 +230,8 @@ function getData(){
 				         		showData('#main-content', data);
 				         		$(document).ready(function() {
 				         			var basis = $("#basis").val();
+				         			$("#tagMsg").html("如有附件请重新上传");
+									$("#tagMsg").css('color', '#FF0000');
 									if(basis == "自定义"){
 										$("#msgBasis").show();
 									}
@@ -247,13 +258,10 @@ function getData(){
 	//删除按钮
 	function dd(){
 		if($("#msgId").val()==""){
-			var obj = document.getElementById('fileID') ; 
-			obj.outerHTML=obj.outerHTML;
-			$("#name").val("");
-			$("#basis").val("");
-			$("#msgBasis").val("");
-			$("#createTime").val("");
-			$("#limitTime").val("");
+			var url = 'rest/msg/upload';
+			$.post(url, function(data) {
+				showData("#main-content",data);
+			});
 		}
 		else{
 			 var url = 'rest/msg/detele';
@@ -278,7 +286,7 @@ function getData(){
 				 form.append("createTime",$("#createTime").val());
 				 form.append("msgId",$("#msgId").val());
 				 form.append("sequenceNumber",$("#sequenceNumber").val());
-				 form.append("basis",$("#msgBasis").val());
+				 form.append("msgBasis",$("#msgBasis").val());
 			     $.ajax({  
 			     	url:'rest/msg/insert',  
 			      	type:"post",  

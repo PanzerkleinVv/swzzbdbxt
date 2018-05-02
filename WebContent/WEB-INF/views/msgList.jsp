@@ -12,7 +12,7 @@
 	</div>
 	<c:if test="${msgs != null}">
 		<c:forEach items="${msgs}" var="msg0">
-			<div class="msg" id="${msg0.id}" onclick="openMsg('${msg0.id}')">
+			<div class="msg" id="${msg0.id}">
 				<span class="msgItem">${msg0.sequence}</span> <span class="msgItem">${msg0.name}</span>
 				<span class="msgItem"> <fmt:formatDate
 						value='${msg0.createTime}' type='DATE' pattern='yyyy-MM-dd' />

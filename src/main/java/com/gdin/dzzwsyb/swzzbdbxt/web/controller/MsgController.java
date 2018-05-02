@@ -234,6 +234,7 @@ public class MsgController {
 					msgCoSponsorService.insertSelective(msgCoSponsor);
 				}
 			}
+			System.out.println("==========msgBasis的值是"+msgBasis);
 			model.addAttribute("msgBasis",msgBasis);
 			model.addAttribute("sequenceNumber",sequenceNumber);
 			model.addAttribute("id",msgId);
