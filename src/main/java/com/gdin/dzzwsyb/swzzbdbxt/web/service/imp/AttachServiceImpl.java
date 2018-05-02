@@ -1,7 +1,12 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,6 +136,65 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	public void deleteByMsgId(String targetId) {
 		// TODO Auto-generated method stub
 		attachMapper.deleteByMsgId(targetId);
+	}
+
+	@Override
+	public void download(String id, Model model, HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		Attach attach = attachMapper.selectByPrimaryKey(id);
+		System.out.println("----------"+attach.getAttachFileName());
+		String attachFileName = attach.getAttachFileName();
+		 if (attachFileName != null) {
+			 File filepath = new File("C://Users//Administrator//git//swzzbdbxt//WebContent//files",attachFileName);
+			 if (filepath.exists()) {
+				 /*response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+			     response.setHeader("Content-Disposition", "attachment;filename="+attachFileName);
+				 */response.setContentType("application/force-download;charset=UTF-8");// 设置强制下载不打开
+			     try {
+					response.addHeader("Content-Disposition",
+					                     "attachment;fileName=" + URLEncoder.encode(attachFileName, "UTF-8"));
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}// 设置文件名
+			     byte[] buffer = new byte[1024];
+			     FileInputStream fis = null;
+			     BufferedInputStream bis = null;
+			     try {
+			    	 fis = new FileInputStream(filepath);
+			    	 bis = new BufferedInputStream(fis);
+			    	 OutputStream os = response.getOutputStream();
+			    	 int i = bis.read(buffer);
+			    	 while (i != -1) {
+			    		 os.write(buffer, 0, i);
+			    		 i = bis.read(buffer);
+			                   }
+			      } catch (Exception e) {
+			                      // TODO: handle exception
+			    	  e.printStackTrace();
+			      } finally {
+			    	  		if (bis != null) {
+			    	  			try {
+			                             bis.close();
+			                         } catch (IOException e) {
+			                             // TODO Auto-generated catch block
+			                            e.printStackTrace();
+			                         }
+			                     }
+			    	  		if (fis != null) {
+			    	  			try {
+			                             fis.close();
+			                         } catch (IOException e) {
+			                             // TODO Auto-generated catch block
+			                             e.printStackTrace();
+			                          }
+			                     }
+			                  }
+			              }
+			 else{
+				 
+			 }
+			         }
 	}
 
 }

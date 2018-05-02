@@ -1,6 +1,7 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public interface AttachService extends GenericService<Attach, String> {
 	List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, List<List<String>> ids);
 	
 	void upload(Model model,MultipartFile[] file,HttpServletResponse resp,HttpServletRequest request) ;
+	
+	void download(String id,Model model, HttpServletRequest request,HttpServletResponse response) ;
+		
 	
 	void deleteByMsgId(String targetId);
 }
