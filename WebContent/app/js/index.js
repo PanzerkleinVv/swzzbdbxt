@@ -47,11 +47,19 @@ function showData(target, data) {
 		$("#main-content").show();
 		$("#main-content").html(data);
 		$("#msg-content").hide();
+		$("#goBack").hide();
 		break;
 	case "#msg-content":
 		$("#msg-content").show();
 		$("#msg-content").html(data);
 		$("#main-content").hide();
+		$("#goBack").show();
 		break;
 	}
+}
+
+function goBack() {
+	$("#main-content").show();
+	$("#msg-content").hide();
+	$("#goBack").hide();
 }

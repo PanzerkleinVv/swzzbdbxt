@@ -234,6 +234,7 @@
 							<li><i class="fa fa-home"></i> 
 									首页 <i class="fa fa-angle-right"></i></li>
 							<li id="current-page-title"> 信息查询 </li>
+							<li id="goBack" style="display: none;color: blue;" onclick="goBack()" class="clickable"> &emsp;&emsp;&emsp;&emsp;返回 </li>
 						</ul>
 						<!-- END PAGE TITLE & BREADCRUMB-->
 					</div>
@@ -251,7 +252,7 @@
 	<!-- END CONTAINER -->
 	<!-- BEGIN FOOTER -->
 	<div class="footer">
-		<div class="footer-inner">2017 &copy; 广东省信息网络有限公司</div>
+		<div class="footer-inner">2018 &copy; 广东省信息网络有限公司</div>
 		<div class="footer-tools">
 			<span class="go-top"><i class="fa fa-angle-up"></i></span>
 		</div>
