@@ -24,7 +24,7 @@
 				</span> <span class="msgItem content">${msg0.contents}</span> <span
 					class="msgItem attach"> <c:forEach var="attachId"
 						items="${msg0.attachIds}" varStatus="status0">
-						<a href="rest/attach/download?id=${attachId}">${msg0.attachs[status0.index]}</a>
+						<a href="rest/attach/download?id=${attachId}" onclick="downFile()" target="_blank">${msg0.attachs[status0.index]}</a>
 					</c:forEach>
 				</span> <span class="msgItem"> <fmt:formatDate
 						value='${msg0.endTime}' type='DATE' pattern='yyyy-MM-dd' />
@@ -42,19 +42,19 @@
 		<span class="page beforeP">上一页</span>
 	</c:if>
 	<c:if test="${page.pageNo > 1}">
-		<span class="page firstP" onclick="query(1)">首页</span>
-		<span class="page beforeP" onclick="query(${page.pageNo-1})">上一页</span>
+		<span class="page firstP clickable" onclick="query(1)">首页</span>
+		<span class="page beforeP clickable" onclick="query(${page.pageNo-1})">上一页</span>
 	</c:if>
 	<c:if test="${page.totalPages<5}">
 		<c:forEach begin="1" end="${page.totalPages}" varStatus="index">
-			<span class="page numP" id="${index.index}"
+			<span class="page numP clickable" id="${index.index}"
 				onclick="query(${index.index})">${index.index}</span>
 		</c:forEach>
 	</c:if>
 	<c:if test="${page.totalPages>5}">
 		<c:if test="${page.pageNo<=3}">
 			<c:forEach begin="1" end="5" varStatus="index">
-				<span class="page numP" id="${index.index}"
+				<span class="page numP clickable" id="${index.index}"
 					onclick="query(${index.index})">${index.index}</span>
 			</c:forEach>
 		</c:if>
@@ -64,7 +64,7 @@
 		<c:if test="${page.pageNo>=4&&page.pageNo<=page.totalPages-2}">
 			<c:forEach begin="${page.pageNo-2}" end="${page.pageNo+2}"
 				varStatus="index">
-				<span class="page numP" id="${index.index}"
+				<span class="page numP clickable" id="${index.index}"
 					onclick="query(${index.index})">${index.index}</span>
 			</c:forEach>
 		</c:if>
@@ -73,7 +73,7 @@
 		<c:if test="${page.pageNo>(page.totalPages-2)}">
 			<c:forEach begin="${page.totalPages-4}" end="${page.totalPages}"
 				varStatus="index">
-				<span class="page numP" id="${index.index}"
+				<span class="page numP clickable" id="${index.index}"
 					onclick="query(${index.index})">${index.index}</span>
 			</c:forEach>
 		</c:if>
@@ -83,8 +83,8 @@
 		<span class="page lastP">尾页</span>
 	</c:if>
 	<c:if test="${page.pageNo < page.totalPages}">
-		<span class="page afterP" onclick="query(${page.pageNo+1})">下一页</span>
-		<span class="page lastP" onclick="query(${page.totalPages})">尾页</span>
+		<span class="page afterP clickable" onclick="query(${page.pageNo+1})">下一页</span>
+		<span class="page lastP clickable" onclick="query(${page.totalPages})">尾页</span>
 	</c:if>
 </div>
 <script type="text/javascript">
@@ -97,6 +97,17 @@
 			showData("#msg-content",data);
 		});
 	}
+	function downloadFile() {
+		var ev = window.event || arguments.callee.caller.arguments[0];
+		if(window.event) {
+			ev.cancelBubble = true;
+		}
+	    else
+	    {
+	        ev.stopPropagation();
+	    }
+		return false;
+	}
 </script>
 <c:if test="${titleName == '督查草稿'}">
 	<script type="text/javascript">
@@ -104,5 +115,14 @@
 		$("#index-page-title").html("督查草稿");
 		$("#current-page-title").html("督查草稿");
 	});
+	function query(pageNo) {
+		var url = 'rest/msg/msgList';
+		$.post(url, {
+			pageNo : pageNo,
+			status : 0
+		}, function(data) {
+			showData("#main-content",data);
+		});
+	}
 	</script>
 </c:if>

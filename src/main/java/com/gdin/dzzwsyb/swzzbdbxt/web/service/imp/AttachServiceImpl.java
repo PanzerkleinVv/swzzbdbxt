@@ -134,11 +134,11 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 
 	@Override
 	public void deleteByMsgId(String targetId) {
-		// TODO Auto-generated method stub
 		attachMapper.deleteByMsgId(targetId);
 	}
 
 	@Override
+
 	public void download(String id, Model model, HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		Attach attach = attachMapper.selectByPrimaryKey(id);
@@ -194,7 +194,13 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 			 else{
 				 
 			 }
-			         }
+ }
+
+	public List<Attach> selectByTargetId(String targetId) {
+		final AttachExample example = new AttachExample();
+		example.createCriteria().andTargetIdEqualTo(targetId);
+		return attachMapper.selectByExample(example);
+
 	}
 
 }

@@ -1,15 +1,16 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
@@ -26,4 +27,6 @@ public interface AttachService extends GenericService<Attach, String> {
 		
 	
 	void deleteByMsgId(String targetId);
+	
+	List<Attach> selectByTargetId(String targetId);
 }
