@@ -75,6 +75,7 @@ public class MsgController {
 		return "query";
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/msgList")
 	public String msgList(Model model, HttpSession session, MsgQuery msgQuery) {
 		final Long roleId = (Long) session.getAttribute("roleId");
@@ -99,7 +100,6 @@ public class MsgController {
 		Page<Msg> page = null;
 		page = msgService.selectByExampleAndPage(example, msgQuery.getPageNo());
 		msgs = page.getResult();
-		@SuppressWarnings("unchecked")
 		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
 		List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
 		for (Msg msg : msgs) {
@@ -129,8 +129,11 @@ public class MsgController {
 		return "upload";
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/openMsg")
-	public String openMsg(MsgExtend msg, Model model) {
+	public String openMsg(MsgExtend msg, Model model, HttpSession session) {
+		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
+		final Long roleId = (Long) session.getAttribute("roleId");
 		if (msg != null && msg.getId() != null && !"".equals(msg.getId()) && msg.getStatus() != null
 				&& 0 == msg.getStatus().intValue()) {
 			Msg msg0 = msgService.selectById(msg.getId());
@@ -147,7 +150,26 @@ public class MsgController {
 			return "upload";
 		} else if (msg != null && msg.getId() != null && !"".equals(msg.getId())) {
 			Msg msg0 = msgService.selectById(msg.getId());
-			model.addAttribute("msg", msg0);
+			MsgExtend msgExtend = new MsgExtend(msg0);
+			List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
+			msgExtends.add(msgExtend);
+			msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
+			msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
+			List<Attach> attachList = attachService.selectByTargetId(msgExtend.getId());
+			msgExtend = msgExtends.get(0);
+			String[] attachs = null;
+			String[] attachIds = null;
+			if (attachList != null && attachList.size() > 0) {
+				attachs = new String[attachList.size()];
+				attachIds = new String[attachList.size()];
+				for (int j = 0; j < attachList.size(); j++) {
+					attachIds[j] = attachList.get(j).getId();
+					attachs[j] = attachList.get(j).getAttachFileName();
+				}
+			}
+			msgExtend.setAttachIds(attachIds);
+			msgExtend.setAttachs(attachs);
+			model.addAttribute("msg", msgExtend);
 			return "msg"; 
 		} else {
 			return "404";
