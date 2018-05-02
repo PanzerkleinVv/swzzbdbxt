@@ -130,6 +130,8 @@ public class MsgController {
 	public String openMsg(MsgExtend msg, Model model, HttpSession session) {
 		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
 		final Long roleId = (Long) session.getAttribute("roleId");
+		final Long permissionId = (Long) session.getAttribute("permissionId");
+		final Long userId = (Long) session.getAttribute("currentUserId");
 		List<Long> msgSponsorSelect = null;// 存储下拉框选中的主处室
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
 		if (msg != null && msg.getId() != null && !"".equals(msg.getId()) && msg.getStatus() != null
@@ -148,28 +150,44 @@ public class MsgController {
 			model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 			return "upload";
 		} else if (msg != null && msg.getId() != null && !"".equals(msg.getId())) {
-			Msg msg0 = msgService.selectById(msg.getId());
-			MsgExtend msgExtend = new MsgExtend(msg0);
-			List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
-			msgExtends.add(msgExtend);
-			msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
-			msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
-			List<Attach> attachList = attachService.selectByTargetId(msgExtend.getId());
-			msgExtend = msgExtends.get(0);
-			String[] attachs = null;
-			String[] attachIds = null;
-			if (attachList != null && attachList.size() > 0) {
-				attachs = new String[attachList.size()];
-				attachIds = new String[attachList.size()];
-				for (int j = 0; j < attachList.size(); j++) {
-					attachIds[j] = attachList.get(j).getId();
-					attachs[j] = attachList.get(j).getAttachFileName();
+			boolean readable = false;
+			readable = msgContractorService.readable(msg.getId(), userId) ? true
+					: msgSponsorService.readable(msg.getId(), roleId) ? true
+							: msgContractorService.readable(msg.getId(), userId);
+			if (readable || 1L == roleId || 2L == roleId || 3L == roleId) {
+				Msg msg0 = msgService.selectById(msg.getId());
+				MsgExtend msgExtend = new MsgExtend(msg0);
+				List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
+				msgExtends.add(msgExtend);
+				msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
+				msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
+				List<Attach> attachList = attachService.selectByTargetId(msgExtend.getId());
+				msgExtend = msgExtends.get(0);
+				String[] attachs = null;
+				String[] attachIds = null;
+				if (attachList != null && attachList.size() > 0) {
+					attachs = new String[attachList.size()];
+					attachIds = new String[attachList.size()];
+					for (int j = 0; j < attachList.size(); j++) {
+						attachIds[j] = attachList.get(j).getId();
+						attachs[j] = attachList.get(j).getAttachFileName();
+					}
 				}
+				boolean signable = false;
+				signable = permissionId < 6L ? msgSponsorService.signable(msg.getId(), roleId) ? true
+						: msgCoSponsorService.signable(msg.getId(), roleId) : false;
+				boolean assignable = false;
+				assignable = permissionId < 6L ? msgSponsorService.assignable(msg.getId(), roleId) ? true
+						: msgCoSponsorService.assignable(msg.getId(), roleId) : false;
+				msgExtend.setAttachIds(attachIds);
+				msgExtend.setAttachs(attachs);
+				model.addAttribute("msg", msgExtend);
+				model.addAttribute("signable", signable);
+				model.addAttribute("assignable", assignable);
+				return "msg";
+			} else {
+				return "404";
 			}
-			msgExtend.setAttachIds(attachIds);
-			msgExtend.setAttachs(attachs);
-			model.addAttribute("msg", msgExtend);
-			return "msg";
 		} else {
 			return "404";
 		}
@@ -203,7 +221,7 @@ public class MsgController {
 		if (id.isEmpty()) {
 			msgSponsorSelect = new ArrayList<Long>();
 			msgCoSponsorSelect = new ArrayList<Long>();
-			
+
 			msg.setId(msgId);
 			msg.setSequence(sequenceNumber);
 			msgService.insertSelective(msg);

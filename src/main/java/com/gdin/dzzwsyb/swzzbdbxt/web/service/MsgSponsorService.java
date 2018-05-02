@@ -30,5 +30,17 @@ public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 	List<Long> selectRoleIdByMsgId(String msgId);
 
 	void deleteByMgsId(String msgId);
+	
+	/**
+	 * 查询处室是否可以阅读信息
+	 * @param msgId
+	 * @param roleId
+	 * @return
+	 */
+	boolean readable(String msgId, Long roleId);
+	
+	boolean signable(String msgId, Long roleId);
+	
+	boolean assignable(String msgId, Long roleId);
 
 }

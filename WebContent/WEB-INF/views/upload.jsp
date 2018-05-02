@@ -44,7 +44,7 @@
 								<c:if test="${msgSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
 						</c:forEach>
 				</select>
-				</span>
+				</span><span id='msg3'></span>
 			</div>
 		</div>
 		<div>
@@ -60,7 +60,7 @@
 								<c:if test="${roleList[j] eq role.id}"><c:set var="j" value="${j+1}" />disabled="disabled"</c:if>>${role.roleName}</option>
 						</c:forEach>
 				</select>
-				</span> <span id='msg3'></span>
+				</span> 
 			</div>
 		</div>
 		<div>
