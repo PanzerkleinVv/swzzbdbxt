@@ -158,5 +158,48 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 	public void deleteByMgsId(String msgId) {
 		msgCoSponsorMapper.deleteByMgsId(msgId);
 	}
-  
+
+	@Override
+	public boolean readable(String msgId, Long roleId) {
+		boolean flag = false;
+		if (roleId != null && msgId != null) {
+			MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andRoleIdEqualTo(roleId).andMsgIdEqualTo(msgId);
+			long count = msgCoSponsorMapper.countByExample(example);
+			if (count > 0L) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
+	
+	@Override
+	public boolean signable(String msgId, Long roleId) {
+		boolean flag = false;
+		if (roleId != null && msgId != null) {
+			MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andRoleIdEqualTo(roleId).andMsgIdEqualTo(msgId).andIsSignedEqualTo(0);
+			long count = msgCoSponsorMapper.countByExample(example);
+			if (count > 0L) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
+
+	@Override
+	public boolean assignable(String msgId, Long roleId) {
+		boolean flag = false;
+		if (roleId != null && msgId != null) {
+			MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andRoleIdEqualTo(roleId).andMsgIdEqualTo(msgId).andIsSignedEqualTo(1)
+					.andIsAssignedEqualTo(0);
+			long count = msgCoSponsorMapper.countByExample(example);
+			if (count > 0L) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
+
 }

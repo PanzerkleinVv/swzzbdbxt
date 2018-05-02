@@ -15,7 +15,8 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
 
 @Service
-public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, String> implements MsgContractorService {
+public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, String>
+		implements MsgContractorService {
 
 	@Resource
 	private MsgContractorMapper msgContractorMapper;
@@ -74,8 +75,21 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 
 	@Override
 	public boolean modifyRoleId(List<MsgContractor> msgContractors) {
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean readable(String msgId, Long userId) {
+		boolean flag = false;
+		if (userId != null && msgId != null) {
+			MsgContractorExample example = new MsgContractorExample();
+			example.createCriteria().andUserIdEqualTo(userId).andMsgIdEqualTo(msgId);
+			long count = msgContractorMapper.countByExample(example);
+			if (count > 0L) {
+				flag = true;
+			}
+		}
+		return flag;
 	}
 
 }
