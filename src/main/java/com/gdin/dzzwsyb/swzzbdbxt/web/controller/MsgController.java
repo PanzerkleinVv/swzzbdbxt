@@ -66,10 +66,6 @@ public class MsgController {
 	@Resource
 	private SequenceNumberService sequenceNumberService;
 	
-	List<Long> msgSponsorSelect;//存储下拉框选中的主处室
-	List<Long> msgCoSponsorSelect;//存储下拉框选中的协助处室
-	
-
 	@RequestMapping(value = "/query")
 	public String query() {
 		return "query";
@@ -131,6 +127,8 @@ public class MsgController {
 
 	@RequestMapping(value = "/openMsg")
 	public String openMsg(MsgExtend msg, Model model) {
+		List<Long> msgSponsorSelect = null;//存储下拉框选中的主处室
+		List<Long> msgCoSponsorSelect = null;//存储下拉框选中的协助处室
 		if (msg != null && msg.getId() != null && !"".equals(msg.getId()) && msg.getStatus() != null
 				&& 0 == msg.getStatus().intValue()) {
 			Msg msg0 = msgService.selectById(msg.getId());
@@ -164,15 +162,20 @@ public class MsgController {
 		String msgContractorId;//督办事项承办人表
 		String msgCoSponsorId;//协办处室id
 		String msgSponsorId;//主办处室id
+		List<Long> msgSponsorSelect = null;//存储下拉框选中的主处室
+		List<Long> msgCoSponsorSelect = null;//存储下拉框选中的协助处室
 		msgSponsorSelect = new  ArrayList<Long>() ;
 		msgCoSponsorSelect = new ArrayList<Long>() ;
 		List<MsgCoSponsor> msgCoSponsors;
 		List<MsgSponsor> msgSponsors;
-		String basisSelect = msg.getBasis();
-		//String basisSelect =null; 
+		
+		String basisSelect =msg.getBasis(); 
 		//录入msg类数据库
 		//是否有id来判断是保存还是修改
 		if(id.isEmpty()) {
+			if(msg.getBasis().equals("自定义")) {
+				msg.setBasis(msgBasis);
+			}
 			msgSponsorSelect = new  ArrayList<Long>();
 			msgCoSponsorSelect = new ArrayList<Long>();
 			String msgId = ApplicationUtils.newUUID();
@@ -181,7 +184,6 @@ public class MsgController {
 			msg.setSequence(sequenceNumber);
 			msgService.insertSelective(msg);
 			List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
-			System.out.println("==========="+fileNameLists);
 			while(fileNameLists != null) {
 				for(String fileName : fileNameLists) {
 					String attachId = ApplicationUtils.newUUID();
@@ -210,6 +212,7 @@ public class MsgController {
 					msgCoSponsorService.insertSelective(msgCoSponsor);
 				}
 			}
+			model.addAttribute("msgBasis",msgBasis);
 			model.addAttribute("sequenceNumber",sequenceNumber);
 			model.addAttribute("id",msgId);
 			model.addAttribute("fileName", fileNameLists);
@@ -234,7 +237,6 @@ public class MsgController {
 				}
 				break;
 			}
-			
 			//录入msg_co-sponsor数据库
 			msgSponsors = new ArrayList<MsgSponsor>();
 			String roleIdArr[] = role.split(",");

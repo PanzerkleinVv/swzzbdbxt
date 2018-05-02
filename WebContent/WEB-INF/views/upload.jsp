@@ -79,7 +79,7 @@
 					</tr>
 					</td>
 					<tr>
-						<input type='text' style="display: none; border: 1px solid ;" id='msgBasis' value="${msgBasis}" class="form-control placeholder-no-fix uploadInput" onblur="check(2)"/>
+						<input type='text' style="display: none; " id='msgBasis' <c:if test="${msgBasis != null} ">value="${msgBasis}"</c:if> class="input-sm form-inline" onblur="check(2)"/>
 					</tr>
 					</table>
 				</span>
@@ -144,10 +144,8 @@
 		language : 'zh-CN'
 	});
 	function basisChange(){
-		console.log($("#basis").val());
 		var basis = $("#basis").val();
 		if(basis == "自定义"){
-			console.log($("#basis").val());
 			$("#msgBasis").show();
 		}
 		else{
@@ -164,7 +162,7 @@ function getData(){
 		form.append("createTime",$("#createTime").val());
 		form.append("msgId",$("#msgId").val());
 		form.append("sequenceNumber",$("#sequenceNumber").val());
-		console.log($("#basis").val());
+		form.append("basis",$("#msgBasis").val());
 			$.ajax({
 				type: "POST",
 				url: 'rest/msg/gett', 
@@ -177,11 +175,9 @@ function getData(){
 				},
 			});
 		}
-	function doUpload() {  
-		 //var File = $('#excelFile').get(0).files[0];  
+	function doUpload() {   
 	     var data = new FormData($( "#uploadForm" )[0]); 
 	     var successMsg = $('#successMsg');
-	     console.log(data); 
 	     $.ajax ({ 
 	          url: 'rest/attach/upload' ,  
 	          type: 'POST',  
@@ -195,13 +191,10 @@ function getData(){
 	        	  console.log(returndata);
 	        	  successMsg.html("上传附件成功");
 	        	  successMsg.css('color', '#00FF00'); 
-	        	 // document.getElementById("insert").disabled = false;
-				 //document.getElementById("send").disabled = false;
 	          },
 	     });  
 	} 
 	function insert(){
-	 	console.log($("#msgId").val());
 			if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
 				 var form = new FormData(document.getElementById("form"));  
 				 form.append("status",0);
@@ -226,6 +219,15 @@ function getData(){
 				    	 if($("#msgId").val()==""){ 
 				         		alert("保存成功！");
 				         		showData('#main-content', data);
+				         		$(document).ready(function() {
+				         			var basis = $("#basis").val();
+									if(basis == "自定义"){
+										$("#msgBasis").show();
+									}
+									else{
+										$("#msgBasis").hide();
+									}
+								})
 				         	}
 				         else{
 				         	alert("更改保存成功！");
@@ -265,7 +267,6 @@ function getData(){
 	}
 	//发布按钮
 	function send(){
-		console.log($("#msgId").val());
 			if (check(0) && check(1) && check(2)&& check(3) && check(4)) {
 				 var form = new FormData(document.getElementById("form"));  
 				 form.append("status",1);
@@ -277,7 +278,7 @@ function getData(){
 				 form.append("createTime",$("#createTime").val());
 				 form.append("msgId",$("#msgId").val());
 				 form.append("sequenceNumber",$("#sequenceNumber").val());
-				 form.append("msgBasis",$("#msgBasis").val());
+				 form.append("basis",$("#msgBasis").val());
 			     $.ajax({  
 			     	url:'rest/msg/insert',  
 			      	type:"post",  
