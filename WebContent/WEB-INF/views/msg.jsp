@@ -2,8 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
-<div style="height: 20px"></div>
-<div id="msgBox">
+<div id="msgBox" class="mainContent">
 	<div>
 		<span class="msgTitle">立项号&emsp;：</span> <span>${msg.sequence}</span>
 		<input id="id" type="hidden" value="${msg.id}" />
@@ -52,10 +51,19 @@
 			</c:if>
 		</span>
 	</div>
+	<div><span id='msg0' style='color: ${msg2 ne null ? msg2 : "#000000"}'>${msg1}</span></div>
 	<div class="titleEnd">
 		<span class="msgTitle">办理情况：</span>
 	</div>
 </div>
 <script type="text/javascript">
 	
+	function sign() {
+		var url = "rest/msg/sign";
+		$.post(url, {
+			id : $("#id").val()
+		}, function(data) {
+			showData("#msg-content",data);
+		});
+	}
 </script>

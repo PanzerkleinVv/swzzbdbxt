@@ -218,4 +218,17 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		return flag;
 	}
 
+	@Override
+	public int doSign(String msgId, Long roleId) {
+		if (msgId != null && roleId != null) {
+			MsgCoSponsor msgCoSponsor = new MsgCoSponsor();
+			msgCoSponsor.setIsSigned(1);
+			MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andRoleIdEqualTo(roleId);
+			return msgCoSponsorMapper.updateByExampleSelective(msgCoSponsor, example);
+		} else {
+			return 0;
+		}
+	}
+
 }

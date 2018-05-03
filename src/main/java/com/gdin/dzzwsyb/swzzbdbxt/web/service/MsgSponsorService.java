@@ -44,5 +44,7 @@ public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 	boolean assignable(String msgId, Long roleId);
 	
 	boolean callbackable(String msgId);
+	
+	int doSign(String msgId, Long roleId);
 
 }

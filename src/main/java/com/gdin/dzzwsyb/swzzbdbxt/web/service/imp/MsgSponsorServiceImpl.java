@@ -218,4 +218,17 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		return flag;
 	}
 
+	@Override
+	public int doSign(String msgId, Long roleId) {
+		if (msgId != null && roleId != null) {
+			MsgSponsor msgSponsor = new MsgSponsor();
+			msgSponsor.setIsSigned(1);
+			MsgSponsorExample example = new MsgSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andRoleIdEqualTo(roleId);
+			return msgSponsorMapper.updateByExampleSelective(msgSponsor, example);
+		} else {
+			return 0;
+		}
+	}
+
 }
