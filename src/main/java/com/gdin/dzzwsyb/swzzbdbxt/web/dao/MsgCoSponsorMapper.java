@@ -3,8 +3,6 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.dao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
-
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 

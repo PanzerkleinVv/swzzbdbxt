@@ -174,7 +174,7 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		}
 		return flag;
 	}
-	
+
 	@Override
 	public boolean signable(String msgId, Long roleId) {
 		boolean flag = false;
@@ -229,9 +229,9 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		} else {
 			return 0;
 		}
-  }
-  
-  @Override
+	}
+
+	@Override
 	public List<MsgCoSponsor> selectMsgCoSponsorsByMsgId(String msgId) {
 		return msgCoSponsorMapper.selectMsgCoSponsorsByMsgId(msgId);
 	}
@@ -239,6 +239,19 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 	@Override
 	public Long selectByMgsId(String msgId) {
 		return msgCoSponsorMapper.selectByMgsId(msgId);
+	}
+
+	@Override
+	public int doCallback(String msgId) {
+		if (msgId != null) {
+			MsgCoSponsor msgCoSponsor = new MsgCoSponsor();
+			msgCoSponsor.setStatus(0);
+			MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId);
+			return msgCoSponsorMapper.updateByExampleSelective(msgCoSponsor, example);
+		} else {
+			return 0;
+		}
 	}
 
 }

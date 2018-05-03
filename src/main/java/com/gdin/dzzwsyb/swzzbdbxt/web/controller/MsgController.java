@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.alibaba.druid.stat.TableStat.Mode;
 import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
@@ -182,7 +181,7 @@ public class MsgController {
 					}
 				}
 				boolean callbackable = false;
-				callbackable = permissionId < 4L ? msgSponsorService.callbackable(msg.getId()) ? true : msgCoSponsorService.callbackable(msg.getId()) : false;
+				callbackable =	msgSponsorService.callbackable(msg.getId()) ? msgCoSponsorService.callbackable(msg.getId()) : false;
 				boolean signable = false;
 				signable = permissionId < 6L ? msgSponsorService.signable(msg.getId(), roleId) ? true
 						: msgCoSponsorService.signable(msg.getId(), roleId) : false;
@@ -413,32 +412,24 @@ public class MsgController {
 	@RequestMapping(value="/callback")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String callBack(@RequestParam("id") String msgId,Model model,HttpSession session, HttpServletRequest request,RedirectAttributes reditectModel) {
-		int status = 0;
+		MsgExtend msg0 = new MsgExtend();
+		msg0.setId(msgId);
 		if(msgId != null) {
-			Msg msg = msgService.selectById(msgId);
 			boolean callbackable = false;
-			callbackable =	msgSponsorService.callbackable(msgId) ? true : msgCoSponsorService.callbackable(msgId) ;
+			callbackable =	msgSponsorService.callbackable(msgId) ? msgCoSponsorService.callbackable(msgId) : false;
 			if(callbackable) {
-				List<MsgSponsor> msgSponsors = msgSponsorService.selectMsgSponsorsByMsgId(msgId);
-				for(MsgSponsor msgSponsor : msgSponsors) {
-					msgSponsor.setStatus(status);
-					msgSponsorService.update(msgSponsor);
+				int count = msgSponsorService.doCallback(msgId);
+				count = count + msgCoSponsorService.doCallback(msgId);
+				if (count > 0) {
+					msg0.setStatus(0);
 				}
-				final Long count = msgCoSponsorService.selectByMgsId(msgId);
-				System.out.println("-------------"+count);
-				while(count > 0L) {
-					List<MsgCoSponsor> msgCoSponsors = msgCoSponsorService.selectMsgCoSponsorsByMsgId(msgId);
-					for(MsgCoSponsor msgCoSponsor : msgCoSponsors) {
-						msgCoSponsor.setStatus(status);
-						msgCoSponsorService.update(msgCoSponsor);
-					}
-					break;
-				}
-				return "redirect:/rest/msg/openMsg?id=" + msgId+"&status="+status;
 			}
 			else {
-				return "msg";
+				reditectModel.addFlashAttribute("msg1", "撤回失败！");
+				reditectModel.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
 			}
+			reditectModel.addFlashAttribute("msg", msg0);
+			return "redirect:/rest/msg/openMsg";
 		}
 		else {
 			return "404";
