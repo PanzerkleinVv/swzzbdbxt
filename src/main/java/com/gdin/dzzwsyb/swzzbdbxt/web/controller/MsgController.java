@@ -78,7 +78,7 @@ public class MsgController {
 	public String msgList(Model model, HttpSession session, MsgQuery msgQuery) {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
-		final Long userId = (Long) session.getAttribute("currentUserId");
+		final Long userId = (Long) session.getAttribute("userId");
 		final MsgExample example = new MsgExample();
 		Criteria criteria = example.createCriteria();
 		final List<String> msgId = new ArrayList<String>();
@@ -128,11 +128,11 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/openMsg")
-	public String openMsg(@ModelAttribute("msg")MsgExtend msg, Model model, HttpSession session) {
+	public String openMsg(@ModelAttribute("msg") MsgExtend msg, Model model, HttpSession session) {
 		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
-		final Long userId = (Long) session.getAttribute("currentUserId");
+		final Long userId = (Long) session.getAttribute("userId");
 		List<Long> msgSponsorSelect = null;// 存储下拉框选中的主处室
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
 		if (msg != null && msg.getId() != null && !"".equals(msg.getId()) && msg.getStatus() != null
@@ -144,7 +144,7 @@ public class MsgController {
 			if (msg0 != null) {
 				msgSponsorSelect = msgSponsorService.selectRoleIdByMsgId(msg0.getId());
 				msgCoSponsorSelect = msgCoSponsorService.selectRoleIdByMsgId(msg0.getId());
-				
+
 			}
 			model.addAttribute("id", msg.getId());
 			model.addAttribute("msgBasis", msgBasis);
@@ -154,8 +154,8 @@ public class MsgController {
 			return "upload";
 		} else if (msg != null && msg.getId() != null && !"".equals(msg.getId())) {
 			boolean readable = false;
-			readable = msgContractorService.readable(msg.getId(), userId) ? true
-					: msgSponsorService.readable(msg.getId(), roleId) ? true
+			readable = msgSponsorService.readable(msg.getId(), userId) && permissionId < 6L ? true
+					: msgCoSponsorService.readable(msg.getId(), roleId) && permissionId < 6L ? true
 							: msgContractorService.readable(msg.getId(), userId);
 			if (readable || 1L == roleId || 2L == roleId || 3L == roleId) {
 				Msg msg0 = msgService.selectById(msg.getId());
@@ -176,6 +176,8 @@ public class MsgController {
 						attachs[j] = attachList.get(j).getAttachFileName();
 					}
 				}
+				boolean callbackable = false;
+				callbackable = permissionId < 4L ? msgSponsorService.callbackable(msg.getId()) ? true : msgSponsorService.callbackable(msg.getId()) : false;
 				boolean signable = false;
 				signable = permissionId < 6L ? msgSponsorService.signable(msg.getId(), roleId) ? true
 						: msgCoSponsorService.signable(msg.getId(), roleId) : false;
@@ -185,6 +187,7 @@ public class MsgController {
 				msgExtend.setAttachIds(attachIds);
 				msgExtend.setAttachs(attachs);
 				model.addAttribute("msg", msgExtend);
+				model.addAttribute("callbackable", callbackable);
 				model.addAttribute("signable", signable);
 				model.addAttribute("assignable", assignable);
 				return "msg";
@@ -198,12 +201,13 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = Exception.class)
-	@RequestMapping(value = "/insert", method=RequestMethod.POST)
+	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String insert(@RequestParam("msgBasis") String msgBasis, @RequestParam("msgId") String id,
 			@RequestParam("sequenceNumber") Integer sequenceNumbers, @RequestParam("status") int status,
 			@RequestParam("role") String role, @RequestParam("assitrole") String assitrole, @Valid Msg msg,
-			@Valid User user, Model model, HttpServletRequest request, RedirectAttributes reditectModel) throws Exception {
+			@Valid User user, Model model, HttpServletRequest request, RedirectAttributes reditectModel)
+			throws Exception {
 		Attach attach;
 		MsgCoSponsor msgCoSponsor;
 		MsgSponsor msgSponsor;
@@ -311,7 +315,7 @@ public class MsgController {
 		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 		model.addAttribute("msgBasis", msgBasis);
 		model.addAttribute("sequenceNumber", sequenceNumber);
-		model.addAttribute("fileName", fileNameLists);	
+		model.addAttribute("fileName", fileNameLists);
 		request.getSession().removeAttribute("fileNameLists");
 		model.addAttribute("id", msgId);
 		if (status == 0) {
@@ -321,15 +325,14 @@ public class MsgController {
 		}
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/gett")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String get(@RequestParam("msgBasis") String msgBasis,@RequestParam("msgId") String id, @RequestParam("sequenceNumber") Integer sequenceNumbers,
-			@RequestParam("role") String role, @Valid Msg msg, @Valid User user, Model model, HttpServletResponse resp,
-			HttpServletRequest request) {
-		
-		
+	public String get(@RequestParam("msgBasis") String msgBasis, @RequestParam("msgId") String id,
+			@RequestParam("sequenceNumber") Integer sequenceNumbers, @RequestParam("role") String role, @Valid Msg msg,
+			@Valid User user, Model model, HttpServletResponse resp, HttpServletRequest request) {
+
 		String basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>();
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
