@@ -231,8 +231,22 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		}
 	}
 
+	@Override
 	public List<MsgSponsor> selectMsgSponsorsByMsgId(String msgId) {
 		return msgSponsorMapper.selectMsgSponsorsByMsgId(msgId);
+	}
+
+	@Override
+	public int doCallback(String msgId) {
+		if (msgId != null) {
+			MsgSponsor msgSponsor = new MsgSponsor();
+			msgSponsor.setIsSigned(1);
+			MsgSponsorExample example = new MsgSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId);
+			return msgSponsorMapper.updateByExampleSelective(msgSponsor, example);
+		} else {
+			return 0;
+		}
 	}
   
 }
