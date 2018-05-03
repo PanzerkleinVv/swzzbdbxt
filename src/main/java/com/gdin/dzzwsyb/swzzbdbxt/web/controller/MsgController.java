@@ -291,9 +291,6 @@ public class MsgController {
 		model.addAttribute("id", msgId);
 		model.addAttribute("fileName", fileNameLists);
 		request.getSession().removeAttribute("fileNameLists");
-		model.addAttribute("basisSelect", basisSelect);
-		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
-		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 		if (status == 0) {
 			return "upload";
 		} else {
@@ -309,9 +306,11 @@ public class MsgController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/gett")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String get(@RequestParam("msgId") String id, @RequestParam("sequenceNumber") Integer sequenceNumbers,
+	public String get(@RequestParam("msgBasis") String msgBasis,@RequestParam("msgId") String id, @RequestParam("sequenceNumber") Integer sequenceNumbers,
 			@RequestParam("role") String role, @Valid Msg msg, @Valid User user, Model model, HttpServletResponse resp,
 			HttpServletRequest request) {
+		
+		
 		String basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>();
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
@@ -334,6 +333,7 @@ public class MsgController {
 		}
 		basisSelect = msg.getBasis();
 		model.addAttribute("id", id);
+		model.addAttribute("msgBasis", msgBasis);
 		model.addAttribute("sequenceNumber", sequenceNumbers);
 		model.addAttribute("basisSelect", basisSelect);
 		model.addAttribute("roleList", roleList);

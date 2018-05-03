@@ -180,7 +180,7 @@
 		form.append("createTime", $("#createTime").val());
 		form.append("msgId", $("#msgId").val());
 		form.append("sequenceNumber", $("#sequenceNumber").val());
-		form.append("basis", $("#msgBasis").val());
+		form.append("msgBasis", $("#msgBasis").val());
 		$.ajax({
 			type : "POST",
 			url : 'rest/msg/gett',
