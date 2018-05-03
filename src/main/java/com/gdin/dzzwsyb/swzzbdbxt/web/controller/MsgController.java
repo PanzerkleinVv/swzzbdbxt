@@ -15,8 +15,11 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
@@ -126,7 +129,7 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/openMsg")
-	public String openMsg(MsgExtend msg, Model model, HttpSession session) {
+	public String openMsg(@ModelAttribute("msg")MsgExtend msg, Model model, HttpSession session) {
 		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
@@ -196,12 +199,12 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = Exception.class)
-	@RequestMapping(value = "/insert")
+	@RequestMapping(value = "/insert", method=RequestMethod.POST)
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String insert(@RequestParam("msgBasis") String msgBasis, @RequestParam("msgId") String id,
 			@RequestParam("sequenceNumber") Integer sequenceNumbers, @RequestParam("status") int status,
 			@RequestParam("role") String role, @RequestParam("assitrole") String assitrole, @Valid Msg msg,
-			@Valid User user, Model model, HttpServletRequest request) throws Exception {
+			@Valid User user, Model model, HttpServletRequest request,RedirectAttributes attr) throws Exception {
 		Attach attach;
 		MsgCoSponsor msgCoSponsor;
 		MsgSponsor msgSponsor;
@@ -210,16 +213,16 @@ public class MsgController {
 		List<MsgCoSponsor> msgCoSponsors;
 		List<MsgSponsor> msgSponsors;
 		String basisSelect = msg.getBasis();
-		String msgId = ApplicationUtils.newUUID();
 		Integer sequenceNumber = sequenceNumberService.next();
 		List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
-
+		String msgId = null;
 		// 录入msg类数据库
 		// 是否有id来判断是保存还是修改
 		if (msg.getBasis().equals("自定义")) {
 			msg.setBasis(msgBasis);
 		}
 		if (id.isEmpty()) {
+			msgId = ApplicationUtils.newUUID();
 			msgSponsorSelect = new ArrayList<Long>();
 			msgCoSponsorSelect = new ArrayList<Long>();
 
@@ -254,6 +257,7 @@ public class MsgController {
 				}
 			}
 		} else {
+			msgId = id;
 			msg.setId(id);
 			msg.setSequence(sequenceNumbers);
 			final int msgCount = msgService.update(msg);
@@ -307,21 +311,21 @@ public class MsgController {
 		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 		model.addAttribute("msgBasis", msgBasis);
 		model.addAttribute("sequenceNumber", sequenceNumber);
-		model.addAttribute("id", msgId);
 		model.addAttribute("fileName", fileNameLists);	
 		request.getSession().removeAttribute("fileNameLists");
+		model.addAttribute("id", msgId);
 		if (status == 0) {
 			return "upload";
 		} else {
 			MsgExtend msgExtend = new MsgExtend();
 			msgExtend.setId(msgId);
 			msgExtend.setStatus(status);
-			model.addAttribute("msg", msgExtend);
-			return "redirect:/openMsg";
+			attr.addFlashAttribute("msg", msgExtend);
+			return "redirect:/rest/msg/openMsg";
 		}
 
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/gett")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
