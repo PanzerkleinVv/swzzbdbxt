@@ -70,13 +70,13 @@
 					class="input-sm form-inline" onblur="check(2)"
 					onchange="basisChange()">
 						<option selected="selected"></option>
-						<c:forEach var="basis" items="${sessionScope.msgBasis}"
+						<c:forEach var="basis" items="${sessionScope.Basis}"
 							varStatus="state">
 							<option value="${basis}"
 								<c:if test="${basis eq basisSelect}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${basis}</option>
 						</c:forEach>
 				</select> <input type='text' style="display: none;" id='msgBasis'
-					value="${basisSelect}" class="input-sm form-inline input-longPlus"
+					value="${msgBasis}" class="input-sm form-inline input-longPlus"
 					onblur="check(2)" />
 				</span> <span id='msg2'></span>
 			</div>
@@ -154,6 +154,7 @@
 			if ($.inArray($('#msgBasis').val(),array) < 0) {
 				$("#basis").val("自定义");
 				basisChange();
+			
 			}
 		} else {
 			$("#basis").val($('#msgBasis').val());
@@ -293,7 +294,7 @@
 			form.append("createTime", $("#createTime").val());
 			form.append("msgId", $("#msgId").val());
 			form.append("sequenceNumber", $("#sequenceNumber").val());
-			form.append("basis", $("#msgBasis").val());
+			form.append("msgBasis", $("#msgBasis").val());
 			$.ajax({
 				url : 'rest/msg/insert',
 				type : "post",
@@ -304,7 +305,7 @@
 				contentType : false,
 				success : function(data) {
 					alert("发布成功");
-					var url = 'rest/msg/upload';
+					var url = 'rest/msg/openMsg';
 					$.post(url, function(data) {
 						showData(parentTarget, data);
 					});

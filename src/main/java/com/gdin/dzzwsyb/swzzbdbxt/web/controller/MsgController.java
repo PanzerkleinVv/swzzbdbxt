@@ -117,7 +117,6 @@ public class MsgController {
 	@RequestMapping(value = "/upload")
 	public String upload(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("userInfo");
-		session.setAttribute("msgBasis", SelectArray.getMsgBasis()); // 立法依据
 		if (user != null) {
 			model.addAttribute("titleName", "督查上传");
 		}
@@ -138,14 +137,16 @@ public class MsgController {
 				&& 0 == msg.getStatus().intValue()) {
 			Msg msg0 = msgService.selectById(msg.getId());
 			model.addAttribute("msg", msg0);
-			String basisSelect = null;
+			String msgBasis = null;
+			msgBasis = msg0.getBasis();
 			if (msg0 != null) {
 				msgSponsorSelect = msgSponsorService.selectRoleIdByMsgId(msg0.getId());
 				msgCoSponsorSelect = msgCoSponsorService.selectRoleIdByMsgId(msg0.getId());
-				basisSelect = msg0.getBasis();
+				
 			}
 			model.addAttribute("id", msg.getId());
-			model.addAttribute("basisSelect", basisSelect);
+			model.addAttribute("msgBasis", msgBasis);
+			model.addAttribute("basisSelect", msgBasis);
 			model.addAttribute("msgSponsorSelect", msgSponsorSelect);
 			model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 			return "upload";
@@ -307,7 +308,7 @@ public class MsgController {
 		model.addAttribute("msgBasis", msgBasis);
 		model.addAttribute("sequenceNumber", sequenceNumber);
 		model.addAttribute("id", msgId);
-		model.addAttribute("fileName", fileNameLists);
+		model.addAttribute("fileName", fileNameLists);	
 		request.getSession().removeAttribute("fileNameLists");
 		if (status == 0) {
 			return "upload";
