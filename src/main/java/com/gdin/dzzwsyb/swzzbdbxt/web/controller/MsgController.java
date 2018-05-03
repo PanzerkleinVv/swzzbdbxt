@@ -23,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
-import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
@@ -204,7 +203,7 @@ public class MsgController {
 	public String insert(@RequestParam("msgBasis") String msgBasis, @RequestParam("msgId") String id,
 			@RequestParam("sequenceNumber") Integer sequenceNumbers, @RequestParam("status") int status,
 			@RequestParam("role") String role, @RequestParam("assitrole") String assitrole, @Valid Msg msg,
-			@Valid User user, Model model, HttpServletRequest request,RedirectAttributes attr) throws Exception {
+			@Valid User user, Model model, HttpServletRequest request, RedirectAttributes reditectModel) throws Exception {
 		Attach attach;
 		MsgCoSponsor msgCoSponsor;
 		MsgSponsor msgSponsor;
@@ -225,7 +224,7 @@ public class MsgController {
 			msgId = ApplicationUtils.newUUID();
 			msgSponsorSelect = new ArrayList<Long>();
 			msgCoSponsorSelect = new ArrayList<Long>();
-
+			msgId = ApplicationUtils.newUUID();
 			msg.setId(msgId);
 			msg.setSequence(sequenceNumber);
 			msgService.insertSelective(msg);
@@ -285,7 +284,7 @@ public class MsgController {
 				}
 				boolean msgSponsorFlag = msgSponsorService.modifyRoleId(id, msgSponsors);
 				if (!msgSponsorFlag) {
-					throw new Exception("修改主办处室出错，操作会滚");
+					throw new Exception("修改主办处室出错，操作回滚");
 				}
 				// 录入msg_sponsor数据库
 				if (assitrole.equals("null")) {
@@ -301,11 +300,12 @@ public class MsgController {
 					}
 					boolean msgCoSponsorFlag = msgCoSponsorService.modifyRoleId(id, msgCoSponsors);
 					if (!msgCoSponsorFlag) {
-						throw new Exception("修改主办处室出错，操作会滚");
+						throw new Exception("修改主办处室出错，操作回滚");
 					}
 				}
 			}
 		}
+		model.addAttribute("id", msgId);
 		model.addAttribute("basisSelect", basisSelect);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
 		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
@@ -317,11 +317,7 @@ public class MsgController {
 		if (status == 0) {
 			return "upload";
 		} else {
-			MsgExtend msgExtend = new MsgExtend();
-			msgExtend.setId(msgId);
-			msgExtend.setStatus(status);
-			attr.addFlashAttribute("msg", msgExtend);
-			return "redirect:/rest/msg/openMsg";
+			return "redirect:/rest/msg/openMsg?id=" + msgId;
 		}
 
 	}

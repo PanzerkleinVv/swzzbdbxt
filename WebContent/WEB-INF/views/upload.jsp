@@ -305,10 +305,7 @@
 				contentType : false,
 				success : function(data) {
 					alert("发布成功");
-					var url = 'rest/msg/openMsg';
-					$.post(url, function(data) {
-						showData(parentTarget, data);
-					});
+					showData(parentTarget, data);
 				},
 				error : function(data) {
 					enabledAll();
