@@ -38,5 +38,9 @@ public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String
 	boolean assignable(String msgId, Long roleId);
 	
 	boolean callbackable(String msgId);
+	
+	List<MsgCoSponsor> selectMsgCoSponsorsByMsgId(String msgId);
+	
+	Long selectByMgsId(String msgId);
 
 }

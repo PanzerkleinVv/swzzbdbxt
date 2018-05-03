@@ -218,4 +218,16 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		return flag;
 	}
 
+	@Override
+	public List<MsgCoSponsor> selectMsgCoSponsorsByMsgId(String msgId) {
+		// TODO Auto-generated method stub
+		return msgCoSponsorMapper.selectMsgCoSponsorsByMsgId(msgId);
+	}
+
+	@Override
+	public Long selectByMgsId(String msgId) {
+		// TODO Auto-generated method stub
+		return msgCoSponsorMapper.selectByMgsId(msgId);
+	}
+
 }

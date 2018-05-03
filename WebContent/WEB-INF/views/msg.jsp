@@ -57,5 +57,11 @@
 	</div>
 </div>
 <script type="text/javascript">
-	
+	function callback(){
+		var url = "rest/msg/callback";
+		$.post(url,{"id": $("#id").val()},function(data){
+			$("#msgBox").html(data);
+		})
+		
+	}
 </script>

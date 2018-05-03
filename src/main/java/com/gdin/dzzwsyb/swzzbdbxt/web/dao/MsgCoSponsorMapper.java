@@ -3,6 +3,8 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.dao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
+
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -38,5 +40,9 @@ public interface MsgCoSponsorMapper extends GenericDao<MsgCoSponsor, String> {
 	List<Long> selectRoleIdByMsgId(String msgId);
 
 	void deleteByMgsId(String msgId);
+	
+	List<MsgCoSponsor> selectMsgCoSponsorsByMsgId(String msgId);
+	
+	Long selectByMgsId(String msgId);
 
 }

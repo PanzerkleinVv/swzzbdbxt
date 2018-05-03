@@ -38,5 +38,9 @@ public interface MsgSponsorMapper extends GenericDao<MsgSponsor, String> {
 	List<Long> selectRoleIdByMsgId(String msgId);
 
 	void deleteByMsgId(String msgId);
+	
+	List<MsgSponsor> selectMsgSponsorsByMsgId(String msgId);
+
+	Long selectByMgsId(String msgId);
 
 }
