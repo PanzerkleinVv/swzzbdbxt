@@ -151,9 +151,7 @@
 				basisChange();
 
 			}
-		} else {
-
-		}
+		} 
 	});
 
 	var parentTarget = "#" + $(".mainContent").parent().attr("id");
