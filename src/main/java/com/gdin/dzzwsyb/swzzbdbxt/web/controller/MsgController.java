@@ -15,7 +15,9 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -126,7 +128,7 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/openMsg")
-	public String openMsg(MsgExtend msg, Model model, HttpSession session) {
+	public String openMsg(@ModelAttribute("msg")MsgExtend msg, Model model, HttpSession session) {
 		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
@@ -196,7 +198,7 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = Exception.class)
-	@RequestMapping(value = "/insert")
+	@RequestMapping(value = "/insert", method=RequestMethod.POST)
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String insert(@RequestParam("msgBasis") String msgBasis, @RequestParam("msgId") String id,
 			@RequestParam("sequenceNumber") Integer sequenceNumbers, @RequestParam("status") int status,
@@ -219,6 +221,7 @@ public class MsgController {
 			msg.setBasis(msgBasis);
 		}
 		if (id.isEmpty()) {
+			msgId = ApplicationUtils.newUUID();
 			msgSponsorSelect = new ArrayList<Long>();
 			msgCoSponsorSelect = new ArrayList<Long>();
 			msgId = ApplicationUtils.newUUID();
@@ -310,6 +313,7 @@ public class MsgController {
 		model.addAttribute("sequenceNumber", sequenceNumber);
 		model.addAttribute("fileName", fileNameLists);	
 		request.getSession().removeAttribute("fileNameLists");
+		model.addAttribute("id", msgId);
 		if (status == 0) {
 			return "upload";
 		} else {
@@ -317,7 +321,7 @@ public class MsgController {
 		}
 
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/gett")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
