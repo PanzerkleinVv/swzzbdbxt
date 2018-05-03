@@ -72,7 +72,6 @@ public class AttachController {
 	@RequestMapping(value = "/upload")
 	@RequiresRoles(value = RoleSign.ADMIN)
 	public void upload(Model model,@RequestParam("file")MultipartFile[] file,HttpServletResponse resp,HttpServletRequest request) throws Exception  {
-		System.out.println("--------------------"+file.length);
 		attachService.upload(model, file, resp, request);
 	}
 	@RequestMapping(value = "/download")

@@ -93,6 +93,7 @@ public class UserController {
 			request.getSession().setAttribute("userState", SelectArray.getUserState()); //用户状态下拉菜单
 			request.getSession().setAttribute("roleUsers", roleUsers); //本处室用户下拉菜单
 			request.getSession().setAttribute("msgStatus", SelectArray.getMsgStatus()); //信息状态
+			request.getSession().setAttribute("Basis", SelectArray.getMsgBasis()); // 立法依据
 		} catch (AuthenticationException e) {
 			// 身份验证失败
 			model.addAttribute("error", "用户名或密码错误 ！");
