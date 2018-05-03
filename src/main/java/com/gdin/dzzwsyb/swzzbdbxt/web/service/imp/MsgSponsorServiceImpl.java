@@ -103,7 +103,9 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 			}
 			if (sponsorRoleNames != null && sponsorRoleNames.length() > 0) {
 				sponsorRoleNames.substring(0, sponsorRoleNames.lastIndexOf("<br/>"));
-				contents.substring(0, contents.lastIndexOf("<br/>"));
+				if (contents != null && contents.length() > 0) {
+					contents.substring(0, contents.lastIndexOf("<br/>"));
+				}
 			}
 			msg.setStatus(status);
 			final String[] msgStatus = SelectArray.getMsgStatus();
@@ -196,6 +198,20 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 					.andIsAssignedEqualTo(0);
 			long count = msgSponsorMapper.countByExample(example);
 			if (count > 0L) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
+
+	@Override
+	public boolean callbackable(String msgId) {
+		boolean flag = false;
+		if (msgId != null) {
+			MsgSponsorExample example = new MsgSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andIsSignedEqualTo(1);
+			long count = msgSponsorMapper.countByExample(example);
+			if (count < 1L) {
 				flag = true;
 			}
 		}

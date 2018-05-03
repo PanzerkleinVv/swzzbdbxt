@@ -27,7 +27,7 @@ public interface UserService extends GenericService<User, Long> {
 	 *            -大组工网id
 	 * @return User -用户对象
 	 */
-	User selectByUsername(String userame);
+	User selectByUsername(String username);
 
 	/**
 	 * 根据用户姓名查询用户
@@ -46,4 +46,5 @@ public interface UserService extends GenericService<User, Long> {
 	 */
 	List<User> selectByRoleId(Long roleId);
 
+	boolean checkUsername(User user);
 }

@@ -9,6 +9,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.UserMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserExample.Criteria;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -58,12 +59,12 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 		UserExample example = new UserExample();
 		example.createCriteria().andUsernameEqualTo(username);
 		final List<User> list = userMapper.selectByExample(example);
-		if (list != null && list.size() >0 ) {
+		if (list != null && list.size() > 0) {
 			return list.get(0);
 		} else {
 			return null;
 		}
-		
+
 	}
 
 	@Override
@@ -88,5 +89,21 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 		example.createCriteria().andUserdescLike("%" + userdesc + "%");
 		example.setOrderByClause("ID");
 		return userMapper.selectByExample(example);
+	}
+
+	@Override
+	public boolean checkUsername(User user) {
+		UserExample example = new UserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(user.getUsername());
+		if (user.getId() != null) {
+			criteria.andIdNotEqualTo(user.getId());
+		}
+		long count = userMapper.countByExample(example);
+		if (count > 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

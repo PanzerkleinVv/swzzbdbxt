@@ -73,6 +73,7 @@ public class UserController {
 			final List<Role> role = roleService.selectRolesByUserId(authUserInfo.getId());
 			final List<Permission> permission = permissionService.selectPermissionsByUserId(authUserInfo.getId());
 			request.getSession().setAttribute("userInfo", authUserInfo);
+			request.getSession().setAttribute("userId", authUserInfo.getId());
 			request.getSession().setAttribute("roleId", role.get(0).getId());
 			request.getSession().setAttribute("permissionId", permission.get(0).getId());
 			final List<Role> roles = roleService.selectList();
@@ -283,8 +284,7 @@ public class UserController {
 			user0.setMsg0(MessageColor.FAILURE.getColor());
 			user0.setMsg("大组工网ID不能为空");
 		} else {
-			user0 = userService.selectByUsername(user.getUsername());
-			if (user0 != null) {
+			if (!userService.checkUsername(user)) {
 				user0 = new User();
 				user0.setMsg0(MessageColor.FAILURE.getColor());
 				user0.setMsg("大组工网ID已被占用");

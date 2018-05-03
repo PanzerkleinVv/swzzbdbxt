@@ -39,16 +39,16 @@
 				value='${msg.endTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
 	</div>
 	<div>
-		<span class="msgTitle">
-			<shiro:hasAnyRoles name="admin,1,2">
-			<button id="callback" type="button"
-				class="btn blue" onclick="callback()">撤回</button>
-			</shiro:hasAnyRoles>
-			<c:if test="${signable}">
+		<span class="msgTitle"> <shiro:hasAnyRoles name="admin,1,2">
+				<c:if test="${callbackable}">
+					<button id="callback" type="button" class="btn blue"
+						onclick="callback()">撤回</button>
+				</c:if>
+			</shiro:hasAnyRoles> <c:if test="${signable}">
 				<button id="insert" type="button" class="btn blue" onclick="sign()">签收</button>
-			</c:if>
-			<c:if test="${assignable}">
-				<button id="insert" type="button" class="btn blue" onclick="assign()">指派</button>
+			</c:if> <c:if test="${assignable}">
+				<button id="insert" type="button" class="btn blue"
+					onclick="assign()">指派</button>
 			</c:if>
 		</span>
 	</div>

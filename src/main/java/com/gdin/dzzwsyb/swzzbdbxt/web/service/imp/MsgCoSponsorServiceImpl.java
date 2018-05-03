@@ -103,7 +103,9 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 			}
 			if (coSponsorRoleNames != null && coSponsorRoleNames.length() > 0) {
 				coSponsorRoleNames.substring(0, coSponsorRoleNames.lastIndexOf("<br/>"));
-				contents.substring(0, contents.lastIndexOf("<br/>"));
+				if (contents != null && contents.length() > 0) {
+					contents.substring(0, contents.lastIndexOf("<br/>"));
+				}
 			}
 			msg.setStatus(status);
 			final String[] msgStatus = SelectArray.getMsgStatus();
@@ -196,6 +198,20 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 					.andIsAssignedEqualTo(0);
 			long count = msgCoSponsorMapper.countByExample(example);
 			if (count > 0L) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
+
+	@Override
+	public boolean callbackable(String msgId) {
+		boolean flag = false;
+		if (msgId != null) {
+			MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andIsSignedEqualTo(1);
+			long count = msgCoSponsorMapper.countByExample(example);
+			if (count < 1L) {
 				flag = true;
 			}
 		}

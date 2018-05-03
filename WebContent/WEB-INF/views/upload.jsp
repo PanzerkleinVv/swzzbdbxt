@@ -60,7 +60,7 @@
 								<c:if test="${roleList[j] eq role.id}"><c:set var="j" value="${j+1}" />disabled="disabled"</c:if>>${role.roleName}</option>
 						</c:forEach>
 				</select>
-				</span> 
+				</span>
 			</div>
 		</div>
 		<div>
@@ -97,32 +97,26 @@
 		<!-- 	</form> -->
 		<div>
 			<div>
-			<form id="uploadForm"  enctype="multipart/form-data" method="post">
-		        <table>
-		            <tr>
-		                <td>请选择文件:</td>
-		                <td><input id="fileID" type="file" name="file" multiple/></td>
-		                <td><button type="button"  onclick="doUpload()" >上传</button></td>
-		            </tr>
-		            <tr>
-		            	<td>
-		            		<span id='tagMsg'></span>
-		             	</td>
-		             </tr>
-		             <tr>
-		             	<td>
-		            		<span id='successMsg'></span><br/>
-		            	</td>
-		            </tr>
-		            <tr>
-		            	<td>
-			            	<c:forEach var="fileName" items="${fileName}" >
-			            		<span id='tagMsg' style="color:#00FF00">${fileName}</span>
-			            	</c:forEach>
-			            </td>
-		            <tr>
-		        </table>
-    		</form>
+				<form id="uploadForm" enctype="multipart/form-data" method="post">
+					<table>
+						<tr>
+							<td>请选择文件:</td>
+							<td><input id="fileID" type="file" name="file" multiple /></td>
+							<td><button type="button" onclick="doUpload()">上传</button></td>
+						</tr>
+						<tr>
+							<td><span id='tagMsg'></span></td>
+						</tr>
+						<tr>
+							<td><span id='successMsg'></span><br /></td>
+						</tr>
+						<tr>
+							<td><c:forEach var="fileName" items="${fileName}">
+									<span id='tagMsg' style="color: #00FF00">${fileName}</span>
+								</c:forEach></td>
+						<tr>
+					</table>
+				</form>
 			</div>
 		</div>
 		<div class="uploadButton">
@@ -140,21 +134,22 @@
 </div>
 
 <script type="text/javascript">
-	$(".form_date").datepicker({
-		format : 'yyyy-mm-dd',
-		language : 'zh-CN'
-	});
-	
 	$(document).ready(function() {
-		if ($('#msgBasis').val() != null && $('#msgBasis').val() != ""){
+		$(".form_date").datepicker({
+			format : 'yyyy-mm-dd',
+			language : 'zh-CN'
+		});
+	});
+	$(document).ready(function() {
+		if ($('#msgBasis').val() != null && $('#msgBasis').val() != "") {
 			var array = new Array();
 			$("#basis option").each(function() {
 				array.push($(this).val());
 			});
-			if ($.inArray($('#msgBasis').val(),array) < 0) {
+			if ($.inArray($('#msgBasis').val(), array) < 0) {
 				$("#basis").val("自定义");
 				basisChange();
-			
+
 			}
 		} 
 	});
