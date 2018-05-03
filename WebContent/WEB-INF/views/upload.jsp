@@ -157,7 +157,7 @@
 			
 			}
 		} else {
-			$("#basis").val($('#msgBasis').val());
+			
 		}
 	});
 
