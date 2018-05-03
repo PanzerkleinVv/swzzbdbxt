@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +25,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
+import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample.Criteria;
+import com.gdin.dzzwsyb.swzzbdbxt.web.security.PermissionSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
@@ -129,7 +132,8 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/openMsg")
-	public String openMsg(@ModelAttribute("msg") MsgExtend msg, Model model, HttpSession session) {
+	public String openMsg(@ModelAttribute("msg") MsgExtend msg, Model model, HttpSession session,
+			@ModelAttribute("msg1") String msg1, @ModelAttribute("msg2") String msg2) {
 		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
@@ -155,7 +159,7 @@ public class MsgController {
 			return "upload";
 		} else if (msg != null && msg.getId() != null && !"".equals(msg.getId())) {
 			boolean readable = false;
-			readable = msgSponsorService.readable(msg.getId(), userId) && permissionId < 6L ? true
+			readable = msgSponsorService.readable(msg.getId(), roleId) && permissionId < 6L ? true
 					: msgCoSponsorService.readable(msg.getId(), roleId) && permissionId < 6L ? true
 							: msgContractorService.readable(msg.getId(), userId);
 			if (readable || 1L == roleId || 2L == roleId || 3L == roleId) {
@@ -191,6 +195,8 @@ public class MsgController {
 				model.addAttribute("callbackable", callbackable);
 				model.addAttribute("signable", signable);
 				model.addAttribute("assignable", assignable);
+				model.addAttribute("msg1", msg1);
+				model.addAttribute("msg2", msg2);
 				return "msg";
 			} else {
 				return "404";
@@ -375,6 +381,34 @@ public class MsgController {
 		msgSponsorService.deleteByMgsId(msgId);
 		return "upload";
 	}
+
+	@RequestMapping(value = "/sign")
+	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
+			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,
+			PermissionSign.CHU_SHI_FU_ZE_REN }, logical = Logical.OR)
+	public String sign(Msg msg, RedirectAttributes model, HttpSession session) {
+		final Long roleId = (Long) session.getAttribute("roleId");
+		if (msg != null && msg.getId() != null) {
+			boolean signable = false;
+			signable = msgSponsorService.signable(msg.getId(), roleId) ? true
+					: msgCoSponsorService.signable(msg.getId(), roleId);
+			if (signable) {
+				int count = 0;
+				count = msgSponsorService.doSign(msg.getId(), roleId);
+				count = count + msgCoSponsorService.doSign(msg.getId(), roleId);
+				if (count == 1) {
+					model.addFlashAttribute("msg1", "签收成功！");
+					model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
+					model.addFlashAttribute("msg", new MsgExtend(msg));
+					return "redirect:/rest/msg/openMsg";
+				}
+			}
+		}
+		model.addFlashAttribute("msg1", "签收失败！");
+		model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
+		model.addFlashAttribute("msg", new MsgExtend(msg));
+		return "redirect:/rest/msg/openMsg";
+  }
 	
 	@RequestMapping(value="/callback")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)

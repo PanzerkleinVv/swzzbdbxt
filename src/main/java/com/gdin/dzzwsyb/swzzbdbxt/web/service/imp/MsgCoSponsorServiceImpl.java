@@ -219,14 +219,25 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 	}
 
 	@Override
+	public int doSign(String msgId, Long roleId) {
+		if (msgId != null && roleId != null) {
+			MsgCoSponsor msgCoSponsor = new MsgCoSponsor();
+			msgCoSponsor.setIsSigned(1);
+			MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andRoleIdEqualTo(roleId);
+			return msgCoSponsorMapper.updateByExampleSelective(msgCoSponsor, example);
+		} else {
+			return 0;
+		}
+  }
+  
+  @Override
 	public List<MsgCoSponsor> selectMsgCoSponsorsByMsgId(String msgId) {
-		// TODO Auto-generated method stub
 		return msgCoSponsorMapper.selectMsgCoSponsorsByMsgId(msgId);
 	}
 
 	@Override
 	public Long selectByMgsId(String msgId) {
-		// TODO Auto-generated method stub
 		return msgCoSponsorMapper.selectByMgsId(msgId);
 	}
 

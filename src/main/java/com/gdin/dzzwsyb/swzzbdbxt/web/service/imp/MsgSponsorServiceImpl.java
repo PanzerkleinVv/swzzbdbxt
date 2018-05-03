@@ -219,11 +219,20 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 	}
 
 	@Override
-	public List<MsgSponsor> selectMsgSponsorsByMsgId(String msgId) {
-		// TODO Auto-generated method stub
-		return msgSponsorMapper.selectMsgSponsorsByMsgId(msgId);
+	public int doSign(String msgId, Long roleId) {
+		if (msgId != null && roleId != null) {
+			MsgSponsor msgSponsor = new MsgSponsor();
+			msgSponsor.setIsSigned(1);
+			MsgSponsorExample example = new MsgSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andRoleIdEqualTo(roleId);
+			return msgSponsorMapper.updateByExampleSelective(msgSponsor, example);
+		} else {
+			return 0;
+		}
 	}
 
-	
-
+	public List<MsgSponsor> selectMsgSponsorsByMsgId(String msgId) {
+		return msgSponsorMapper.selectMsgSponsorsByMsgId(msgId);
+	}
+  
 }

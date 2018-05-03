@@ -59,6 +59,7 @@ function showData(target, data) {
 }
 
 function goBack() {
+	query($("#pageNo").val());
 	$("#main-content").show();
 	$("#msg-content").hide();
 	$("#goBack").hide();
