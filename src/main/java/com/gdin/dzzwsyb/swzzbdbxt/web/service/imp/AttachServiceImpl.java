@@ -104,9 +104,12 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 				//多文件
 				for(MultipartFile multipartFile : file) {
 					if(multipartFile.getSize()>0) {
-						String fileName = multipartFile.getOriginalFilename();
+						String fileNameSuffix = multipartFile.getOriginalFilename();
+						
+						String  fileNameArray[] = fileNameSuffix.replace(".",",").split(",");
+						System.out.println("=======文件名"+fileNameSuffix+"=========="+fileNameArray[0]);
+						String fileName = fileNameArray[0];
 						fileNameLists.add(fileName);
-						System.out.println(multipartFile.getOriginalFilename());
 						//保存的位置临时文件
 						/*String path = request.getSession().getServletContext().getRealPath("files/");
 						File filepath=new File(path);*/
