@@ -57,7 +57,6 @@
 	</div>
 </div>
 <script type="text/javascript">
-	
 	function sign() {
 		var url = "rest/msg/sign";
 		$.post(url, {
@@ -65,5 +64,12 @@
 		}, function(data) {
 			showData("#msg-content",data);
 		});
+  }
+  
+	function callback(){
+		var url = "rest/msg/callback";
+		$.post(url,{"id": $("#id").val()},function(data){
+			$("#msgBox").html(data);
+		})
 	}
 </script>

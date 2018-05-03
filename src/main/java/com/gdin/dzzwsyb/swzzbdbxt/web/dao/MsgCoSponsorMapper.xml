@@ -249,4 +249,13 @@
     delete from `msg_co-sponsor`
     where msg_id = #{msgId,jdbcType=VARCHAR}
   </delete>
+   <select id="selectMsgCoSponsorsByMsgId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select
+    <include refid="Base_Column_List" />
+    from  `msg_co-sponsor` where msg_id = #{msgId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByMgsId" parameterType="java.lang.String"  resultType="java.lang.Long">
+    select count(*) from `msg_co-sponsor`
+    where msg_id = #{msgId,jdbcType=VARCHAR}
+  </select>
 </mapper>

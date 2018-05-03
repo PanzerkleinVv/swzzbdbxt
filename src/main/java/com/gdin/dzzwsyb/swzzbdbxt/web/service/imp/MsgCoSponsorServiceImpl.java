@@ -229,6 +229,16 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		} else {
 			return 0;
 		}
+  }
+  
+  @Override
+	public List<MsgCoSponsor> selectMsgCoSponsorsByMsgId(String msgId) {
+		return msgCoSponsorMapper.selectMsgCoSponsorsByMsgId(msgId);
+	}
+
+	@Override
+	public Long selectByMgsId(String msgId) {
+		return msgCoSponsorMapper.selectByMgsId(msgId);
 	}
 
 }

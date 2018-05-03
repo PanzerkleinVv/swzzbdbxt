@@ -249,5 +249,11 @@
     delete from msg_sponsor
     where msg_id = #{msgId,jdbcType=VARCHAR}
   </delete>
+  <select id="selectMsgSponsorsByMsgId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select
+    <include refid="Base_Column_List" />
+    from msg_sponsor where msg_id = #{msgId,jdbcType=VARCHAR}
+  
+  </select>
   
 </mapper>

@@ -231,4 +231,8 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		}
 	}
 
+	public List<MsgSponsor> selectMsgSponsorsByMsgId(String msgId) {
+		return msgSponsorMapper.selectMsgSponsorsByMsgId(msgId);
+	}
+  
 }
