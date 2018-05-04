@@ -266,4 +266,11 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		}
 	}
 
+	@Override
+	public List<MsgCoSponsor> selectMsgCoSponsorsByMsgIdRoleId(String msgId, Long roleId) {
+		MsgCoSponsorExample example = new MsgCoSponsorExample();
+		example.createCriteria().andMsgIdEqualTo(msgId).andRoleIdEqualTo(roleId);
+		return msgCoSponsorMapper.selectByExample(example);
+	}
+
 }

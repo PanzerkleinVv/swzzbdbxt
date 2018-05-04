@@ -28,6 +28,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample.Criteria;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.PermissionSign;
@@ -35,7 +36,10 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
@@ -161,7 +165,7 @@ public class MsgController {
 			readable = msgSponsorService.readable(msg.getId(), roleId) && permissionId < 6L ? true
 					: msgCoSponsorService.readable(msg.getId(), roleId) && permissionId < 6L ? true
 							: msgContractorService.readable(msg.getId(), userId);
-			if (readable || 1L == roleId || 2L == roleId || 3L == roleId) {
+			if (readable || ((1L == roleId || 2L == roleId || 3L == roleId) && permissionId < 6L)) {
 				Msg msg0 = msgService.selectById(msg.getId());
 				MsgExtend msgExtend = new MsgExtend(msg0);
 				List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
@@ -181,7 +185,9 @@ public class MsgController {
 					}
 				}
 				boolean callbackable = false;
-				callbackable =	msgSponsorService.callbackable(msg.getId()) ? msgCoSponsorService.callbackable(msg.getId()) : false;
+				callbackable = msgSponsorService.callbackable(msg.getId())
+						? msgCoSponsorService.callbackable(msg.getId())
+						: false;
 				boolean signable = false;
 				signable = permissionId < 6L ? msgSponsorService.signable(msg.getId(), roleId) ? true
 						: msgCoSponsorService.signable(msg.getId(), roleId) : false;
@@ -407,42 +413,42 @@ public class MsgController {
 		model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
 		model.addFlashAttribute("msg", new MsgExtend(msg));
 		return "redirect:/rest/msg/openMsg";
-  }
-	
-	@RequestMapping(value="/callback")
+	}
+
+	@RequestMapping(value = "/callback")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String callBack(@RequestParam("id") String msgId,Model model,HttpSession session, HttpServletRequest request,RedirectAttributes reditectModel) {
+	public String callBack(@RequestParam("id") String msgId, Model model, HttpSession session,
+			HttpServletRequest request, RedirectAttributes reditectModel) {
 		MsgExtend msg0 = new MsgExtend();
 		msg0.setId(msgId);
-		if(msgId != null) {
+		if (msgId != null) {
 			boolean callbackable = false;
-			callbackable =	msgSponsorService.callbackable(msgId) ? msgCoSponsorService.callbackable(msgId) : false;
-			if(callbackable) {
+			callbackable = msgSponsorService.callbackable(msgId) ? msgCoSponsorService.callbackable(msgId) : false;
+			if (callbackable) {
 				int count = msgSponsorService.doCallback(msgId);
 				count = count + msgCoSponsorService.doCallback(msgId);
 				if (count > 0) {
 					msg0.setStatus(0);
 				}
-			}
-			else {
+			} else {
 				reditectModel.addFlashAttribute("msg1", "撤回失败！");
 				reditectModel.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
 			}
 			reditectModel.addFlashAttribute("msg", msg0);
 			return "redirect:/rest/msg/openMsg";
-		}
-		else {
+		} else {
 			return "404";
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/assign")
 	@Transactional(rollbackFor = Exception.class)
 	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
 			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,
 			PermissionSign.CHU_SHI_FU_ZE_REN }, logical = Logical.OR)
-	public String assign(String msgId, List<Long> userIds, RedirectAttributes model, HttpSession session) throws Exception {
+	public String assign(String msgId, List<Long> userIds, RedirectAttributes model, HttpSession session)
+			throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
 		final MsgExtend msgExtend = new MsgExtend();
@@ -467,5 +473,132 @@ public class MsgController {
 		model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
 		model.addFlashAttribute("msg", msgExtend);
 		return "redirect:/rest/msg/openMsg";
+	}
+
+	@RequestMapping(value = "/getContent")
+	public String getContent(Msg msg, Model model, HttpSession session) {
+		final Long roleId = (Long) session.getAttribute("roleId");
+		final Long permissionId = (Long) session.getAttribute("permissionId");
+		final Long userId = (Long) session.getAttribute("userId");
+		if (msg != null && msg.getId() != null) {
+			boolean readable = false;
+			readable = msgSponsorService.readable(msg.getId(), roleId) && permissionId < 6L ? true
+					: msgCoSponsorService.readable(msg.getId(), roleId) && permissionId < 6L ? true
+							: msgContractorService.readable(msg.getId(), userId);
+			List<MsgSponsorExtend> msgSponsorExtends = null;
+			List<MsgCoSponsorExtend> msgCoSponsorExtends = null;
+			if ((1L == roleId || 2L == roleId || 3L == roleId) && permissionId < 6L) {
+				List<MsgSponsor> msgSponsors = msgSponsorService.selectMsgSponsorsByMsgId(msg.getId());
+				List<MsgCoSponsor> msgCoSponsors = msgCoSponsorService.selectMsgCoSponsorsByMsgId(msg.getId());
+				List<Integer> status0 = new ArrayList<Integer>();
+				status0.add(1);
+				status0.add(2);
+				List<Integer> status1 = new ArrayList<Integer>(status0);
+				status1.add(0);
+				if (msgSponsors != null && msgSponsors.size() > 0) {
+					msgSponsorExtends = new ArrayList<MsgSponsorExtend>();
+					MsgSponsorExtend msgSponsorExtend = null;
+					for (MsgSponsor msgSponsor : msgSponsors) {
+						msgSponsorExtend = new MsgSponsorExtend(msgSponsor);
+						if (msgSponsorExtend.getStatus() > 2
+								|| (msgSponsorExtend.getRoleId() == roleId || msgSponsorExtend.getStatus() < 3)) {
+							msgSponsorExtend.setEditabled(true);
+						}
+						List<Submission> submissions = null;
+						if (msgSponsorExtend.getRoleId() == roleId) {
+							submissions = submissionService.selectByMsgId(msgSponsorExtend.getId(), status1);
+						} else {
+							submissions = submissionService.selectByMsgId(msgSponsorExtend.getId(), status0);
+						}
+						if (submissions != null && submissions.size() > 0) {
+							List<SubmissionExtend> submissionExtends = new ArrayList<SubmissionExtend>();
+							for (Submission submission : submissions) {
+								submissionExtends.add(new SubmissionExtend(submission));
+							}
+							msgSponsorExtend.setSubmissions(submissionExtends);
+						}
+						msgSponsorExtends.add(msgSponsorExtend);
+					}
+				}
+				if (msgCoSponsors != null && msgCoSponsors.size() > 0) {
+					msgCoSponsorExtends = new ArrayList<MsgCoSponsorExtend>();
+					MsgCoSponsorExtend msgCoSponsorExtend = null;
+					for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
+						msgCoSponsorExtend = new MsgCoSponsorExtend(msgCoSponsor);
+						if (msgCoSponsorExtend.getStatus() > 2
+								|| (msgCoSponsorExtend.getRoleId() == roleId || msgCoSponsorExtend.getStatus() < 3)) {
+							msgCoSponsorExtend.setEditabled(true);
+						}
+						List<Submission> submissions = null;
+						if (msgCoSponsorExtend.getRoleId() == roleId) {
+							submissions = submissionService.selectByMsgId(msgCoSponsorExtend.getId(), status1);
+						} else {
+							submissions = submissionService.selectByMsgId(msgCoSponsorExtend.getId(), status0);
+						}
+						if (submissions != null && submissions.size() > 0) {
+							List<SubmissionExtend> submissionExtends = new ArrayList<SubmissionExtend>();
+							for (Submission submission : submissions) {
+								submissionExtends.add(new SubmissionExtend(submission));
+							}
+							msgCoSponsorExtend.setSubmissions(submissionExtends);
+						}
+						msgCoSponsorExtends.add(msgCoSponsorExtend);
+					}
+				}
+				model.addAttribute("msgSponsorExtends", msgSponsorExtends);
+				model.addAttribute("msgCoSponsorExtends", msgCoSponsorExtends);
+				return "msgContent";
+			} else if (readable) {
+				List<MsgSponsor> msgSponsors = msgSponsorService.selectMsgSponsorsByMsgIdRoleId(msg.getId(), roleId);
+				List<MsgCoSponsor> msgCoSponsors = msgCoSponsorService.selectMsgCoSponsorsByMsgIdRoleId(msg.getId(),
+						roleId);
+				List<Integer> status0 = new ArrayList<Integer>();
+				status0.add(0);
+				status0.add(1);
+				status0.add(2);
+				if (msgSponsors != null && msgSponsors.size() > 0) {
+					msgSponsorExtends = new ArrayList<MsgSponsorExtend>();
+					MsgSponsorExtend msgSponsorExtend = null;
+					for (MsgSponsor msgSponsor : msgSponsors) {
+						msgSponsorExtend = new MsgSponsorExtend(msgSponsor);
+						if (msgSponsorExtend.getStatus() < 3) {
+							msgSponsorExtend.setEditabled(true);
+						}
+						List<Submission> submissions = null;
+						submissions = submissionService.selectByMsgId(msgSponsorExtend.getId(), status0);
+						if (submissions != null && submissions.size() > 0) {
+							List<SubmissionExtend> submissionExtends = new ArrayList<SubmissionExtend>();
+							for (Submission submission : submissions) {
+								submissionExtends.add(new SubmissionExtend(submission));
+							}
+							msgSponsorExtend.setSubmissions(submissionExtends);
+						}
+						msgSponsorExtends.add(msgSponsorExtend);
+					}
+				}
+				if (msgCoSponsors != null && msgCoSponsors.size() > 0) {
+					msgCoSponsorExtends = new ArrayList<MsgCoSponsorExtend>();
+					MsgCoSponsorExtend msgCoSponsorExtend = null;
+					for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
+						msgCoSponsorExtend = new MsgCoSponsorExtend(msgCoSponsor);
+						if (msgCoSponsorExtend.getStatus() < 3) {
+							msgCoSponsorExtend.setEditabled(true);
+						}
+						List<Submission> submissions = null;
+						submissions = submissionService.selectByMsgId(msgCoSponsorExtend.getId(), status0);
+						if (submissions != null && submissions.size() > 0) {
+							List<SubmissionExtend> submissionExtends = new ArrayList<SubmissionExtend>();
+							for (Submission submission : submissions) {
+								submissionExtends.add(new SubmissionExtend(submission));
+							}
+							msgCoSponsorExtend.setSubmissions(submissionExtends);
+						}
+						msgCoSponsorExtends.add(msgCoSponsorExtend);
+					}
+				}
+				return "msgContent";
+			}
+		}
+		return "404";
 	}
 }

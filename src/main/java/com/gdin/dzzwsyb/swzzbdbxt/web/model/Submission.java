@@ -5,114 +5,132 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Submission {
-    private String id;
+	private String id;
 
-    private String msgId;
+	private String msgId;
 
-    private Integer type;
+	private Integer type;
 
-    private String situation;
+	private String situation;
 
-    private String reason;
+	private String reason;
 
-    private String measure;
+	private String measure;
 
-    private Long ownerId;
+	private Long ownerId;
 
-    private Integer superiorVerifyPassed;
+	private Integer superiorVerifyPassed;
 
-    private Long superiorVerifiUserId;
+	private Long superiorVerifiUserId;
 
-    private Integer status;
+	private Integer status;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date sendTime;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date sendTime;
 
-    public String getId() {
-        return id;
-    }
+	public Submission() {
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
-    }
+	}
+	
+	public Submission(Submission submission) {
+		id = submission.getId();
+		msgId = submission.getMsgId();
+		type = submission.getType();
+		situation = submission.getSituation();
+		reason = submission.getReason();
+		measure = submission.getMeasure();
+		ownerId = submission.getOwnerId();
+		superiorVerifyPassed = submission.getSuperiorVerifyPassed();
+		superiorVerifiUserId = submission.getSuperiorVerifiUserId();
+		status = submission.getStatus();
+		sendTime = submission.getSendTime();
+	}
 
-    public String getMsgId() {
-        return msgId;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setMsgId(String msgId) {
-        this.msgId = msgId == null ? null : msgId.trim();
-    }
+	public void setId(String id) {
+		this.id = id == null ? null : id.trim();
+	}
 
-    public Integer getType() {
-        return type;
-    }
+	public String getMsgId() {
+		return msgId;
+	}
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
+	public void setMsgId(String msgId) {
+		this.msgId = msgId == null ? null : msgId.trim();
+	}
 
-    public String getSituation() {
-        return situation;
-    }
+	public Integer getType() {
+		return type;
+	}
 
-    public void setSituation(String situation) {
-        this.situation = situation == null ? null : situation.trim();
-    }
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
-    public String getReason() {
-        return reason;
-    }
+	public String getSituation() {
+		return situation;
+	}
 
-    public void setReason(String reason) {
-        this.reason = reason == null ? null : reason.trim();
-    }
+	public void setSituation(String situation) {
+		this.situation = situation == null ? null : situation.trim();
+	}
 
-    public String getMeasure() {
-        return measure;
-    }
+	public String getReason() {
+		return reason;
+	}
 
-    public void setMeasure(String measure) {
-        this.measure = measure == null ? null : measure.trim();
-    }
+	public void setReason(String reason) {
+		this.reason = reason == null ? null : reason.trim();
+	}
 
-    public Long getOwnerId() {
-        return ownerId;
-    }
+	public String getMeasure() {
+		return measure;
+	}
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
+	public void setMeasure(String measure) {
+		this.measure = measure == null ? null : measure.trim();
+	}
 
-    public Integer getSuperiorVerifyPassed() {
-        return superiorVerifyPassed;
-    }
+	public Long getOwnerId() {
+		return ownerId;
+	}
 
-    public void setSuperiorVerifyPassed(Integer superiorVerifyPassed) {
-        this.superiorVerifyPassed = superiorVerifyPassed;
-    }
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
+	}
 
-    public Long getSuperiorVerifiUserId() {
-        return superiorVerifiUserId;
-    }
+	public Integer getSuperiorVerifyPassed() {
+		return superiorVerifyPassed;
+	}
 
-    public void setSuperiorVerifiUserId(Long superiorVerifiUserId) {
-        this.superiorVerifiUserId = superiorVerifiUserId;
-    }
+	public void setSuperiorVerifyPassed(Integer superiorVerifyPassed) {
+		this.superiorVerifyPassed = superiorVerifyPassed;
+	}
 
-    public Integer getStatus() {
-        return status;
-    }
+	public Long getSuperiorVerifiUserId() {
+		return superiorVerifiUserId;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public void setSuperiorVerifiUserId(Long superiorVerifiUserId) {
+		this.superiorVerifiUserId = superiorVerifiUserId;
+	}
 
-    public Date getSendTime() {
-        return sendTime;
-    }
+	public Integer getStatus() {
+		return status;
+	}
 
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
 }
