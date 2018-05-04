@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.MsgContractorMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractorExample;
@@ -74,8 +75,18 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 	}
 
 	@Override
-	public boolean modifyRoleId(List<MsgContractor> msgContractors) {
-		return false;
+	public void modifyUserId(String msgId, List<Long> userIds, List<Long> roleUserIds) {
+		MsgContractorExample example = new MsgContractorExample();
+		example.createCriteria().andUserIdIn(roleUserIds).andMsgIdEqualTo(msgId);
+		msgContractorMapper.deleteByExample(example);
+		MsgContractor msgContractor = null;
+		for (Long userId : userIds) {
+			msgContractor = new MsgContractor();
+			msgContractor.setId(ApplicationUtils.newUUID());
+			msgContractor.setMsgId(msgId);
+			msgContractor.setUserId(userId);
+			msgContractorMapper.insert(msgContractor);
+		}
 	}
 
 	@Override

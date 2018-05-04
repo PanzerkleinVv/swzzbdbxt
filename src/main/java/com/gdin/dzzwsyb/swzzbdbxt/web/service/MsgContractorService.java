@@ -12,7 +12,7 @@ public interface MsgContractorService extends GenericService<MsgContractor, Stri
 
 	List<MsgContractor> selectByExample(MsgContractorExample example);
 	
-	boolean modifyRoleId(List<MsgContractor> msgContractors);
+	void modifyUserId(String msgId, List<Long> userIds, List<Long> roleUserIds);
 	
 	/**
 	 * 判断用户是否可读信息

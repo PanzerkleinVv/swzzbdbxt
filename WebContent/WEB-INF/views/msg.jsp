@@ -47,14 +47,14 @@
 				<button id="insert" type="button" class="btn blue" onclick="sign()">签收</button>
 			</c:if> <c:if test="${assignable}">
 				<button id="insert" type="button" class="btn blue"
-					onclick="assign()">指派</button>
+					onclick="assign()">分派</button>
 			</c:if>
 		</span>
 	</div>
-	<div><span id='msg0' style='color: ${msg2 ne null ? msg2 : "#000000"}'>${msg1}</span></div>
-	<div class="titleEnd">
+	<div>
 		<span class="msgTitle">办理情况：</span>
 	</div>
+	<div class="titleEnd"><span id='msg0' style='color: ${msg2 ne null ? msg2 : "#000000"}'>${msg1}</span></div>
 </div>
 <script type="text/javascript">
 	function sign() {

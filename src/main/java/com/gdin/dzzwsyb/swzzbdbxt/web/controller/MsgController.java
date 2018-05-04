@@ -435,4 +435,37 @@ public class MsgController {
 			return "404";
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/assign")
+	@Transactional(rollbackFor = Exception.class)
+	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
+			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,
+			PermissionSign.CHU_SHI_FU_ZE_REN }, logical = Logical.OR)
+	public String assign(String msgId, List<Long> userIds, RedirectAttributes model, HttpSession session) throws Exception {
+		final Long roleId = (Long) session.getAttribute("roleId");
+		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
+		final MsgExtend msgExtend = new MsgExtend();
+		msgExtend.setId(msgId);
+		if (msgId != null && !"".equals(msgId)) {
+			boolean assignable = false;
+			assignable = msgSponsorService.assignable(msgId, roleId) ? true
+					: msgCoSponsorService.assignable(msgId, roleId);
+			if (assignable) {
+				final List<Long> roleUserIds = new ArrayList<Long>();
+				for (User roleUser : roleUsers) {
+					roleUserIds.add(roleUser.getId());
+				}
+				msgContractorService.modifyUserId(msgId, userIds, roleUserIds);
+				model.addFlashAttribute("msg1", "分派成功！");
+				model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
+				model.addFlashAttribute("msg", msgExtend);
+				return "redirect:/rest/msg/openMsg";
+			}
+		}
+		model.addFlashAttribute("msg1", "分派失败！");
+		model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
+		model.addFlashAttribute("msg", msgExtend);
+		return "redirect:/rest/msg/openMsg";
+	}
 }
