@@ -37,24 +37,24 @@
 		<span class="msgTitle">反馈时间：</span> <span><fmt:formatDate
 				value='${msg.endTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
 	</div>
-	<div>
+	<div class="middleTitle">
 		<span class="msgTitle"> <shiro:hasAnyRoles name="admin,1,2">
 				<c:if test="${callbackable}">
 					<button id="callback" type="button" class="btn blue"
 						onclick="callback()">撤回</button>
 				</c:if>
 			</shiro:hasAnyRoles> <c:if test="${signable}">
-				<button id="insert" type="button" class="btn blue" onclick="sign()">签收</button>
-			</c:if> <c:if test="${assignable}">
-				<button id="insert" type="button" class="btn blue"
-					onclick="assign()">分派</button>
+				<button id="sign" type="button" class="btn blue" onclick="sign()">签收</button>
 			</c:if>
 		</span>
 	</div>
-	<div>
+	<div class="middleTitle">
+		<span id='msg0' style='color: ${msg2 ne null ? msg2 : "#000000"}'>${msg1}</span>
+	</div>
+	<div class="titleEnd">
 		<span class="msgTitle">办理情况：</span>
 	</div>
-	<div class="titleEnd"><span id='msg0' style='color: ${msg2 ne null ? msg2 : "#000000"}'>${msg1}</span></div>
+
 </div>
 <script type="text/javascript">
 	function sign() {
@@ -62,14 +62,54 @@
 		$.post(url, {
 			id : $("#id").val()
 		}, function(data) {
-			showData("#msg-content",data);
+			showData("#msg-content", data);
 		});
-  }
-  
-	function callback(){
+	}
+
+	function callback() {
 		var url = "rest/msg/callback";
-		$.post(url,{"id": $("#id").val()},function(data){
-			$("#msgBox").html(data);
+		$.post(url, {
+			"id" : $("#id").val()
+		}, function(data) {
+			showData("#msg-content", data);
+		})
+	}
+
+	$(function($) {
+		var url = "rest/msg/getContent";
+		$.post(url, {
+			id : $("#id").val()
+		}, function(data) {
+			$(".titleEnd").after(data);
+		});
+	});
+	
+	function assign(id) {
+		var url = "rest/msg/assign";
+		var userIds = [];
+		$("input[name='" + id + "']:checked").each(function(i) {
+			userIds[i] = $(this).val();
+		});
+		$.post(url, {
+			"msgId" : $("#id").val(),
+			"userIds" : userIds
+		}, function(data) {
+			showData("#msg-content", data);
+		});
+	}
+
+	function saveContent(id, type) {
+		if (type == 1) {
+			var url = "rest/msg/saveMsgSponsor";
+		} else {
+			var url = "rest/msg/saveMsgCoSponsor";
+		}
+		$.post(url, {
+			"id" : id,
+			"type" : type,
+			"content" : UE.getEditor(id + '_editor').getContent()
+		}, function(data) {
+			showData("#msg-content", data);
 		})
 	}
 </script>

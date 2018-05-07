@@ -13,6 +13,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.MsgContractorMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractorExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
 
 @Service
@@ -75,17 +76,19 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 	}
 
 	@Override
-	public void modifyUserId(String msgId, List<Long> userIds, List<Long> roleUserIds) {
+	public void modifyUserId(String msgId, long[] userIds, List<Long> roleUserIds) {
 		MsgContractorExample example = new MsgContractorExample();
 		example.createCriteria().andUserIdIn(roleUserIds).andMsgIdEqualTo(msgId);
 		msgContractorMapper.deleteByExample(example);
 		MsgContractor msgContractor = null;
-		for (Long userId : userIds) {
-			msgContractor = new MsgContractor();
-			msgContractor.setId(ApplicationUtils.newUUID());
-			msgContractor.setMsgId(msgId);
-			msgContractor.setUserId(userId);
-			msgContractorMapper.insert(msgContractor);
+		if (userIds != null && userIds.length > 0) {
+			for (long userId : userIds) {
+				msgContractor = new MsgContractor();
+				msgContractor.setId(ApplicationUtils.newUUID());
+				msgContractor.setMsgId(msgId);
+				msgContractor.setUserId(userId);
+				msgContractorMapper.insert(msgContractor);
+			}
 		}
 	}
 
@@ -93,7 +96,7 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 	public boolean readable(String msgId, Long userId) {
 		boolean flag = false;
 		if (userId != null && msgId != null) {
-			MsgContractorExample example = new MsgContractorExample();
+			final MsgContractorExample example = new MsgContractorExample();
 			example.createCriteria().andUserIdEqualTo(userId).andMsgIdEqualTo(msgId);
 			long count = msgContractorMapper.countByExample(example);
 			if (count > 0L) {
@@ -101,6 +104,29 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 			}
 		}
 		return flag;
+	}
+
+	@Override
+	public List<Long> selectByMsgIdAndRoleUsers(String msgId, List<User> roleUsers) {
+		if (msgId != null && roleUsers != null && roleUsers.size() > 0) {
+			List<Long> userIds = new ArrayList<Long>();
+			for (User user : roleUsers) {
+				userIds.add(user.getId());
+			}
+			final MsgContractorExample example = new MsgContractorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andUserIdIn(userIds);
+			final List<MsgContractor> msgContractors = msgContractorMapper.selectByExample(example);
+			userIds = null;
+			if (msgContractors != null && msgContractors.size() > 0) {
+				userIds = new ArrayList<Long>();
+				for (MsgContractor msgContractor : msgContractors) {
+					userIds.add(msgContractor.getUserId());
+				}
+			}
+			return userIds;
+		} else {
+			return null;
+		}
 	}
 
 }

@@ -5,6 +5,10 @@ import java.util.List;
 public class MsgSponsorExtend extends MsgSponsor {
 
 	private boolean editabled;
+	
+	private boolean assignable;
+	
+	private List<User> users;
 
 	private List<SubmissionExtend> submissions;
 
@@ -24,11 +28,27 @@ public class MsgSponsorExtend extends MsgSponsor {
 		this.editabled = editabled;
 	}
 
+	public boolean isAssignable() {
+		return assignable;
+	}
+
+	public void setAssignable(boolean assignable) {
+		this.assignable = assignable;
+	}
+
 	public List<SubmissionExtend> getSubmissions() {
 		return submissions;
 	}
 
 	public void setSubmissions(List<SubmissionExtend> submissions) {
 		this.submissions = submissions;
+	}
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 }

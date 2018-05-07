@@ -106,4 +106,14 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 			return true;
 		}
 	}
+
+	@Override
+	public List<User> selectByUserIds(List<Long> userIds) {
+		if (userIds != null && userIds.size() > 0) {
+			UserExample example = new UserExample();
+			example.createCriteria().andIdIn(userIds);
+			return userMapper.selectByExample(example);
+		}
+		return null;
+	}
 }

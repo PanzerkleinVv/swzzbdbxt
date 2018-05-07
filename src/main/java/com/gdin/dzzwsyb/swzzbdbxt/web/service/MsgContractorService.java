@@ -5,6 +5,7 @@ import java.util.List;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractorExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 
 public interface MsgContractorService extends GenericService<MsgContractor, String> {
 
@@ -12,7 +13,7 @@ public interface MsgContractorService extends GenericService<MsgContractor, Stri
 
 	List<MsgContractor> selectByExample(MsgContractorExample example);
 	
-	void modifyUserId(String msgId, List<Long> userIds, List<Long> roleUserIds);
+	void modifyUserId(String msgId, long[] userIds, List<Long> roleUserIds);
 	
 	/**
 	 * 判断用户是否可读信息
@@ -21,5 +22,7 @@ public interface MsgContractorService extends GenericService<MsgContractor, Stri
 	 * @return
 	 */
 	boolean readable(String msgId, Long userId);
+	
+	List<Long> selectByMsgIdAndRoleUsers(String msgId, List<User> roleUsers);
 
 }

@@ -41,6 +41,8 @@ public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String
 	
 	List<MsgCoSponsor> selectMsgCoSponsorsByMsgId(String msgId);
 	
+	List<MsgCoSponsor> selectSignedMsgCoSponsorsByMsgId(String msgId);
+	
 	Long selectByMgsId(String msgId);
 
 	int doSign(String msgId, Long roleId);

@@ -48,6 +48,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SequenceNumberService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.UserService;
 
 @Controller
 @RequestMapping(value = "/msg")
@@ -70,6 +71,9 @@ public class MsgController {
 
 	@Resource
 	private AttachService attachService;
+	
+	@Resource
+	private UserService userService;
 
 	// 立项号
 	@Resource
@@ -191,15 +195,11 @@ public class MsgController {
 				boolean signable = false;
 				signable = permissionId < 6L ? msgSponsorService.signable(msg.getId(), roleId) ? true
 						: msgCoSponsorService.signable(msg.getId(), roleId) : false;
-				boolean assignable = false;
-				assignable = permissionId < 6L ? msgSponsorService.assignable(msg.getId(), roleId) ? true
-						: msgCoSponsorService.assignable(msg.getId(), roleId) : false;
 				msgExtend.setAttachIds(attachIds);
 				msgExtend.setAttachs(attachs);
 				model.addAttribute("msg", msgExtend);
 				model.addAttribute("callbackable", callbackable);
 				model.addAttribute("signable", signable);
-				model.addAttribute("assignable", assignable);
 				model.addAttribute("msg1", msg1);
 				model.addAttribute("msg2", msg2);
 				return "msg";
@@ -447,7 +447,7 @@ public class MsgController {
 	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
 			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,
 			PermissionSign.CHU_SHI_FU_ZE_REN }, logical = Logical.OR)
-	public String assign(String msgId, List<Long> userIds, RedirectAttributes model, HttpSession session)
+	public String assign(String msgId, @RequestParam(value = "userIds[]")long[] userIds, RedirectAttributes model, HttpSession session)
 			throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
@@ -488,8 +488,8 @@ public class MsgController {
 			List<MsgSponsorExtend> msgSponsorExtends = null;
 			List<MsgCoSponsorExtend> msgCoSponsorExtends = null;
 			if ((1L == roleId || 2L == roleId || 3L == roleId) && permissionId < 6L) {
-				List<MsgSponsor> msgSponsors = msgSponsorService.selectMsgSponsorsByMsgId(msg.getId());
-				List<MsgCoSponsor> msgCoSponsors = msgCoSponsorService.selectMsgCoSponsorsByMsgId(msg.getId());
+				List<MsgSponsor> msgSponsors = msgSponsorService.selectSignedMsgSponsorsByMsgId(msg.getId());
+				List<MsgCoSponsor> msgCoSponsors = msgCoSponsorService.selectSignedMsgCoSponsorsByMsgId(msg.getId());
 				List<Integer> status0 = new ArrayList<Integer>();
 				status0.add(1);
 				status0.add(2);
@@ -501,9 +501,16 @@ public class MsgController {
 					for (MsgSponsor msgSponsor : msgSponsors) {
 						msgSponsorExtend = new MsgSponsorExtend(msgSponsor);
 						if (msgSponsorExtend.getStatus() > 2
-								|| (msgSponsorExtend.getRoleId() == roleId || msgSponsorExtend.getStatus() < 3)) {
+								|| (msgSponsorExtend.getRoleId() == roleId && msgSponsorExtend.getStatus() < 3)) {
 							msgSponsorExtend.setEditabled(true);
+							msgSponsorExtend.setAssignable(true);
+						} else {
+							msgSponsorExtend.setEditabled(false);
+							msgSponsorExtend.setAssignable(false);
 						}
+						final List<User> roleUsers = userService.selectByRoleId(msgSponsorExtend.getRoleId());
+						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(), roleUsers);
+						msgSponsorExtend.setUsers(userService.selectByUserIds(userIds));
 						List<Submission> submissions = null;
 						if (msgSponsorExtend.getRoleId() == roleId) {
 							submissions = submissionService.selectByMsgId(msgSponsorExtend.getId(), status1);
@@ -526,9 +533,16 @@ public class MsgController {
 					for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 						msgCoSponsorExtend = new MsgCoSponsorExtend(msgCoSponsor);
 						if (msgCoSponsorExtend.getStatus() > 2
-								|| (msgCoSponsorExtend.getRoleId() == roleId || msgCoSponsorExtend.getStatus() < 3)) {
+								|| (msgCoSponsorExtend.getRoleId() == roleId && msgCoSponsorExtend.getStatus() < 3)) {
 							msgCoSponsorExtend.setEditabled(true);
+							msgCoSponsorExtend.setAssignable(true);
+						} else {
+							msgCoSponsorExtend.setEditabled(false);
+							msgCoSponsorExtend.setAssignable(false);
 						}
+						final List<User> roleUsers = userService.selectByRoleId(msgCoSponsorExtend.getRoleId());
+						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(), roleUsers);
+						msgCoSponsorExtend.setUsers(userService.selectByUserIds(userIds));
 						List<Submission> submissions = null;
 						if (msgCoSponsorExtend.getRoleId() == roleId) {
 							submissions = submissionService.selectByMsgId(msgCoSponsorExtend.getId(), status1);
@@ -563,7 +577,18 @@ public class MsgController {
 						msgSponsorExtend = new MsgSponsorExtend(msgSponsor);
 						if (msgSponsorExtend.getStatus() < 3) {
 							msgSponsorExtend.setEditabled(true);
+							if (permissionId < 6L) {
+								msgSponsorExtend.setAssignable(true);
+							} else {
+								msgSponsorExtend.setAssignable(false);
+							}
+						} else {
+							msgSponsorExtend.setEditabled(false);
+							msgSponsorExtend.setAssignable(false);
 						}
+						final List<User> roleUsers = userService.selectByRoleId(roleId);
+						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(), roleUsers);
+						msgSponsorExtend.setUsers(userService.selectByUserIds(userIds));
 						List<Submission> submissions = null;
 						submissions = submissionService.selectByMsgId(msgSponsorExtend.getId(), status0);
 						if (submissions != null && submissions.size() > 0) {
@@ -583,7 +608,18 @@ public class MsgController {
 						msgCoSponsorExtend = new MsgCoSponsorExtend(msgCoSponsor);
 						if (msgCoSponsorExtend.getStatus() < 3) {
 							msgCoSponsorExtend.setEditabled(true);
+							if (permissionId < 6L) {
+								msgCoSponsorExtend.setAssignable(true);
+							} else {
+								msgCoSponsorExtend.setAssignable(false);
+							}
+						} else {
+							msgCoSponsorExtend.setEditabled(false);
+							msgCoSponsorExtend.setAssignable(false);
 						}
+						final List<User> roleUsers = userService.selectByRoleId(roleId);
+						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(), roleUsers);
+						msgCoSponsorExtend.setUsers(userService.selectByUserIds(userIds));
 						List<Submission> submissions = null;
 						submissions = submissionService.selectByMsgId(msgCoSponsorExtend.getId(), status0);
 						if (submissions != null && submissions.size() > 0) {
@@ -596,6 +632,8 @@ public class MsgController {
 						msgCoSponsorExtends.add(msgCoSponsorExtend);
 					}
 				}
+				model.addAttribute("msgSponsorExtends", msgSponsorExtends);
+				model.addAttribute("msgCoSponsorExtends", msgCoSponsorExtends);
 				return "msgContent";
 			}
 		}
