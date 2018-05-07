@@ -83,7 +83,7 @@ public class MsgSponsorExample {
 			return criteria;
 		}
 
-		protected void addCriterion(String condition) {
+		public void addCriterion(String condition) {
 			if (condition == null) {
 				throw new RuntimeException("Value for condition cannot be null");
 			}

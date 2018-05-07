@@ -77,5 +77,6 @@ public class MsgServiceImpl extends GenericServiceImpl<Msg, String> implements M
 		// TODO Auto-generated method stub
 		return msgMapper.insertSelective(record);
 	}
+	
 
 }

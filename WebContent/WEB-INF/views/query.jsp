@@ -64,16 +64,13 @@
 				<span class="queryTitle">
 					<button id="querySubmit" type="button" class="btn blue"
 						onclick="query(1)">检索</button>
+					<button id="resetSubmit" type="button" class="btn blue"
+						onclick="reset()">重置</button>
 				</span>
 			</div>
 		</div>
 	</div>
 	<div id="msgList"></div>
-	<div id="openMsg"></div>
-	<div id="goback">
-		<button id="gobackButton" type="button" class="btn blue"
-			onclick="goback()">返回</button>
-	</div>
 </div>
 <script type="text/javascript">
 	function query(pageNo) {
@@ -92,6 +89,17 @@
 			$('#msgList').html(data);
 		});
 	}
+	
+	function reset() {
+		$("#sequence").val("");
+		$("#basis").val("");
+		$("#name").val("");
+		$("#createTimeBegin").val("");
+		$("#createTimeEnd").val("");
+		$("#roleId").val("");
+		$("#status").val("");
+		$("#userId").val("");
+	}
 
 	function getCodeSelected(target) {
 		var array = new Array();
@@ -105,16 +113,6 @@
 		format : 'yyyy-mm-dd',
 		language : 'zh-CN'
 	});
-
-	function openMsg(msgId) {
-		var url = 'rest/msg/openMsg';
-		$("#openMsg").show();
-		$.post(url, {
-			msgId : msgId
-		}, function(data) {
-			$('#openMsg').html(data);
-		});
-	}
 
 	$(function() {
 		$("#index-page-title").html("信息查询");

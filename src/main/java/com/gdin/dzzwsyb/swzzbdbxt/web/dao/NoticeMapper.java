@@ -38,5 +38,7 @@ public interface NoticeMapper extends GenericDao<Notice, Long> {
 
 	List<NoticeCount> countNotice(Long userid);
 
+	//int  deleteNotice(Notice notice);
+
 
 }

@@ -59,6 +59,10 @@
 	width: 200px;
 }
 
+.input-longPlus {
+	width: 500px;
+}
+
 .middleSpan {
 	margin-left: 6px;
 	margin-right: 6px;
@@ -90,6 +94,7 @@
 }
 
 .msgItem {
+	font-size: 12pt;
 	display: table-cell;
 	text-align: center;
 	border-left: 2px solid #FFFFFF;
@@ -128,6 +133,7 @@
 
 .msgTitle {
 	font-family: 微软雅黑;
+	line-height: 22px;
 }
 
 #goback {
@@ -268,4 +274,8 @@
 
 .infoButton button {
 	display: inline;
+}
+
+.clickable {
+	cursor: pointer;
 }

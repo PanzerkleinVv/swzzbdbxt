@@ -1,5 +1,8 @@
 package com.gdin.dzzwsyb.swzzbdbxt.core.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -77,6 +80,16 @@ public class ApplicationUtils {
 	 */
 	public static String replaceNullToNbsp(String string) {
 		return (string == null ? "&nbsp;" : ("".equals(string) ? "&nbsp;" : string));
+	}
+	/**
+	 * 获取系统当前时间
+	 * @param string
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static Date getTime() throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		return sdf.parse(sdf.format(new Date()));
 	}
 
 }

@@ -51,6 +51,8 @@
 	rel="stylesheet" type="text/css" />
 <link href="app/css/index.css" rel="stylesheet" type="text/css" />
 <link href="assets/plugins/summernote/summernote.css" rel="stylesheet" />
+<link href="assets/plugins/bootstrap/css/bootstrap-multiselect.css"
+	rel="stylesheet" type="text/css" />
 </head>
 <!-- END HEAD -->
 
@@ -107,7 +109,7 @@
 
 					<li class="start active"><a href="rest/page/dashboard"
 						id="btn-dashboard"> <i class="fa fa-home"></i><span
-							class="title"> 首页</span><span class="selected"> </span>
+							class="title"> 首页 </span><span class="selected"> </span>
 					</a></li>
 
 					<li class=""><a href="./rest/msg/query"> <i class="fa fa-search"></i><span
@@ -119,12 +121,12 @@
 						id="btn-dashboard"> <i class="fa fa-upload"></i><span
 							class="title"> 督查上传 </span><span class="selected"> </span>
 					</a></li>
-					</shiro:hasAnyRoles>
 					
-					<li class=""><a href="./rest/msg/upload"
+					<li class=""><a href="./rest/msg/msgList?status=0&pageNo=1"
 						id="btn-dashboard"> <i class="fa fa-recycle"></i><span
-							class="title"> 回收站</span><span class="selected"> </span>
+							class="title"> 督查草稿 </span><span class="selected"> </span>
 					</a></li>
+					</shiro:hasAnyRoles>
 						
 					<shiro:hasRole  name="admin">
 					<li class=""><a href="javascript:;"> <i
@@ -232,6 +234,7 @@
 							<li><i class="fa fa-home"></i> 
 									首页 <i class="fa fa-angle-right"></i></li>
 							<li id="current-page-title"> 信息查询 </li>
+							<li id="goBack" style="display: none;color: blue;" onclick="goBack()" class="clickable"> &emsp;&emsp;&emsp;&emsp;返回 </li>
 						</ul>
 						<!-- END PAGE TITLE & BREADCRUMB-->
 					</div>
@@ -240,7 +243,7 @@
 
 				<!-- BEGIN DASHBOARD STATS -->
 				<div id="main-content"></div>
-
+				<div id="msg-content"></div>
 				<!-- END PORTLET-->
 			</div>
 		</div>
@@ -249,7 +252,7 @@
 	<!-- END CONTAINER -->
 	<!-- BEGIN FOOTER -->
 	<div class="footer">
-		<div class="footer-inner">2017 &copy; 广东省信息网络有限公司</div>
+		<div class="footer-inner">2018 &copy; 广东省信息网络有限公司</div>
 		<div class="footer-tools">
 			<span class="go-top"><i class="fa fa-angle-up"></i></span>
 		</div>
@@ -300,8 +303,6 @@
 
 
 <script src="assets/plugins/bootstrap/js/bootstrap-multiselect.js"></script>
-<link href="assets/plugins/bootstrap/css/bootstrap-multiselect.css"
-	rel="stylesheet" type="text/css" />
 	<!-- <script data-main="app/js/main" src="app/lib/requirejs/require.js"></script> -->
 </body>
 </html>

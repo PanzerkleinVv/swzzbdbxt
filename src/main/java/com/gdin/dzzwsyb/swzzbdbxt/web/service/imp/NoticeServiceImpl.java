@@ -65,6 +65,36 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 		return noticeMapper.countNotice(userid);
 	}
 
+	@Override
+	public int deleteNotice(Notice notice) {
+		 NoticeExample example = new NoticeExample();
+		 example.createCriteria().andTypeEqualTo(notice.getType()).andUserIdEqualTo(notice.getUserId()).andTargetIdEqualTo(notice.getTargetId()).andTargetTypeEqualTo(notice.getTargetType());
+		 List<Notice> notices = noticeMapper.selectByExample(example);
+		 if(notice != null && notices.size()>0) {
+			 return delete(notices.get(0).getId());
+		 }else {
+			 return 0;
+		 }
+	}
+
+	@Override
+	public boolean addNotice(Notice notice) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeNotice(Notice notice) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean readNotice(Notice notice) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 
 }

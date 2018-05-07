@@ -101,21 +101,25 @@ public class MsgQuery {
 
 	public void setExample(Criteria criteria) {
 		if (userId != null && userId != 0L) {
-			String condition = " (id in (select msgId from msg_contractor where userId=" + userId + ")) ";
+			String condition = " (id in (select msg_id from msg_contractor where user_id=" + userId + ")) ";
 			criteria.addCriterion(condition);
 		}
 		if (roleId != null && roleId != 0L && status == null) {
-			String condition = " (id in (select msgId from msg_sponsor where roleId=" + roleId
-					+ ") OR id in (select msgId from msg_co-sponsor where roleId=" + roleId + ")) ";
+			String condition = " (id in (select msg_id from msg_sponsor where role_id=" + roleId + " and status > 0"
+					+ ") OR id in (select msg_id from `msg_co-sponsor` where role_id=" + roleId + " and status > 0" + ")) ";
 			criteria.addCriterion(condition);
 		} else if (roleId != null && roleId != 0L && status != null) {
-			String condition = " (id in (select msgId from msg_sponsor where roleId=" + roleId + " and status=" + status
-					+ ") OR id in (select msgId from msg_co-sponsor where roleId=" + roleId + " and status=" + status
+			String condition = " (id in (select msg_id from msg_sponsor where role_id=" + roleId + " and status=" + status
+					+ ") OR id in (select msg_id from `msg_co-sponsor` where role_id=" + roleId + " and status=" + status
 					+ ")) ";
 			criteria.addCriterion(condition);
 		} else if ((roleId == null || roleId == 0L) && status != null) {
-			String condition = " (id in (select msgId from msg_sponsor where status=" + status
-					+ ") OR id in (select msgId from msg_co-sponsor where status=" + status + ")) ";
+			String condition = " (id in (select msg_id from msg_sponsor where status=" + status
+					+ ") OR id in (select msg_id from `msg_co-sponsor` where status=" + status + ")) ";
+			criteria.addCriterion(condition);
+		} else {
+			String condition = " (id in (select msg_id from msg_sponsor where status > 0"
+					+ ") OR id in (select msg_id from `msg_co-sponsor` where status > 0" + ")) ";
 			criteria.addCriterion(condition);
 		}
 		if (sequence != null && sequence != 0) {

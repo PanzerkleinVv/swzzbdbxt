@@ -1,74 +1,75 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<div style="height: 20px"></div>
-<div id="msgBox">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<div id="msgBox" class="mainContent">
 	<div>
-		<span class="msgTitle">标题：</span> <span>${msg.msgTitle}</span> <input id="msgId"
-			type="hidden" value="${msg.msgId}" />
+		<span class="msgTitle">立项号&emsp;：</span> <span>${msg.sequence}</span>
+		<input id="id" type="hidden" value="${msg.id}" />
 	</div>
 	<div>
-		<span class="msgTitle">工作类型：</span> <span>${msg.msgServiceName}</span>
+		<span class="msgTitle">督察事项：</span> <span>${msg.name}</span>
 	</div>
 	<div>
-		<span class="msgTitle">信息类型：</span> <span>${msg.msgTypeName}</span>
+		<span class="msgTitle">立项时间：</span> <span><fmt:formatDate
+				value='${msg.createTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
 	</div>
 	<div>
-		<span class="msgTitle">上报单位：</span> <span>${msg.msgUserUnit}</span>
+		<span class="msgTitle">立项依据：</span> <span>${msg.basis}</span>
 	</div>
 	<div>
-		<span class="msgTitle">所属地区：</span> <span>${msg.msgAreaName}</span>
+		<span class="msgTitle">主办处室：</span> <span>${msg.sponsorRoleNames}</span>
 	</div>
 	<div>
-		<span class="msgTitle">联系人姓名：</span> <span>${msg.msgAttn}</span>
+		<span class="msgTitle">协办处室：</span> <span>${msg.coSponsorRoleNames}</span>
 	</div>
 	<div>
-		<span class="msgTitle">联系人电话：</span> <span>${msg.msgPhone}</span>
+		<span class="msgTitle">办结时限：</span> <span><fmt:formatDate
+				value='${msg.limitTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
 	</div>
-	<c:choose>
-		<c:when test="${roleId == '1'}">
-			<div id='msgStatus'>
-				<span class="msgTitle">信息状态：</span> <span class="" id="msgStatusName"
-					onclick="getCode1()">${msg.msgStatusName}</span>
-			</div>
-		</c:when>
-		<c:otherwise>
-			<div>
-				<span class="msgTitle">信息状态：</span> <span>${msg.msgStatusName}</span>
-			</div>
-		</c:otherwise>
-	</c:choose>
 	<div>
-		<div class="msgTitle">正文：</div>
-		<div>${msg.msgContent}</div>
+		<span class="msgTitle">附件资料：</span> <span><c:forEach
+				var="attachId" items="${msg.attachIds}" varStatus="status0">
+				<a href="rest/attach/download?id=${attachId}" target="_blank">${msg.attachs[status0.index]}</a>
+			</c:forEach></span>
+	</div>
+	<div>
+		<span class="msgTitle">反馈时间：</span> <span><fmt:formatDate
+				value='${msg.endTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
+	</div>
+	<div>
+		<span class="msgTitle"> <shiro:hasAnyRoles name="admin,1,2">
+				<c:if test="${callbackable}">
+					<button id="callback" type="button" class="btn blue"
+						onclick="callback()">撤回</button>
+				</c:if>
+			</shiro:hasAnyRoles> <c:if test="${signable}">
+				<button id="insert" type="button" class="btn blue" onclick="sign()">签收</button>
+			</c:if> <c:if test="${assignable}">
+				<button id="insert" type="button" class="btn blue"
+					onclick="assign()">指派</button>
+			</c:if>
+		</span>
+	</div>
+	<div><span id='msg0' style='color: ${msg2 ne null ? msg2 : "#000000"}'>${msg1}</span></div>
+	<div class="titleEnd">
+		<span class="msgTitle">办理情况：</span>
 	</div>
 </div>
 <script type="text/javascript">
-	function getCode1() {
-		var url;
-		var target;
-		var method;
-		url = "rest/code/status";
-		target = $("#msgStatus");
-		$.get(url, {
-			method : "select1"
+	function sign() {
+		var url = "rest/msg/sign";
+		$.post(url, {
+			id : $("#id").val()
 		}, function(data) {
-			$(target).after(data);
+			showData("#msg-content",data);
 		});
-	}
-
-	function codeClick1(target) {
-		var thisSpan = $(target);
-		var msgStatusName = thisSpan.html();
-		if (msgStatusName != $("#msgStatusName").html()) {
-			var url = "rest/msg/changeMsgStatus";
-			var msgStatus = thisSpan.attr('id');
-			$.post(url, {
-				msgId : $("#msgId").val(),
-				msgStatus : msgStatus
-			}, function(data) {
-				$('#msgStatusName').html(data);
-			});
-		}
-		$("#msgStatus").next().remove();
+  }
+  
+	function callback(){
+		var url = "rest/msg/callback";
+		$.post(url,{"id": $("#id").val()},function(data){
+			$("#msgBox").html(data);
+		})
 	}
 </script>

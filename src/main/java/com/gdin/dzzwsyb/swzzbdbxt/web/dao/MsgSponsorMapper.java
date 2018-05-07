@@ -17,7 +17,7 @@ public interface MsgSponsorMapper extends GenericDao<MsgSponsor, String> {
 
 	int deleteByExample(MsgSponsorExample example);
 
-    int deleteByPrimaryKey(String id);
+  int deleteByPrimaryKey(String id);
 
 	int insert(MsgSponsor record);
 
@@ -25,7 +25,7 @@ public interface MsgSponsorMapper extends GenericDao<MsgSponsor, String> {
 
 	List<MsgSponsor> selectByExample(MsgSponsorExample example);
 
-    MsgSponsor selectByPrimaryKey(String id);
+	MsgSponsor selectByPrimaryKey(String id);
 
 	int updateByExampleSelective(@Param("record") MsgSponsor record, @Param("example") MsgSponsorExample example);
 
@@ -34,4 +34,13 @@ public interface MsgSponsorMapper extends GenericDao<MsgSponsor, String> {
 	int updateByPrimaryKeySelective(MsgSponsor record);
 
 	int updateByPrimaryKey(MsgSponsor record);
+	
+	List<Long> selectRoleIdByMsgId(String msgId);
+
+	void deleteByMsgId(String msgId);
+	
+	List<MsgSponsor> selectMsgSponsorsByMsgId(String msgId);
+
+	Long selectByMgsId(String msgId);
+
 }

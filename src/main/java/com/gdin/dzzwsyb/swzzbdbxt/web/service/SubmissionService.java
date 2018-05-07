@@ -11,6 +11,6 @@ public interface SubmissionService extends GenericService<Submission, String> {
 
 	List<Submission> selectByMsgExample(SubmissionExample example);
 
-	List<List<String>> selectIdsByMsgList(List<Msg> msgs);
+	List<List<String>> selectIdsByMsgList(List<Msg> msgs, Long roleId);
 
 }

@@ -61,4 +61,13 @@ public class Attach {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+	public Attach(String id, String targetId, Integer targetType, String attachFileName, Date createTime) {
+		super();
+		this.id = id;
+		this.targetId = targetId;
+		this.targetType = targetType;
+		this.attachFileName = attachFileName;
+		this.createTime = createTime;
+	}
+	public Attach() {};
 }
