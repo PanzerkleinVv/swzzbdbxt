@@ -101,12 +101,13 @@
 	function saveContent(id, type) {
 		if (type == 1) {
 			var url = "rest/msg/saveMsgSponsor";
-		} else {
+		} else  if (type == 2) {
 			var url = "rest/msg/saveMsgCoSponsor";
+		} else {
+			return false;
 		}
 		$.post(url, {
 			"id" : id,
-			"type" : type,
 			"content" : UE.getEditor(id + '_editor').getContent()
 		}, function(data) {
 			showData("#msg-content", data);

@@ -90,8 +90,14 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 			for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 				coSponsorRoleNames = coSponsorRoleNames + roleMap.get(msgCoSponsor.getRoleId()) + "<br/>";
 				if (roleId < 4L || (roleId > 3L && roleId == msgCoSponsor.getRoleId())) {
-					contents = contents + "<b>" + roleMap.get(msgCoSponsor.getRoleId()) + "：</b>" + "<br/>"
-							+ ApplicationUtils.replaceNullToEmpty(msgCoSponsor.getContent()) + "<br/>";
+					contents = contents + "<b>" + roleMap.get(msgCoSponsor.getRoleId()) + "：</b>" + "<br/>";
+					final String content = ApplicationUtils.removeTag(ApplicationUtils.replaceNullToEmpty(msgCoSponsor.getContent()));
+					if (content.length() > 30) {
+						contents = contents + content.substring(0, 30) + "...";
+					} else {
+						contents = contents + content;
+					}				
+					contents = contents+ "<br/>";
 					if (status == null) {
 						status = msgCoSponsor.getStatus();
 					} else if (status > 2 && 3 > msgCoSponsor.getStatus()) {

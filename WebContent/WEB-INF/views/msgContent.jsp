@@ -51,6 +51,7 @@
 							= c.clear = c.exception = c.trace = c.assert = function(){};
 							return c;
 						})();
+						UE.delEditor('${msgSponsor.id}_editor');
 						var ue = UE.getEditor('${msgSponsor.id}_editor');
 					</script>
 				</c:when>
@@ -109,7 +110,8 @@
 							= c.clear = c.exception = c.trace = c.assert = function(){};
 							return c;
 						})();
-						var ue = UE.getEditor('${msgSponsor.id}_editor');
+						UE.delEditor('${msgCoSponsor.id}_editor');
+						var ue = UE.getEditor('${msgCoSponsor.id}_editor');
 					</script>
 				</c:when>
 				<c:otherwise>

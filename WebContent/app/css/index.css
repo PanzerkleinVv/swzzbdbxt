@@ -91,6 +91,7 @@
 	cursor: default;
 	display: table-row;
 	border-collapse: collapse;
+	height: 150px;
 }
 
 .msgItem {
@@ -102,6 +103,14 @@
 
 .msgItem:first-child {
 	border-left: 0 !important;
+}
+
+.msgItem.content {
+	text-align: left;
+	width: 300px;
+	height: 150px;
+    overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .msgHeader {

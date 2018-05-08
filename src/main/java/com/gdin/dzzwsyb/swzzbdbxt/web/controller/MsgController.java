@@ -71,7 +71,7 @@ public class MsgController {
 
 	@Resource
 	private AttachService attachService;
-	
+
 	@Resource
 	private UserService userService;
 
@@ -447,8 +447,8 @@ public class MsgController {
 	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
 			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,
 			PermissionSign.CHU_SHI_FU_ZE_REN }, logical = Logical.OR)
-	public String assign(String msgId, @RequestParam(value = "userIds[]")long[] userIds, RedirectAttributes model, HttpSession session)
-			throws Exception {
+	public String assign(String msgId, @RequestParam(value = "userIds[]") long[] userIds, RedirectAttributes model,
+			HttpSession session) throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
 		final MsgExtend msgExtend = new MsgExtend();
@@ -509,7 +509,8 @@ public class MsgController {
 							msgSponsorExtend.setAssignable(false);
 						}
 						final List<User> roleUsers = userService.selectByRoleId(msgSponsorExtend.getRoleId());
-						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(), roleUsers);
+						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(),
+								roleUsers);
 						msgSponsorExtend.setUsers(userService.selectByUserIds(userIds));
 						List<Submission> submissions = null;
 						if (msgSponsorExtend.getRoleId() == roleId) {
@@ -541,7 +542,8 @@ public class MsgController {
 							msgCoSponsorExtend.setAssignable(false);
 						}
 						final List<User> roleUsers = userService.selectByRoleId(msgCoSponsorExtend.getRoleId());
-						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(), roleUsers);
+						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(),
+								roleUsers);
 						msgCoSponsorExtend.setUsers(userService.selectByUserIds(userIds));
 						List<Submission> submissions = null;
 						if (msgCoSponsorExtend.getRoleId() == roleId) {
@@ -587,7 +589,8 @@ public class MsgController {
 							msgSponsorExtend.setAssignable(false);
 						}
 						final List<User> roleUsers = userService.selectByRoleId(roleId);
-						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(), roleUsers);
+						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(),
+								roleUsers);
 						msgSponsorExtend.setUsers(userService.selectByUserIds(userIds));
 						List<Submission> submissions = null;
 						submissions = submissionService.selectByMsgId(msgSponsorExtend.getId(), status0);
@@ -618,7 +621,8 @@ public class MsgController {
 							msgCoSponsorExtend.setAssignable(false);
 						}
 						final List<User> roleUsers = userService.selectByRoleId(roleId);
-						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(), roleUsers);
+						final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msg.getId(),
+								roleUsers);
 						msgCoSponsorExtend.setUsers(userService.selectByUserIds(userIds));
 						List<Submission> submissions = null;
 						submissions = submissionService.selectByMsgId(msgCoSponsorExtend.getId(), status0);
@@ -635,6 +639,88 @@ public class MsgController {
 				model.addAttribute("msgSponsorExtends", msgSponsorExtends);
 				model.addAttribute("msgCoSponsorExtends", msgCoSponsorExtends);
 				return "msgContent";
+			}
+		}
+		return "404";
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/saveMsgSponsor")
+	public String saveMsgSponsor(MsgSponsor msgSponsor, RedirectAttributes model, HttpSession session) {
+		final Long roleId = (Long) session.getAttribute("roleId");
+		final Long permissionId = (Long) session.getAttribute("permissionId");
+		final Long userId = (Long) session.getAttribute("userId");
+		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
+		if (msgSponsor != null && msgSponsor.getId() != null) {
+			final MsgSponsor msgSponsor0 = msgSponsorService.selectById(msgSponsor.getId());
+			if (msgSponsor0 != null) {
+				final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msgSponsor0.getMsgId(), roleUsers);
+				boolean editabled = false;
+				if (roleId < 4L && permissionId < 6L && msgSponsor0.getStatus() > 2) {
+					editabled = true;
+				} else if (msgSponsor0.getStatus() < 3 && msgSponsor0.getRoleId() == roleId && permissionId < 6L) {
+					editabled = true;
+				} else if (userIds != null && userIds.contains(userId)) {
+					editabled = true;
+				}
+				if (editabled) {
+					final int count = msgSponsorService.update(msgSponsor);
+					if (count > 0) {
+						final MsgExtend msgExtend = new MsgExtend();
+						msgExtend.setId(msgSponsor0.getMsgId());
+						model.addFlashAttribute("msg1", "保存办理情况成功！");
+						model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
+						model.addFlashAttribute("msg", msgExtend);
+						return "redirect:/rest/msg/openMsg";
+					}
+				}
+				final MsgExtend msgExtend = new MsgExtend();
+				msgExtend.setId(msgSponsor0.getMsgId());
+				model.addFlashAttribute("msg1", "保存办理情况失败！ --无修改权限");
+				model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
+				model.addFlashAttribute("msg", msgExtend);
+				return "redirect:/rest/msg/openMsg";
+			}
+		}
+		return "404";
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/saveMsgCoSponsor")
+	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, RedirectAttributes model, HttpSession session) {
+		final Long roleId = (Long) session.getAttribute("roleId");
+		final Long permissionId = (Long) session.getAttribute("permissionId");
+		final Long userId = (Long) session.getAttribute("userId");
+		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
+		if (msgCoSponsor != null && msgCoSponsor.getId() != null) {
+			final MsgCoSponsor msgCoSponsor0 = msgCoSponsorService.selectById(msgCoSponsor.getId());
+			if (msgCoSponsor0 != null) {
+				final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msgCoSponsor0.getMsgId(), roleUsers);
+				boolean editabled = false;
+				if (roleId < 4L && permissionId < 6L && msgCoSponsor0.getStatus() > 2) {
+					editabled = true;
+				} else if (msgCoSponsor0.getStatus() < 3 && msgCoSponsor0.getRoleId() == roleId && permissionId < 6L) {
+					editabled = true;
+				} else if (userIds != null && userIds.contains(userId)) {
+					editabled = true;
+				}
+				if (editabled) {
+					final int count = msgCoSponsorService.update(msgCoSponsor);
+					if (count > 0) {
+						final MsgExtend msgExtend = new MsgExtend();
+						msgExtend.setId(msgCoSponsor0.getMsgId());
+						model.addFlashAttribute("msg1", "保存办理情况成功！");
+						model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
+						model.addFlashAttribute("msg", msgExtend);
+						return "redirect:/rest/msg/openMsg";
+					}
+				}
+				final MsgExtend msgExtend = new MsgExtend();
+				msgExtend.setId(msgCoSponsor0.getMsgId());
+				model.addFlashAttribute("msg1", "保存办理情况失败！ --无修改权限");
+				model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
+				model.addFlashAttribute("msg", msgExtend);
+				return "redirect:/rest/msg/openMsg";
 			}
 		}
 		return "404";
