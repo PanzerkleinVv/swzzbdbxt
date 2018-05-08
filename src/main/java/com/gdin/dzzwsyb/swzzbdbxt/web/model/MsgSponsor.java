@@ -20,6 +20,20 @@ public class MsgSponsor {
     private String content;
 
     private Integer status;
+    
+    public MsgSponsor() {
+    	
+    }
+    
+    public MsgSponsor(MsgSponsor msgSponsor) {
+    	id = msgSponsor.getId();
+    	msgId = msgSponsor.getMsgId();
+    	roleId = msgSponsor.getRoleId();
+    	isSigned = msgSponsor.getIsSigned();
+    	isAssigned = msgSponsor.getIsAssigned();
+    	content = msgSponsor.getContent();
+    	status = msgSponsor.getStatus();
+    }
 
     public String getId() {
         return id;
@@ -88,6 +102,5 @@ public class MsgSponsor {
 		this.content = content;
 		this.status = status;
 	}
-	public MsgSponsor() {};
     
 }

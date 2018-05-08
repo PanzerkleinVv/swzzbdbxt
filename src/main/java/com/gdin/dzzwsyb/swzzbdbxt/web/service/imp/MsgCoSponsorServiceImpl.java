@@ -90,8 +90,14 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 			for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 				coSponsorRoleNames = coSponsorRoleNames + roleMap.get(msgCoSponsor.getRoleId()) + "<br/>";
 				if (roleId < 4L || (roleId > 3L && roleId == msgCoSponsor.getRoleId())) {
-					contents = contents + "<b>" + roleMap.get(msgCoSponsor.getRoleId()) + "：</b>" + "<br/>"
-							+ ApplicationUtils.replaceNullToEmpty(msgCoSponsor.getContent()) + "<br/>";
+					contents = contents + "<b>" + roleMap.get(msgCoSponsor.getRoleId()) + "：</b>" + "<br/>";
+					final String content = ApplicationUtils.removeTag(ApplicationUtils.replaceNullToEmpty(msgCoSponsor.getContent()));
+					if (content.length() > 30) {
+						contents = contents + content.substring(0, 30) + "...";
+					} else {
+						contents = contents + content;
+					}				
+					contents = contents+ "<br/>";
 					if (status == null) {
 						status = msgCoSponsor.getStatus();
 					} else if (status > 2 && 3 > msgCoSponsor.getStatus()) {
@@ -194,8 +200,7 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		boolean flag = false;
 		if (roleId != null && msgId != null) {
 			MsgCoSponsorExample example = new MsgCoSponsorExample();
-			example.createCriteria().andRoleIdEqualTo(roleId).andMsgIdEqualTo(msgId).andIsSignedEqualTo(1)
-					.andIsAssignedEqualTo(0);
+			example.createCriteria().andRoleIdEqualTo(roleId).andMsgIdEqualTo(msgId).andIsSignedEqualTo(1);
 			long count = msgCoSponsorMapper.countByExample(example);
 			if (count > 0L) {
 				flag = true;
@@ -252,6 +257,36 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		} else {
 			return 0;
 		}
+	}
+
+	@Override
+	public int doAssign(String msgId, Long roleId) {
+		if (msgId != null && roleId != null) {
+			MsgCoSponsor msgCoSponsor = new MsgCoSponsor();
+			msgCoSponsor.setIsAssigned(1);
+			MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andRoleIdEqualTo(roleId);
+			return msgCoSponsorMapper.updateByExampleSelective(msgCoSponsor, example);
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public List<MsgCoSponsor> selectMsgCoSponsorsByMsgIdRoleId(String msgId, Long roleId) {
+		MsgCoSponsorExample example = new MsgCoSponsorExample();
+		example.createCriteria().andMsgIdEqualTo(msgId).andRoleIdEqualTo(roleId).andIsSignedEqualTo(1);
+		return msgCoSponsorMapper.selectByExample(example);
+	}
+
+	@Override
+	public List<MsgCoSponsor> selectSignedMsgCoSponsorsByMsgId(String msgId) {
+		if (msgId != null) {
+			final MsgCoSponsorExample example = new MsgCoSponsorExample();
+			example.createCriteria().andMsgIdEqualTo(msgId).andIsSignedEqualTo(1);
+			return msgCoSponsorMapper.selectByExample(example);
+		}
+		return null;
 	}
 
 }
