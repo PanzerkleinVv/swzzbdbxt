@@ -107,7 +107,7 @@
 						<div class="sidebar-toggler hidden-phone"></div> <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
 					</li>
 
-					<li class="start active"><a href="rest/page/dashboard"
+					<li class="start active"><a href="./rest/page/dashboard"
 						id="btn-dashboard"> <i class="fa fa-home"></i><span
 							class="title"> 首页 </span><span class="selected"> </span>
 					</a></li>
@@ -229,11 +229,11 @@
 				<div class="row">
 					<div class="col-md-12">
 						<!-- BEGIN PAGE TITLE & BREADCRUMB-->
-						<h3 class="page-title page-title1" id="index-page-title">信息查询</h3>
+						<h3 class="page-title page-title1" id="index-page-title">提醒预览</h3>
 						<ul class="page-breadcrumb breadcrumb">
 							<li><i class="fa fa-home"></i> 
 									首页 <i class="fa fa-angle-right"></i></li>
-							<li id="current-page-title"> 信息查询 </li>
+							<li id="current-page-title"> 提醒预览 </li>
 							<li id="goBack" style="display: none;color: blue;" onclick="goBack()" class="clickable"> &emsp;&emsp;&emsp;&emsp;返回 </li>
 						</ul>
 						<!-- END PAGE TITLE & BREADCRUMB-->

@@ -24,7 +24,7 @@ public class PageController {
      */
     @RequestMapping("/dashboard")
     public String dashboard() {
-        return "query";
+        return "dashboard";
     }
 
     /**

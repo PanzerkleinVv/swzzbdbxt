@@ -36,5 +36,7 @@ public interface NoticeService extends GenericService<Notice, Long> {
 	 * @throws Exception 出错会回滚
 	 */
 	boolean readNotice(Notice notice) throws Exception;
+	
+	void noticeByTargetId(String targetId) throws Exception;
 
 }

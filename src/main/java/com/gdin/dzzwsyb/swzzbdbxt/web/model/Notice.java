@@ -81,4 +81,16 @@ public class Notice {
 	public void setIsRead(Integer isRead) {
 		this.isRead = isRead;
 	}
+
+	public Notice(Long userId, Integer type, String targetId, Integer targetType, Date createTime, Integer isRead) {
+		super();
+		this.userId = userId;
+		this.type = type;
+		this.targetId = targetId;
+		this.targetType = targetType;
+		this.createTime = createTime;
+		this.isRead = isRead;
+	}
+	
+	public Notice() {};
 }

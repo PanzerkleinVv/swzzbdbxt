@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample.Criteria;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.PermissionSign;
@@ -35,6 +37,8 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
@@ -42,6 +46,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SequenceNumberService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
 
@@ -70,6 +75,9 @@ public class MsgController {
 	// 立项号
 	@Resource
 	private SequenceNumberService sequenceNumberService;
+	
+	@Resource
+	private NoticeService noticeService;
 
 	@RequestMapping(value = "/query")
 	public String query() {
@@ -221,6 +229,9 @@ public class MsgController {
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
 		List<MsgCoSponsor> msgCoSponsors;
 		List<MsgSponsor> msgSponsors;
+		final int isRead = 1;//提醒表-未读
+		final int type = 4;//提醒表-草稿
+		final int targetType = 0;//提醒表-msg
 		String basisSelect = msg.getBasis();
 		Integer sequenceNumber = sequenceNumberService.next();
 		List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
@@ -325,8 +336,14 @@ public class MsgController {
 		request.getSession().removeAttribute("fileNameLists");
 		model.addAttribute("id", msgId);
 		if (status == 0) {
+			//录入提醒表
+			noticeService.noticeByTargetId(msgId);
+			Long userId = (Long) request.getSession().getAttribute("userId");
+			Notice notice = new Notice(userId, type, msgId, targetType, ApplicationUtils.getTime(), isRead);
+			noticeService.addNotice(notice);
 			return "upload";
 		} else {
+			noticeService.noticeByTargetId(msgId);
 			return "redirect:/rest/msg/openMsg?id=" + msgId;
 		}
 
@@ -411,7 +428,10 @@ public class MsgController {
 	
 	@RequestMapping(value="/callback")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String callBack(@RequestParam("id") String msgId,Model model,HttpSession session, HttpServletRequest request,RedirectAttributes reditectModel) {
+	public String callBack(@RequestParam("id") String msgId,Model model,HttpSession session, HttpServletRequest request,RedirectAttributes reditectModel) throws Exception {
+		final int isRead = 1;//提醒表-未读
+		final int type = 4;//提醒表-草稿
+		final int targetType = 0;//提醒表-msg
 		MsgExtend msg0 = new MsgExtend();
 		msg0.setId(msgId);
 		if(msgId != null) {
@@ -423,6 +443,10 @@ public class MsgController {
 				if (count > 0) {
 					msg0.setStatus(0);
 				}
+				//撤回重新录入notice提醒表
+				Long userId = (Long) request.getSession().getAttribute("userId");
+				Notice notice = new Notice(userId, type, msgId, targetType, ApplicationUtils.getTime(), isRead);
+				noticeService.addNotice(notice);
 			}
 			else {
 				reditectModel.addFlashAttribute("msg1", "撤回失败！");

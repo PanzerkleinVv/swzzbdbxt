@@ -248,5 +248,6 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 			return 0;
 		}
 	}
+	
   
 }
