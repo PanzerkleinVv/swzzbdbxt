@@ -253,7 +253,6 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 			return 0;
 		}
 	}
-
 	@Override
 	public int doAssign(String msgId, Long roleId) {
 		if (msgId != null && roleId != null) {
