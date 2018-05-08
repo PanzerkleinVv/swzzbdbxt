@@ -74,12 +74,12 @@ public class ApplicationUtils {
 	}
 
 	/**
-	 * 替换目标String为&nbsp
+	 * 替换目标String为&emsp
 	 * @param string
 	 * @return
 	 */
-	public static String replaceNullToNbsp(String string) {
-		return (string == null ? "&nbsp;" : ("".equals(string) ? "&nbsp;" : string));
+	public static String replaceNullToEmsp(String string) {
+		return (string == null ? "&emsp;" : ("".equals(string) ? "&emsp;" : string));
 	}
 	/**
 	 * 获取系统当前时间
@@ -90,6 +90,10 @@ public class ApplicationUtils {
 	public static Date getTime() throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		return sdf.parse(sdf.format(new Date()));
+	}
+	
+	public static String removeTag(String string) {
+		return string.replaceAll("<[^>]+>", "").replaceAll("&nbsp;", "").replaceAll("&emsp;", "").replaceAll("&ensp;", "");
 	}
 
 }

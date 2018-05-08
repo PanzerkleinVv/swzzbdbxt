@@ -104,11 +104,20 @@
 	border-left: 0 !important;
 }
 
+.msgItem.content {
+	text-align: left;
+	width: 300px;
+	max-height: 150px;
+    overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .msgHeader {
 	text-align: center;
 	background-color: #1570a6 !important;
 	font-family: 微软雅黑;
 	color: #FFFFFF;
+	height: 30px !important;
 }
 
 .msgTable .msg:nth-child(odd) {
@@ -133,7 +142,16 @@
 
 .msgTitle {
 	font-family: 微软雅黑;
-	line-height: 22px;
+	line-height: 24px;
+}
+
+.contentTitle {
+	font-family: 楷体;
+	font-size: 18px;
+}
+
+.middleTitle {
+	text-align: center;
 }
 
 #goback {

@@ -17,6 +17,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExample.Criteria;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
@@ -106,13 +107,24 @@ public class SubmissionServiceImpl extends GenericServiceImpl<Submission, String
 			final SubmissionExample example = new SubmissionExample();
 			example.createCriteria().andMsgIdIn(ids0);
 			List<Submission> submissions = submissionMapper.selectByExample(example);
-			ids0.add(0,msg.getId());
+			ids0.add(0, msg.getId());
 			for (Submission submission : submissions) {
 				ids0.add(submission.getId());
 			}
 			ids.add(ids0);
 		}
 		return ids;
+	}
+
+	@Override
+	public List<Submission> selectByMsgId(String msgId, List<Integer> status) {
+		final SubmissionExample example = new SubmissionExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andMsgIdEqualTo(msgId);
+		if (status != null && status.size() > 0) {
+			criteria.andStatusIn(status);
+		}
+		return submissionMapper.selectByExample(example);
 	}
 
 }

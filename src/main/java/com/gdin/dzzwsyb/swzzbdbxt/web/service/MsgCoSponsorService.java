@@ -41,9 +41,15 @@ public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String
 	
 	List<MsgCoSponsor> selectMsgCoSponsorsByMsgId(String msgId);
 	
+	List<MsgCoSponsor> selectSignedMsgCoSponsorsByMsgId(String msgId);
+	
 	Long selectByMgsId(String msgId);
 
 	int doSign(String msgId, Long roleId);
 	
 	int doCallback(String msgId);
+	
+	int doAssign(String msgId, Long roleId);
+	
+	List<MsgCoSponsor> selectMsgCoSponsorsByMsgIdRoleId(String msgId, Long roleId);
 }
