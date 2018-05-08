@@ -91,7 +91,6 @@
 	cursor: default;
 	display: table-row;
 	border-collapse: collapse;
-	height: 150px;
 }
 
 .msgItem {
@@ -108,7 +107,7 @@
 .msgItem.content {
 	text-align: left;
 	width: 300px;
-	height: 150px;
+	max-height: 150px;
     overflow: hidden;
 	text-overflow: ellipsis;
 }
@@ -118,6 +117,7 @@
 	background-color: #1570a6 !important;
 	font-family: 微软雅黑;
 	color: #FFFFFF;
+	height: 30px !important;
 }
 
 .msgTable .msg:nth-child(odd) {
