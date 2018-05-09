@@ -44,7 +44,7 @@
 					<select id="status" class="input-sm form-inline">
 						<option></option>
 						<c:forEach var="status" begin="1" items="${sessionScope.msgStatus}" varStatus="state">
-							<option value="${state}">${status}</option>
+							<option value="${state.index}">${status}</option>
 						</c:forEach>
 					</select>
 				</span>

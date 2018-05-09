@@ -104,12 +104,17 @@ public class SubmissionServiceImpl extends GenericServiceImpl<Submission, String
 			for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 				ids0.add(msgCoSponsor.getId());
 			}
-			final SubmissionExample example = new SubmissionExample();
-			example.createCriteria().andMsgIdIn(ids0);
-			List<Submission> submissions = submissionMapper.selectByExample(example);
+			List<Submission> submissions = null;
+			if (ids0 != null && ids0.size() > 0) {
+				final SubmissionExample example = new SubmissionExample();
+				example.createCriteria().andMsgIdIn(ids0);
+				submissions = submissionMapper.selectByExample(example);
+			}
 			ids0.add(0, msg.getId());
-			for (Submission submission : submissions) {
-				ids0.add(submission.getId());
+			if (submissions != null) {
+				for (Submission submission : submissions) {
+					ids0.add(submission.getId());
+				}
 			}
 			ids.add(ids0);
 		}
@@ -121,6 +126,7 @@ public class SubmissionServiceImpl extends GenericServiceImpl<Submission, String
 		final SubmissionExample example = new SubmissionExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andMsgIdEqualTo(msgId);
+		example.setOrderByClause("send_time asc");
 		if (status != null && status.size() > 0) {
 			criteria.andStatusIn(status);
 		}

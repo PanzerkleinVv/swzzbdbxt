@@ -70,12 +70,10 @@ public class UserController {
 			subject.login(new UsernamePasswordToken(user.getUsername(), user.getPassword()));
 			// 验证成功在Session中保存用户信息
 			final User authUserInfo = userService.selectByUsername(user.getUsername());
-			final List<Role> role = roleService.selectRolesByUserId(authUserInfo.getId());
-			final List<Permission> permission = permissionService.selectPermissionsByUserId(authUserInfo.getId());
 			request.getSession().setAttribute("userInfo", authUserInfo);
 			request.getSession().setAttribute("userId", authUserInfo.getId());
-			request.getSession().setAttribute("roleId", role.get(0).getId());
-			request.getSession().setAttribute("permissionId", permission.get(0).getId());
+			request.getSession().setAttribute("roleId", authUserInfo.getRoleId());
+			request.getSession().setAttribute("permissionId", authUserInfo.getPermissionId());
 			final List<Role> roles = roleService.selectList();
 			final Map<Long, String> roleMap = new HashMap<Long, String>();
 			for (Role role0 : roles) {
@@ -86,7 +84,7 @@ public class UserController {
 			for (Permission permission0 : permissions) {
 				permissionMap.put(permission0.getId(), permission0.getPermissionName());
 			}
-			final List<User> roleUsers = userService.selectByRoleId(role.get(0).getId());
+			final List<User> roleUsers = userService.selectByRoleId(authUserInfo.getRoleId());
 			request.getSession().setAttribute("roles", roles); //处室下拉菜单
 			request.getSession().setAttribute("permissions", permissions); //权限下拉菜单
 			request.getSession().setAttribute("roleMap", roleMap); //处室名显示映射
@@ -95,6 +93,8 @@ public class UserController {
 			request.getSession().setAttribute("roleUsers", roleUsers); //本处室用户下拉菜单
 			request.getSession().setAttribute("msgStatus", SelectArray.getMsgStatus()); //信息状态
 			request.getSession().setAttribute("Basis", SelectArray.getMsgBasis()); // 立法依据
+			request.getSession().setAttribute("submissionStatus", SelectArray.getSubmissionStatus());
+			request.getSession().setAttribute("submissionType", SelectArray.getSubmissionType());
 		} catch (AuthenticationException e) {
 			// 身份验证失败
 			model.addAttribute("error", "用户名或密码错误 ！");

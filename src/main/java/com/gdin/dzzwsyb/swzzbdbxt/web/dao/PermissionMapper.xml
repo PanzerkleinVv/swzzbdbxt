@@ -211,7 +211,7 @@
 		resultMap="BaseResultMap">
 		SELECT p.* FROM permission p LEFT JOIN user u ON
 		u.permission_id = p.id
-		WHERE p.id =
+		WHERE u.id =
 		#{id,jdbcType=BIGINT}
 	</select>
 </mapper>

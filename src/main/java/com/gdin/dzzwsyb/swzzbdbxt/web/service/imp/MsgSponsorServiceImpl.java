@@ -245,7 +245,7 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 	public int doCallback(String msgId) {
 		if (msgId != null) {
 			MsgSponsor msgSponsor = new MsgSponsor();
-			msgSponsor.setIsSigned(1);
+			msgSponsor.setStatus(0);
 			MsgSponsorExample example = new MsgSponsorExample();
 			example.createCriteria().andMsgIdEqualTo(msgId);
 			return msgSponsorMapper.updateByExampleSelective(msgSponsor, example);

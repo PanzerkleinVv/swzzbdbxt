@@ -140,6 +140,14 @@
 	background-color: #FFFFFF;
 }
 
+.msgSponsorContent {
+	border: 1px solid #999999;
+}
+
+.msgSponsorContent>div:first-child {
+	background-color: #3c9dff !important;
+}
+
 .msgTitle {
 	font-family: 微软雅黑;
 	line-height: 24px;
@@ -148,6 +156,15 @@
 .contentTitle {
 	font-family: 楷体;
 	font-size: 18px;
+}
+
+.submissionTitle {
+	background-color: #EEEEEE !important;
+}
+
+.submissionTitle>span {
+	font-family: 黑体 !important;
+	font-size: 17px;
 }
 
 .middleTitle {
