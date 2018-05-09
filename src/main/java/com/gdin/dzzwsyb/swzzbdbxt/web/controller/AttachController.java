@@ -1,40 +1,16 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import javax.annotation.Resource;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractor;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
@@ -42,10 +18,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.RoleService;
-import com.gdin.dzzwsyb.swzzbdbxt.web.service.SequenceNumberService;
-import com.mysql.fabric.xmlrpc.base.Data;
-
-import sun.launcher.resources.launcher_de;
 
 @Controller
 @RequestMapping(value = "/attach")

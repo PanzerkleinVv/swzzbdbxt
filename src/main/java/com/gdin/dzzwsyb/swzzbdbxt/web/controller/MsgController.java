@@ -100,16 +100,12 @@ public class MsgController {
 		final Long userId = (Long) session.getAttribute("userId");
 		final MsgExample example = new MsgExample();
 		Criteria criteria = example.createCriteria();
-		final List<String> msgId = new ArrayList<String>();
 		if (roleId < 4L && permissionId < 6L) {
 			criteria.andIdIsNotNull();
 		} else if (permissionId < 6L) {
-			msgId.addAll(msgSponsorService.selectMsgIdByRoleId(roleId));
-			msgId.addAll(msgCoSponsorService.selectMsgIdByRoleId(roleId));
-			criteria.andIdIn(msgId);
+			msgQuery.setRoleId(roleId);
 		} else {
-			msgId.addAll(msgContractorService.selectMsgIdByUserId(userId));
-			criteria.andIdIn(msgId);
+			msgQuery.setUserId(userId);
 		}
 		msgQuery.setExample(criteria);
 		example.setOrderByClause("sequence asc");
@@ -349,8 +345,10 @@ public class MsgController {
 			noticeService.addNotice(notice);
 			return "upload";
 		} else {
-			noticeService.noticeByTargetId(msgId);
-			return "redirect:/rest/msg/openMsg?id=" + msgId;
+			MsgExtend msgExtend = new MsgExtend();
+			msgExtend.setId(msgId);
+			reditectModel.addFlashAttribute("msg", msgExtend);
+			return "redirect:/rest/msg/openMsg";
 		}
 
 	}
@@ -527,7 +525,11 @@ public class MsgController {
 						if (msgSponsorExtend.getStatus() > 2
 								|| (msgSponsorExtend.getRoleId() == roleId && msgSponsorExtend.getStatus() < 3)) {
 							msgSponsorExtend.setEditabled(true);
-							msgSponsorExtend.setAssignable(true);
+							if (msgSponsorExtend.getRoleId() == roleId && msgSponsorExtend.getStatus() < 3) {
+								msgSponsorExtend.setAssignable(true);
+							} else {
+								msgSponsorExtend.setAssignable(false);
+							}
 						} else {
 							msgSponsorExtend.setEditabled(false);
 							msgSponsorExtend.setAssignable(false);
@@ -545,7 +547,17 @@ public class MsgController {
 						if (submissions != null && submissions.size() > 0) {
 							List<SubmissionExtend> submissionExtends = new ArrayList<SubmissionExtend>();
 							for (Submission submission : submissions) {
-								submissionExtends.add(new SubmissionExtend(submission));
+								SubmissionExtend submissionExtend = new SubmissionExtend(submission);
+								if (submissionExtend.getOwnerId() != null) {
+									submissionExtend.setOwnerDesc(
+											(userService.selectById(submissionExtend.getOwnerId()).getUserdesc()));
+								}
+								if (submissionExtend.getSuperiorVerifiUserId() != null) {
+									submissionExtend.setSuperiorVerifiUserDesc((userService
+											.selectById(submissionExtend.getSuperiorVerifiUserId()).getUserdesc()));
+								}
+								submissionExtend.setVerifiable(true);
+								submissionExtends.add(submissionExtend);
 							}
 							msgSponsorExtend.setSubmissions(submissionExtends);
 						}
@@ -560,7 +572,11 @@ public class MsgController {
 						if (msgCoSponsorExtend.getStatus() > 2
 								|| (msgCoSponsorExtend.getRoleId() == roleId && msgCoSponsorExtend.getStatus() < 3)) {
 							msgCoSponsorExtend.setEditabled(true);
-							msgCoSponsorExtend.setAssignable(true);
+							if (msgCoSponsorExtend.getRoleId() == roleId && msgCoSponsorExtend.getStatus() < 3) {
+								msgCoSponsorExtend.setAssignable(true);
+							} else {
+								msgCoSponsorExtend.setAssignable(false);
+							}
 						} else {
 							msgCoSponsorExtend.setEditabled(false);
 							msgCoSponsorExtend.setAssignable(false);
@@ -578,7 +594,17 @@ public class MsgController {
 						if (submissions != null && submissions.size() > 0) {
 							List<SubmissionExtend> submissionExtends = new ArrayList<SubmissionExtend>();
 							for (Submission submission : submissions) {
-								submissionExtends.add(new SubmissionExtend(submission));
+								SubmissionExtend submissionExtend = new SubmissionExtend(submission);
+								if (submissionExtend.getOwnerId() != null) {
+									submissionExtend.setOwnerDesc(
+											(userService.selectById(submissionExtend.getOwnerId()).getUserdesc()));
+								}
+								if (submissionExtend.getSuperiorVerifiUserId() != null) {
+									submissionExtend.setSuperiorVerifiUserDesc((userService
+											.selectById(submissionExtend.getSuperiorVerifiUserId()).getUserdesc()));
+								}
+								submissionExtend.setVerifiable(true);
+								submissionExtends.add(submissionExtend);
 							}
 							msgCoSponsorExtend.setSubmissions(submissionExtends);
 						}
@@ -621,7 +647,17 @@ public class MsgController {
 						if (submissions != null && submissions.size() > 0) {
 							List<SubmissionExtend> submissionExtends = new ArrayList<SubmissionExtend>();
 							for (Submission submission : submissions) {
-								submissionExtends.add(new SubmissionExtend(submission));
+								SubmissionExtend submissionExtend = new SubmissionExtend(submission);
+								if (submissionExtend.getOwnerId() != null) {
+									submissionExtend.setOwnerDesc(
+											(userService.selectById(submissionExtend.getOwnerId()).getUserdesc()));
+								}
+								if (submissionExtend.getSuperiorVerifiUserId() != null) {
+									submissionExtend.setSuperiorVerifiUserDesc((userService
+											.selectById(submissionExtend.getSuperiorVerifiUserId()).getUserdesc()));
+								}
+								submissionExtend.setVerifiable(false);
+								submissionExtends.add(submissionExtend);
 							}
 							msgSponsorExtend.setSubmissions(submissionExtends);
 						}
@@ -653,7 +689,17 @@ public class MsgController {
 						if (submissions != null && submissions.size() > 0) {
 							List<SubmissionExtend> submissionExtends = new ArrayList<SubmissionExtend>();
 							for (Submission submission : submissions) {
-								submissionExtends.add(new SubmissionExtend(submission));
+								SubmissionExtend submissionExtend = new SubmissionExtend(submission);
+								if (submissionExtend.getOwnerId() != null) {
+									submissionExtend.setOwnerDesc(
+											(userService.selectById(submissionExtend.getOwnerId()).getUserdesc()));
+								}
+								if (submissionExtend.getSuperiorVerifiUserId() != null) {
+									submissionExtend.setSuperiorVerifiUserDesc((userService
+											.selectById(submissionExtend.getSuperiorVerifiUserId()).getUserdesc()));
+								}
+								submissionExtend.setVerifiable(false);
+								submissionExtends.add(submissionExtend);
 							}
 							msgCoSponsorExtend.setSubmissions(submissionExtends);
 						}
@@ -678,7 +724,8 @@ public class MsgController {
 		if (msgSponsor != null && msgSponsor.getId() != null) {
 			final MsgSponsor msgSponsor0 = msgSponsorService.selectById(msgSponsor.getId());
 			if (msgSponsor0 != null) {
-				final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msgSponsor0.getMsgId(), roleUsers);
+				final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msgSponsor0.getMsgId(),
+						roleUsers);
 				boolean editabled = false;
 				if (roleId < 4L && permissionId < 6L && msgSponsor0.getStatus() > 2) {
 					editabled = true;
@@ -708,7 +755,7 @@ public class MsgController {
 		}
 		return "404";
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveMsgCoSponsor")
 	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, RedirectAttributes model, HttpSession session) {
@@ -719,7 +766,8 @@ public class MsgController {
 		if (msgCoSponsor != null && msgCoSponsor.getId() != null) {
 			final MsgCoSponsor msgCoSponsor0 = msgCoSponsorService.selectById(msgCoSponsor.getId());
 			if (msgCoSponsor0 != null) {
-				final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msgCoSponsor0.getMsgId(), roleUsers);
+				final List<Long> userIds = msgContractorService.selectByMsgIdAndRoleUsers(msgCoSponsor0.getMsgId(),
+						roleUsers);
 				boolean editabled = false;
 				if (roleId < 4L && permissionId < 6L && msgCoSponsor0.getStatus() > 2) {
 					editabled = true;
