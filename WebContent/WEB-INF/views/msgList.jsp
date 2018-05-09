@@ -37,6 +37,8 @@
 </div>
 <div class="pageBox">
 	<input type="hidden" id="pageNo" value="${page.pageNo}" />
+	<input type="hidden" id="type" value="${type}" />
+	<input type="hidden" id="status" value="${status}" />
 	<c:if test="${page.pageNo eq 1}">
 		<span class="page firstP">首页</span>
 		<span class="page beforeP">上一页</span>
@@ -122,6 +124,24 @@
 			status : 0
 		}, function(data) {
 			showData("#main-content",data);
+		});
+	}
+	</script>
+	</c:if>
+	<c:if test="${titleName == '提醒预览'}">
+	<script type="text/javascript">
+	$(function() {
+		$("#index-page-title").html("提醒预览");
+		$("#current-page-title").html("提醒预览");
+	});
+	function query(pageNo) {
+		var url = 'rest/msg//msgListByNotice';
+		$.post(url, {
+			pageNo : pageNo,
+			type:$("#type").val(),
+			status:$("#status").val()
+		}, function(data) {
+			$('#msgList').html(data);
 		});
 	}
 	</script>

@@ -1,8 +1,10 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
@@ -39,4 +41,11 @@ public interface NoticeService extends GenericService<Notice, Long> {
 	
 	void noticeByTargetId(String targetId) throws Exception;
 
+	List<Notice> selectMsg(int type,Long userId,int isRead);
+	
+	List<Notice> selectMsg(int type,Long userId);
+	
+	int deleteByExample(NoticeExample example);
+	
+	void modifyUserId(String msgId,List<Long> roleUserIds,int type) throws Exception ;
 }

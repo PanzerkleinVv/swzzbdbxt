@@ -76,9 +76,6 @@ public class UserController {
 			final User authUserInfo = userService.selectByUsername(user.getUsername());
 			final List<Role> role = roleService.selectRolesByUserId(authUserInfo.getId());
 			final List<Permission> permission = permissionService.selectPermissionsByUserId(authUserInfo.getId());
-			//计算提醒信息
-			List<NoticeCount> noticeCounts = noticeService.countNotice(1L);
-			request.getSession().setAttribute("noticeCounts",noticeCounts);
 			request.getSession().setAttribute("userInfo", authUserInfo);
 			request.getSession().setAttribute("userId", authUserInfo.getId());
 			request.getSession().setAttribute("roleId", role.get(0).getId());
