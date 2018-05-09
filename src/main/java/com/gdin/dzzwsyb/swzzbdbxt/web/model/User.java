@@ -122,7 +122,7 @@ public class User {
 	}
 
 	public boolean isEmpty() {
-		if (this.id != null && !"".equals(this.id)) {
+		if (this.id != null && this.id != 0) {
 			return false;
 		} else if (this.username != null && !"".equals(this.username)) {
 			return false;

@@ -92,7 +92,7 @@
 		});
 		$.post(url, {
 			"msgId" : $("#id").val(),
-			"userIds" : userIds
+			"userIds[]" : userIds
 		}, function(data) {
 			showData("#msg-content", data);
 		});
@@ -112,5 +112,96 @@
 		}, function(data) {
 			showData("#msg-content", data);
 		})
+	}
+	
+	function addSubmission(type, targetId) {
+		var url = "rest/submission/add";
+		$.post(url, {
+			"msgId0" : $("#id").val(),
+			"msgId" : targetId,
+			"type" : type
+		}, function(data) {
+			showData("#msg-content", data);
+		});
+	}
+	
+	function saveSubmission(targetId, status, type) {
+		var url = "rest/submission/save";
+		if (type == 1 || type == 4) {
+			$.post(url, {
+				"msgId0" : $("#id").val(),
+				"id" : targetId,
+				"status" : status,
+				"situation" : UE.getEditor(targetId + '_editor1').getContent()
+			}, function(data) {
+				showData("#msg-content", data);
+			});
+		} else if (type == 2) {
+			$.post(url, {
+				"msgId0" : $("#id").val(),
+				"id" : targetId,
+				"status" : status,
+				"situation" : UE.getEditor(targetId + '_editor1').getContent(),
+				"reason" : UE.getEditor(targetId + '_editor2').getContent(),
+				"measure" : UE.getEditor(targetId + '_editor3').getContent()
+			}, function(data) {
+				showData("#msg-content", data);
+			});
+		} else if (type == 3) {
+			$.post(url, {
+				"msgId0" : $("#id").val(),
+				"id" : targetId,
+				"status" : status,
+				"situation" : UE.getEditor(targetId + '_editor1').getContent(),
+				"reason" : UE.getEditor(targetId + '_editor2').getContent()
+			}, function(data) {
+				showData("#msg-content", data);
+			});
+		}
+	}
+	
+	function delSubmission(targetId) {
+		var url = "rest/submission/del";
+		$.post(url, {
+			"msgId0" : $("#id").val(),
+			"id" : targetId
+		}, function(data) {
+			showData("#msg-content", data);
+		});
+	}
+	
+	function pass(targetId) {
+		var url = "rest/submission/verify";
+		$.post(url, {
+			"msgId0" : $("#id").val(),
+			"id" : targetId,
+			"superiorVerifyPassed" : 1,
+			"status" : 2
+		}, function(data) {
+			showData("#msg-content", data);
+		});
+	}
+	
+	function noPass(targetId) {
+		var url = "rest/submission/verify";
+		$.post(url, {
+			"msgId0" : $("#id").val(),
+			"id" : targetId,
+			"superiorVerifyPassed" : 0,
+			"status" : 2
+		}, function(data) {
+			showData("#msg-content", data);
+		});
+	}
+	
+	function callbackSubmission(targetId) {
+		var url = "rest/submission/callback";
+		$.post(url, {
+			"msgId0" : $("#id").val(),
+			"id" : targetId,
+			"status" : 0
+		}, function(data) {
+			showData("#msg-content", data);
+		});
 	}
 </script>
