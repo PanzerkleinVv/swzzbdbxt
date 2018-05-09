@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 
@@ -11,6 +12,8 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserExample.Criteria;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.UserService;
+import com.mysql.fabric.xmlrpc.base.Array;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -115,5 +118,21 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 			return userMapper.selectByExample(example);
 		}
 		return null;
+	}
+
+	@Override
+	public List<User> selectByRoleIdList(List<Long> roleIdList) {
+		// TODO Auto-generated method stub
+		List<User> users = new ArrayList<User>();
+		for(Long roleId : roleIdList) {
+			UserExample example = new UserExample();
+			example.createCriteria().andRoleIdEqualTo(roleId).andStateNotEqualTo(0);
+			example.setOrderByClause("PERMISSION_ID");
+			List<User> userList = userMapper.selectByExample(example);
+			for(User user : userList) {
+				users.add(user);
+			}
+		}
+		return users;
 	}
 }

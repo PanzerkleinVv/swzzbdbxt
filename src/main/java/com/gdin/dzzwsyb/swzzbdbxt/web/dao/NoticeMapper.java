@@ -37,6 +37,8 @@ public interface NoticeMapper extends GenericDao<Notice, Long> {
 	int updateByPrimaryKey(Notice record);
 
 	List<NoticeCount> countNotice(Long userid);
+	
+	
 
 
 }

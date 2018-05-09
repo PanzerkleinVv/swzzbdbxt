@@ -1,5 +1,7 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,8 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample.Criteria;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
@@ -28,30 +32,21 @@ public class NoticeController {
 	@Resource
 	NoticeService noticeService;
 	
-	@RequestMapping("/notices")
-	public String notices(Model model, HttpSession session) {
-		final Long roldId = (Long) session.getAttribute("roldId");
-		final Long userId = (Long) session.getAttribute("userId");
+	@RequestMapping("/dashboard")
+	public String dashboard(Model model, HttpSession session) {
+		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
-		List<Notice> noticeList = null;
-		NoticeExample noticeExample  = new NoticeExample();
-		if(roldId == 1) {
-			noticeList = noticeService.selectList();
-		}
-		else {
-			Criteria criteria = noticeExample.createCriteria();
-			criteria.andUserIdEqualTo(roldId);
-			noticeList = noticeService.selectByExample(noticeExample);
-		}
-		model.addAttribute("noticeList", noticeList);
-		return "noticeList";
+		final Long userId = (Long) session.getAttribute("userId");
+		List<NoticeCount> noticeCounts = null;
+		noticeCounts = noticeService.countNotice(userId);
+		String[] noticeType = SelectArray.getNoticeType();
+		//计算提醒信息
+		model.addAttribute("noticeCounts",noticeCounts);
+		model.addAttribute("noticeType",noticeType);
+		return "dashboard";
 	}
 	
-	@RequestMapping("/msgList")
-	public String msgList(@RequestParam("status") Integer status,@RequestParam("Type") Integer type,Model model, HttpSession session) {
-		
-		
-		return null;
-		
-	}
+	
+	
+	
 }
