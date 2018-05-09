@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Permission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.PermissionService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.RoleService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.UserService;
@@ -46,6 +48,8 @@ public class UserController {
 	private RoleService roleService;
 	@Resource
 	private PermissionService permissionService;
+	@Resource
+	private NoticeService noticeService;
 
 	/**
 	 * 用户登录
@@ -70,6 +74,11 @@ public class UserController {
 			subject.login(new UsernamePasswordToken(user.getUsername(), user.getPassword()));
 			// 验证成功在Session中保存用户信息
 			final User authUserInfo = userService.selectByUsername(user.getUsername());
+			final List<Role> role = roleService.selectRolesByUserId(authUserInfo.getId());
+			final List<Permission> permission = permissionService.selectPermissionsByUserId(authUserInfo.getId());
+			//计算提醒信息
+			List<NoticeCount> noticeCounts = noticeService.countNotice(1L);
+			request.getSession().setAttribute("noticeCounts",noticeCounts);
 			request.getSession().setAttribute("userInfo", authUserInfo);
 			request.getSession().setAttribute("userId", authUserInfo.getId());
 			request.getSession().setAttribute("roleId", authUserInfo.getRoleId());

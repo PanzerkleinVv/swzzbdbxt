@@ -68,21 +68,58 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 	@Override
 	public boolean addNotice(Notice notice) throws Exception {
 		// TODO Auto-generated method stub
-		return false;
+		boolean flag = false;
+		if(notice.getTargetId() != null&&notice.getTargetType() != null&&notice.getType() != null) {
+			noticeMapper.insert(notice);
+			flag = true;
+		}
+		else {
+			throw new Exception("新增出错");
+		}
+		return flag;
 	}
 
 	@Override
 	public boolean removeNotice(Notice notice) throws Exception {
 		// TODO Auto-generated method stub
-		return false;
+		boolean flag = false;
+		if(notice.getTargetId() != null&&notice.getTargetType() != null&&notice.getType() != null) {
+			noticeMapper.deleteByPrimaryKey(notice.getId());
+			flag = true;
+		}
+		else {
+			throw new Exception("删除出错");
+		}
+		return flag;
 	}
 
 	@Override
 	public boolean readNotice(Notice notice) throws Exception {
 		// TODO Auto-generated method stub
-		return false;
+		boolean flag = false;
+		if(notice.getTargetId() != null&&notice.getTargetType() != null&&notice.getType() != null) {
+			notice.setIsRead(1);
+			noticeMapper.updateByPrimaryKey(notice);
+			flag = true;
+		}
+		else {
+			throw new Exception("标志已读出错");
+		}
+		return flag;
+	
 	}
 
-
+	@Override
+	public void noticeByTargetId(String targetId) throws Exception {
+		// TODO Auto-generated method stub
+		NoticeExample example = new NoticeExample();
+		example.createCriteria().andTargetIdEqualTo(targetId);
+		List<Notice> notices = selectByExample(example);
+		if(notices.size() > 0 ) {
+			for(Notice notice : notices) {
+				removeNotice(notice);
+			}
+		}
+	}
 
 }

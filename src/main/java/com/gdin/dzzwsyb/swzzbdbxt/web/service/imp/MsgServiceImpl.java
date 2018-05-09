@@ -64,12 +64,12 @@ public class MsgServiceImpl extends GenericServiceImpl<Msg, String> implements M
 	}
 
 	@Override
-	public int deleteOldMsg() {
+	public List<Msg> overMsg() {
 		MsgExample example = new MsgExample();
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.YEAR, -3);
-		example.createCriteria().andCreateTimeLessThan(calendar.getTime());
-		return msgMapper.deleteByExample(example);
+		calendar.add(Calendar.DATE,0);
+		example.createCriteria().andLimitTimeLessThan(calendar.getTime());
+		return msgMapper.selectByExample(example);
 	}
 
 	@Override
