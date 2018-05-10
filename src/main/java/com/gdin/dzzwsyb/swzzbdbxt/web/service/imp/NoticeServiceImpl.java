@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.NoticeMapper;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
@@ -119,6 +122,42 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 			for(Notice notice : notices) {
 				removeNotice(notice);
 			}
+		}
+	}
+
+	@Override
+	public List<Notice> selectMsg(int type,Long userId, int isRead) {
+		// TODO Auto-generated method stub
+		NoticeExample example = new NoticeExample();
+		example.createCriteria().andTypeEqualTo(type).andIsReadEqualTo(isRead).andUserIdEqualTo(userId);
+		return noticeMapper.selectByExample(example);
+	}
+
+	@Override
+	public List<Notice> selectMsg(int type,Long userId) {
+		// TODO Auto-generated method stub
+		NoticeExample example = new NoticeExample();
+		example.createCriteria().andTypeEqualTo(type).andUserIdEqualTo(userId);
+		return noticeMapper.selectByExample(example);
+	}
+
+	@Override
+	public int deleteByExample(NoticeExample example) {
+		// TODO Auto-generated method stub
+		return noticeMapper.deleteByExample(example);
+	}
+
+	@Override
+	public void modifyUserId(String msgId, List<Long> roleUserIds,int type) throws Exception {
+		// TODO Auto-generated method stub
+		final int isRead = 1;//提醒表-未读
+		final int targetType = 0;//提醒表-msg
+		NoticeExample example = new NoticeExample();
+		example.createCriteria().andUserIdIn(roleUserIds).andTargetIdEqualTo(msgId);
+		noticeMapper.deleteByExample(example);
+		for(Long userId :roleUserIds) {
+			Notice notice = new Notice(userId, type, msgId, targetType, ApplicationUtils.getTime(), isRead);
+			addNotice(notice);
 		}
 	}
 

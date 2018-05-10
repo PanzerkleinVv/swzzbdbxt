@@ -107,7 +107,7 @@
 						<div class="sidebar-toggler hidden-phone"></div> <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
 					</li>
 
-					<li class="start active"><a href="./rest/page/dashboard"
+					<li class="start active"><a href="./rest/notice/dashboard"
 						id="btn-dashboard"> <i class="fa fa-home"></i><span
 							class="title"> 首页 </span><span class="selected"> </span>
 					</a></li>

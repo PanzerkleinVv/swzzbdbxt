@@ -49,4 +49,6 @@ public interface UserService extends GenericService<User, Long> {
 	boolean checkUsername(User user);
 	
 	List<User> selectByUserIds(List<Long> userIds);
+	
+	List<User> selectByRoleIdList(List<Long> roleIdList);
 }

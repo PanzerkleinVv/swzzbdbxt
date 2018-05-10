@@ -241,11 +241,8 @@ public class MsgController {
 		MsgSponsor msgSponsor;
 		List<Long> msgSponsorSelect = null;// 存储下拉框选中的主处室
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
-		List<MsgCoSponsor> msgCoSponsors;
-		List<MsgSponsor> msgSponsors;
-		final int isRead = 1;//提醒表-未读
-		final int type = 4;//提醒表-草稿
-		final int targetType = 0;//提醒表-msg
+		List<MsgCoSponsor> msgCoSponsors = null;
+		List<MsgSponsor> msgSponsors = null;
 		String basisSelect = msg.getBasis();
 		Integer sequenceNumber = sequenceNumberService.next();
 		List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
@@ -351,16 +348,41 @@ public class MsgController {
 		model.addAttribute("id", msgId);
 		if (status == 0) {
 			//录入提醒表
+			int type = 5;//草稿箱
+			
 			noticeService.noticeByTargetId(msgId);
-			Long userId = (Long) request.getSession().getAttribute("userId");
-			Notice notice = new Notice(userId, type, msgId, targetType, ApplicationUtils.getTime(), isRead);
-			noticeService.addNotice(notice);
+			List<Long> roleIdList = new ArrayList<Long>();
+			roleIdList.add(1L);
+			roleIdList.add(2L);
+			roleIdList.add(3L);
+			List<Long> roleUserIds = new ArrayList<Long>();
+			List<User> roleUsers = userService.selectByRoleIdList(roleIdList);
+			for(User user2 : roleUsers) {
+				roleUserIds.add(user2.getId());
+			}
+			noticeService.modifyUserId(msgId, roleUserIds,type);
 			return "upload";
 		} else {
-			MsgExtend msgExtend = new MsgExtend();
-			msgExtend.setId(msgId);
-			reditectModel.addFlashAttribute("msg", msgExtend);
-			return "redirect:/rest/msg/openMsg";
+			//发布之后变为待签收状态
+			int type = 3 ;//待签收
+			noticeService.noticeByTargetId(msgId);//根据msgid删除notice
+			List<Long> roleIdList = new ArrayList<Long>();
+			for(MsgSponsor msgSponsor2 : msgSponsors) {
+				roleIdList.add(msgSponsor2.getRoleId());
+			}
+			while(msgCoSponsors.size()>0) {
+				for(MsgCoSponsor msgCoSponsor2 : msgCoSponsors) {
+					roleIdList.add(msgCoSponsor2.getRoleId());
+				}
+				break;
+			}
+			List<Long> roleUserIds = new ArrayList<Long>();
+			List<User> roleUsers = userService.selectByRoleIdList(roleIdList);
+			for(User user2 : roleUsers) {
+				roleUserIds.add(user2.getId());
+			}
+			noticeService.modifyUserId(msgId, roleUserIds,type);
+			return "redirect:/rest/msg/openMsg?id=" + msgId;
 		}
 
 	}
@@ -406,11 +428,12 @@ public class MsgController {
 	@RequestMapping(value = "/detele")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String detele(@RequestParam("id") String msgId, Model model, HttpServletResponse resp,
-			HttpServletRequest request) {
+			HttpServletRequest request) throws Exception {
 		msgService.delete(msgId);
 		attachService.deleteByMsgId(msgId);
 		msgCoSponsorService.deleteByMgsId(msgId);
 		msgSponsorService.deleteByMgsId(msgId);
+		noticeService.noticeByTargetId(msgId);
 		return "upload";
 	}
 
@@ -418,7 +441,7 @@ public class MsgController {
 	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
 			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,
 			PermissionSign.CHU_SHI_FU_ZE_REN }, logical = Logical.OR)
-	public String sign(Msg msg, RedirectAttributes model, HttpSession session) {
+	public String sign(Msg msg, RedirectAttributes model, HttpSession session) throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		if (msg != null && msg.getId() != null) {
 			boolean signable = false;
@@ -429,6 +452,16 @@ public class MsgController {
 				count = msgSponsorService.doSign(msg.getId(), roleId);
 				count = count + msgCoSponsorService.doSign(msg.getId(), roleId);
 				if (count == 1) {
+					//签收成功，notice变为待指派
+					int type = 4;//待指派
+					final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
+					List<Long> roleUserIds = new ArrayList<Long>();
+					for(User user : roleUsers) {
+						if(user.getPermissionId() < 6L) {
+							roleUserIds.add(user.getId());
+						}
+					}
+					noticeService.modifyUserId(msg.getId(), roleUserIds, type);
 					model.addFlashAttribute("msg1", "签收成功！");
 					model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
 					model.addFlashAttribute("msg", new MsgExtend(msg));
@@ -445,9 +478,6 @@ public class MsgController {
 	@RequestMapping(value = "/callback")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String callBack(@RequestParam("id") String msgId,Model model,HttpSession session, HttpServletRequest request,RedirectAttributes reditectModel) throws Exception {
-		final int isRead = 1;//提醒表-未读
-		final int type = 4;//提醒表-草稿
-		final int targetType = 0;//提醒表-msg
 		MsgExtend msg0 = new MsgExtend();
 		msg0.setId(msgId);
 		if (msgId != null) {
@@ -460,9 +490,20 @@ public class MsgController {
 					msg0.setStatus(0);
 				}
 				//撤回重新录入notice提醒表
-				Long userId = (Long) request.getSession().getAttribute("userId");
-				Notice notice = new Notice(userId, type, msgId, targetType, ApplicationUtils.getTime(), isRead);
-				noticeService.addNotice(notice);
+				int type = 5;//草稿
+				noticeService.noticeByTargetId(msgId);
+				List<Long> roleIdList = new ArrayList<Long>();
+				roleIdList.add(1L);
+				roleIdList.add(2L);
+				roleIdList.add(3L);
+				List<Long> roleUserIds = new ArrayList<Long>();
+				List<User> roleUsers = userService.selectByRoleIdList(roleIdList);
+				for(User user2 : roleUsers) {
+					if(user2.getPermissionId() < 6L) {
+						roleUserIds.add(user2.getId());
+					}
+				}
+				noticeService.modifyUserId(msgId, roleUserIds,type);
 			}
 			else {
 				reditectModel.addFlashAttribute("msg1", "撤回失败！");
@@ -497,6 +538,8 @@ public class MsgController {
 					roleUserIds.add(roleUser.getId());
 				}
 				msgContractorService.modifyUserId(msgId, userIds, roleUserIds);
+				//成功删除改督查事项待分派提醒
+				noticeService.noticeByTargetId(msgId);
 				model.addFlashAttribute("msg1", "分派成功！");
 				model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
 				model.addFlashAttribute("msg", msgExtend);
@@ -808,5 +851,45 @@ public class MsgController {
 			}
 		}
 		return "404";
+	}
+	
+	@RequestMapping("/msgListByNotice")
+	public String noticeList(@RequestParam("pageNo") int pageNo,@RequestParam("status") Integer status,@RequestParam("type") Integer type,Model model, HttpSession session) {
+		final Long roleId = (Long) session.getAttribute("roleId");
+		final Long permissionId = (Long) session.getAttribute("permissionId");
+		final Long userId = (Long) session.getAttribute("userId");
+		final MsgExample example = new MsgExample();
+		List<Notice> notices = null;	
+		List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
+		List<Msg> msgs = new ArrayList<Msg>();
+		List<String> msgIds = new ArrayList<String>();
+		Page<Msg> page = null;
+		example.setOrderByClause("sequence asc");
+		Criteria criteria = example.createCriteria();
+		if(status != null && status == 0) {
+			notices = noticeService.selectMsg(type,userId);
+		}
+		else {
+			notices = noticeService.selectMsg(type, userId,1);
+		}
+		for(Notice notice : notices) {
+			Msg msg = msgService.selectById(notice.getTargetId());
+			msgExtends.add(new MsgExtend(msg));
+			msgs.add(msg);
+			msgIds.add(msg.getId());
+		}
+		criteria.andIdIn(msgIds);
+		page = msgService.selectByExampleAndPage(example, pageNo);
+		final Map<Long, String> roleMap = (Map<Long, String>) session.getAttribute("roleMap");
+		msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
+		msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
+		List<List<String>> ids = submissionService.selectIdsByMsgList(msgs, roleId);
+		msgExtends = attachService.selectMsgExtendByMsgList(msgExtends, ids);
+		model.addAttribute("msgs", msgExtends);
+		model.addAttribute("page", page);
+		model.addAttribute("titleName", "提醒预览");
+		model.addAttribute("status",status);
+		model.addAttribute("type",type);
+		return "msgList";
 	}
 }
