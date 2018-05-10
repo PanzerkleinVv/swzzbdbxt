@@ -126,3 +126,20 @@
 	}
 	</script>
 </c:if>
+<c:if test="${titleName == '提请草稿'}">
+	<script type="text/javascript">
+	$(function() {
+		$("#index-page-title").html("提请草稿");
+		$("#current-page-title").html("提请草稿");
+	});
+	function query(pageNo) {
+		var url = 'rest/msg/msgList';
+		$.post(url, {
+			pageNo : pageNo,
+			submissionStatustatus : 0
+		}, function(data) {
+			showData("#main-content",data);
+		});
+	}
+	</script>
+</c:if>

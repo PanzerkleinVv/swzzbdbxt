@@ -18,6 +18,14 @@ public class PageController {
     public String login() {
         return "login";
     }
+    
+    /**
+     * 单点登录页
+     */
+    @RequestMapping("/singleLogin")
+    public String singleLogin() {
+        return "singleLogin";
+    }
 
     /**
      * dashboard页

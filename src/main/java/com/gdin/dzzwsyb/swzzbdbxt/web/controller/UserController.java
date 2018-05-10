@@ -68,14 +68,12 @@ public class UserController {
 			}
 			if (result.hasErrors()) {
 				model.addAttribute("error", "参数错误！");
-				return "login";
+				return "singleLogin";
 			}
 			// 身份验证
 			subject.login(new UsernamePasswordToken(user.getUsername(), user.getPassword()));
 			// 验证成功在Session中保存用户信息
 			final User authUserInfo = userService.selectByUsername(user.getUsername());
-			final List<Role> role = roleService.selectRolesByUserId(authUserInfo.getId());
-			final List<Permission> permission = permissionService.selectPermissionsByUserId(authUserInfo.getId());
 			//计算提醒信息
 			List<NoticeCount> noticeCounts = noticeService.countNotice(1L);
 			request.getSession().setAttribute("noticeCounts",noticeCounts);
@@ -107,7 +105,7 @@ public class UserController {
 		} catch (AuthenticationException e) {
 			// 身份验证失败
 			model.addAttribute("error", "用户名或密码错误 ！");
-			return "login";
+			return "singleLogin";
 		}
 		return "redirect:/";
 	}
@@ -130,7 +128,7 @@ public class UserController {
 		// 登出操作
 		Subject subject = SecurityUtils.getSubject();
 		subject.logout();
-		return "login";
+		return "singleLogin";
 	}
 
 	/**

@@ -26,6 +26,8 @@ public class MsgQuery {
 	private Long roleId;
 
 	private Long userId;
+	
+	private Integer submissionStatus;
 
 	public Date getCreateTimeBegin() {
 		return createTimeBegin;
@@ -99,6 +101,14 @@ public class MsgQuery {
 		this.userId = userId;
 	}
 
+	public Integer getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(Integer submissionStatus) {
+		this.submissionStatus = submissionStatus;
+	}
+
 	public void setExample(Criteria criteria) {
 		if (userId != null && userId != 0L) {
 			String condition = " (id in (select msg_id from msg_contractor where user_id=" + userId + ")) ";
@@ -151,6 +161,13 @@ public class MsgQuery {
 			calendar.setTime(createTimeEnd);
 			calendar.add(Calendar.DAY_OF_MONTH, 1);
 			criteria.andCreateTimeLessThan(calendar.getTime());
+		}
+		if (submissionStatus != null && submissionStatus == 0) {
+			String condition = "(id in (select msg_id from msg_sponsor where id in (select msg_id from submission where status = 0)) OR id in (select msg_id from `msg_co-sponsor` where id in (select msg_id from submission where status = 0)))";
+			criteria.addCriterion(condition);
+		} else if (submissionStatus != null && submissionStatus == 1) {
+			String condition = "(id in (select msg_id from msg_sponsor where id in (select msg_id from submission where status = 1)) OR id in (select msg_id from `msg_co-sponsor` where id in (select msg_id from submission where status = 1)))";
+			criteria.addCriterion(condition);
 		}
 	}
 }
