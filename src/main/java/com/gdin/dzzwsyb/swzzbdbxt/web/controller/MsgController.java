@@ -398,7 +398,7 @@ public class MsgController {
 	@RequestMapping(value = "/getData")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String get( String msgBasis, String msgId, Integer sequenceNumber, String role, String name,
-					String basis,Date limitTime,Date createTime,Model model, HttpServletResponse resp, HttpServletRequest request) {
+					String basis,Date limitTime,Date createTime,Model model,  HttpServletRequest request) {
 
 		String basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>();
