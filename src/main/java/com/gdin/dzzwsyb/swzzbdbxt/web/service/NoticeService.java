@@ -48,4 +48,8 @@ public interface NoticeService extends GenericService<Notice, Long> {
 	int deleteByExample(NoticeExample example);
 	
 	void modifyUserId(String msgId,List<Long> roleUserIds,int type) throws Exception ;
+	
+	void updateIsRead(String msgId,Long userId);
+	
+	void updateByMsgId(String msgId);
 }

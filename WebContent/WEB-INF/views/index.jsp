@@ -269,6 +269,8 @@
         <![endif]-->
 	<script src="assets/plugins/jquery-1.10.2.min.js"
 		type="text/javascript"></script>
+	<script src="assets/plugins/ajaxfileupload(2).js"
+		type="text/javascript"></script>
 	<script src="assets/plugins/jquery-migrate-1.2.1.min.js"
 		type="text/javascript"></script>
 	<script src="assets/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js"

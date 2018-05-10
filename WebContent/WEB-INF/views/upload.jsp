@@ -2,7 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<!-- <form id="from" method="post"> -->
 <div class="mainContent">
 	<div id="uploadBox">
 		<input type='text' id='msgId' value="${id}" style="display: none"
@@ -165,21 +164,20 @@
 	}
 
 	function getData() {
-		var form = new FormData(document.getElementById("form"));
-		form.append("name", $("#name").val());
-		form.append("basis", $("#basis").val());
-		form.append("role", $("#role").val());
-		form.append("assitrole", $("#assitrole").val());
-		form.append("limitTime", $("#limitTime").val());
-		form.append("createTime", $("#createTime").val());
-		form.append("msgId", $("#msgId").val());
-		form.append("sequenceNumber", $("#sequenceNumber").val());
-		form.append("msgBasis", $("#msgBasis").val());
 		$.ajax({
 			type : "POST",
-			url : 'rest/msg/gett',
+			url : 'rest/msg/getData',
 			async : false,
-			data : form,
+			data : {
+			name: $("#name").val(),
+			basis: $("#basis").val(),
+			role: $("#role").val(),
+			limitTime: $("#limitTime").val(),
+			createTime: $("#createTime").val(),
+			msgId :$("#msgId").val(),
+			sequenceNumber: $("#sequenceNumber").val(),
+			msgBasis: $("#msgBasis").val(),
+			},
 			contentType : false,
 			processData : false,
 			success : function(data) {
@@ -188,19 +186,17 @@
 		});
 	}
 	function doUpload() {
-		var data = new FormData($("#uploadForm")[0]);
 		var successMsg = $('#successMsg');
-		$.ajax({
+		 $.ajaxFileUpload({
 			url : 'rest/attach/upload',
 			type : 'POST',
-			data : data,
-			fileElementId : 'excelFile', //文件上传域的ID(<input type="file">的id)    
+			data : $('#uploadForm').serialize(), 
+			fileElementId : 'fileID', //文件上传域的ID(<input type="file">的id)    
 			async : false,
 			cache : false,
 			contentType : false,
 			processData : false,
 			success : function(returndata) {
-				console.log(returndata);
 				successMsg.html("上传附件成功");
 				successMsg.css('color', '#00FF00');
 			},
@@ -209,21 +205,22 @@
 	function insert() {
 		disabledAll();
 		if (check(0) && check(1) && check(2) && check(3) && check(4)) {
-			var form = new FormData(document.getElementById("form"));
-			form.append("status", 0);
-			form.append("name", $("#name").val());
-			form.append("basis", $("#basis").val());
-			form.append("role", $("#role").val());
-			form.append("assitrole", $("#assitrole").val());
-			form.append("limitTime", $("#limitTime").val());
-			form.append("createTime", $("#createTime").val());
-			form.append("msgId", $("#msgId").val());
-			form.append("sequenceNumber", $("#sequenceNumber").val());
-			form.append("msgBasis", $("#msgBasis").val());
+			var json ={
+				status: 0,
+				name: $("#name").val(),
+				basis: $("#basis").val(),
+				role: $("#role").val(),
+				assitrole: $("#assitrole").val(),
+				limitTime: $("#limitTime").val(),
+				createTime: $("#createTime").val(),
+				id :$("#msgId").val(),
+				sequenceNumbers: $("#sequenceNumber").val(),
+				msgBasis: $("#msgBasis").val(),
+			}
 			$.ajax({
 				url : 'rest/msg/insert',
 				type : "post",
-				data : form,
+				data : json,
 				/* fileElementId: 'file', */
 				cache : false,
 				processData : false,
@@ -277,17 +274,18 @@
 	function send() {
 		disabledAll();
 		if (check(0) && check(1) && check(2) && check(3) && check(4)) {
-			var form = new FormData(document.getElementById("form"));
-			form.append("status", 1);
-			form.append("name", $("#name").val());
-			form.append("basis", $("#basis").val());
-			form.append("role", $("#role").val());
-			form.append("assitrole", $("#assitrole").val());
-			form.append("limitTime", $("#limitTime").val());
-			form.append("createTime", $("#createTime").val());
-			form.append("msgId", $("#msgId").val());
-			form.append("sequenceNumber", $("#sequenceNumber").val());
-			form.append("msgBasis", $("#msgBasis").val());
+			var json ={
+				status: 0,
+				name: $("#name").val(),
+				basis: $("#basis").val(),
+				role: $("#role").val(),
+				assitrole: $("#assitrole").val(),
+				limitTime: $("#limitTime").val(),
+				createTime: $("#createTime").val(),
+				id :$("#msgId").val(),
+				sequenceNumbers: $("#sequenceNumber").val(),
+				msgBasis: $("#msgBasis").val(),
+			}
 			$.ajax({
 				url : 'rest/msg/insert',
 				type : "post",

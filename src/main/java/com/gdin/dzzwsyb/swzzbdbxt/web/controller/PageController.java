@@ -27,14 +27,7 @@ public class PageController {
         return "singleLogin";
     }
 
-    /**
-     * dashboard页
-     */
-    @RequestMapping("/dashboard")
-    public String dashboard() {
-        return "dashboard";
-    }
-
+   
     /**
      * 404页
      */
