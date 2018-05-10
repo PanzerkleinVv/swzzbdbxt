@@ -36,7 +36,7 @@
 				<ref bean="jobtask1" />
 			</property>
 			<!-- cron表达式 每天24:00运行一次 -->
-			<property name="cronExpression" value="0 18 10 * * ?" />
+			<property name="cronExpression" value="0 7 13 * * ?" />
 		</bean>
 		<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
 		<bean id="startQuertz" lazy-init="false" autowire="no"

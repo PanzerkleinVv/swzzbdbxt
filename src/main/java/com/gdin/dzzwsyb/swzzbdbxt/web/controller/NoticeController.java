@@ -2,6 +2,7 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -37,7 +38,7 @@ public class NoticeController {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
-		List<NoticeCount> noticeCounts = null;
+		List<NoticeCount> noticeCounts = new ArrayList<NoticeCount>();
 		noticeCounts = noticeService.countNotice(userId);
 		String[] noticeType = SelectArray.getNoticeType();
 		//计算提醒信息

@@ -152,12 +152,35 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 		// TODO Auto-generated method stub
 		final int isRead = 1;//提醒表-未读
 		final int targetType = 0;//提醒表-msg
-		NoticeExample example = new NoticeExample();
-		example.createCriteria().andUserIdIn(roleUserIds).andTargetIdEqualTo(msgId);
-		noticeMapper.deleteByExample(example);
+		noticeByTargetId(msgId);
 		for(Long userId :roleUserIds) {
 			Notice notice = new Notice(userId, type, msgId, targetType, ApplicationUtils.getTime(), isRead);
 			addNotice(notice);
+		}
+	}
+
+	@Override
+	public void updateIsRead(String msgId, Long userId) {
+		// TODO Auto-generated method stub
+		final int isRead = 0;//提醒表-已读
+		NoticeExample example = new NoticeExample();
+		example.createCriteria().andUserIdEqualTo(userId).andTargetIdEqualTo(msgId);
+		List<Notice> notices = noticeMapper.selectByExample(example);
+		for(Notice notice : notices) {
+			notice.setIsRead(isRead);
+			noticeMapper.updateByExample(notice, example);
+		}
+	}
+
+	@Override
+	public void updateByMsgId(String msgId) {
+		// TODO Auto-generated method stub
+		NoticeExample example = new NoticeExample();
+		example.createCriteria().andTargetIdEqualTo(msgId);
+		List<Notice> notices = noticeMapper.selectByExample(example);
+		for(Notice notice : notices) {
+			notice.setType(1);
+			noticeMapper.updateByExample(notice, example);
 		}
 	}
 
