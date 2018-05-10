@@ -16,6 +16,8 @@ public class MsgExtend extends Msg {
 	
 	private String statusName;
 	
+	private String msgBasis;
+	
 	public MsgExtend() {
 		
 	}
@@ -83,6 +85,14 @@ public class MsgExtend extends Msg {
 
 	public String getStatusName() {
 		return statusName;
+	}
+
+	public String getMsgBasis() {
+		return msgBasis;
+	}
+
+	public void setMsgBasis(String msgBasis) {
+		this.msgBasis = msgBasis;
 	}
 
 	public void setStatusName(String statusName) {
