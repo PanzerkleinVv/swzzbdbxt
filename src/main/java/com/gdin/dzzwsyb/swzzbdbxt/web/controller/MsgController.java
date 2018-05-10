@@ -386,8 +386,8 @@ public class MsgController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getData")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String getData( MsgExtend msg, @RequestParam(value = "role[]") long[] role, Model model, HttpServletResponse resp, HttpServletRequest request) {
 
+	public String getData( MsgExtend msg, @RequestParam(value = "role[]") long[] role, Model model, HttpServletResponse resp, HttpServletRequest request) {
 		String basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>();
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
