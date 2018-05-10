@@ -7,31 +7,31 @@
 			<div class="queryLine">
 				<span class="queryItem queryTitle">立项号：</span>
 				<span>
-					<input type='text' id='sequence' value=''
+					<input type='text' id='sequenceQuery' value=''
 						class="input-sm form-inline" />
 				</span>
 				<span class="queryItem queryTitle">立项依据：</span>
 				<span>
-					<input type='text' id='basis' value='' class="input-sm form-inline input-long" />
+					<input type='text' id='basisQuery' value='' class="input-sm form-inline input-long" />
 				</span>
 				<span class="queryItem queryTitle">督查事项：</span>
 				<span>
-					<input type='text' id='name' value='' class="input-sm form-inline input-long" />
+					<input type='text' id='nameQuery' value='' class="input-sm form-inline input-long" />
 				</span>
 			</div>
 			<div class="queryLine">
 				<span class="queryItem queryTitle">立项时间：</span>
 				<span>
-					<input size="16" type="text" id="createTimeBegin" value="" readonly
+					<input size="16" type="text" id="createTimeBeginQuery" value="" readonly
 						class="form_date input-sm form-inline"> <span
 						class="middleSpan">至</span> <input size="16" type="text"
-						id=createTimeEnd value="" readonly
+						id="createTimeEndQuery" value="" readonly
 						class="form_date input-sm form-inline">
 				</span>
 				<shiro:hasAnyRoles name="admin,1,2">
 				<span class="queryItem queryTitle">经办处室：</span>
 				<span>
-					<select id="roleId" class="input-sm form-inline">
+					<select id="roleIdQuery" class="input-sm form-inline">
 						<option></option>
 						<c:forEach var="role" begin="1" items="${sessionScope.roles}">
 							<option value="${role.id}">${role.roleName}</option>
@@ -41,7 +41,7 @@
 				</shiro:hasAnyRoles>
 				<span class="queryItem queryTitle">信息状态：</span>
 				<span>
-					<select id="status" class="input-sm form-inline">
+					<select id="statusQuery" class="input-sm form-inline">
 						<option></option>
 						<c:forEach var="status" begin="1" items="${sessionScope.msgStatus}" varStatus="state">
 							<option value="${state.index}">${status}</option>
@@ -53,7 +53,7 @@
 			<shiro:lacksPermission name="3">
 				<span class="queryItem queryTitle">经办人：</span>
 				<span>
-					<select id="userId" class="input-sm form-inline">
+					<select id="userIdQuery" class="input-sm form-inline">
 						<option></option>
 						<c:forEach var="user" items="${sessionScope.roleUsers}">
 							<option value="${user.id}">${user.userdesc}</option>
@@ -77,28 +77,28 @@
 		var url = 'rest/msg/msgList';
 		$.post(url, {
 			pageNo : pageNo,
-			sequence : $("#sequence").val(),
-			basis : $("#basis").val(),
-			name : $("#name").val(),
-			createTimeBegin : $("#createTimeBegin").val(),
-			createTimeEnd : $("#createTimeEnd").val(),
-			roleId : $("#roleId").val(),
-			status : $("#status").val(),
-			userId : $("#userId").val()
+			sequence : $("#sequenceQuery").val(),
+			basis : $("#basisQuery").val(),
+			name : $("#nameQuery").val(),
+			createTimeBegin : $("#createTimeBeginQuery").val(),
+			createTimeEnd : $("#createTimeEndQuery").val(),
+			roleId : $("#roleIdQuery").val(),
+			status : $("#statusQuery").val(),
+			userId : $("#userIdQuery").val()
 		}, function(data) {
 			$('#msgList').html(data);
 		});
 	}
 	
 	function reset() {
-		$("#sequence").val("");
-		$("#basis").val("");
-		$("#name").val("");
-		$("#createTimeBegin").val("");
-		$("#createTimeEnd").val("");
-		$("#roleId").val("");
-		$("#status").val("");
-		$("#userId").val("");
+		$("#sequenceQuery").val("");
+		$("#basisQuery").val("");
+		$("#nameQuery").val("");
+		$("#createTimeBeginQuery").val("");
+		$("#createTimeEndQuery").val("");
+		$("#roleIdQuery").val("");
+		$("#statusQuery").val("");
+		$("#userIdQuery").val("");
 	}
 
 	function getCodeSelected(target) {

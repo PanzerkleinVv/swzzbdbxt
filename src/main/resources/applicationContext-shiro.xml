@@ -9,7 +9,7 @@
 
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
-		<property name="loginUrl" value="/rest/page/login" />
+		<property name="loginUrl" value="/rest/page/singleLogin" />
 		<property name="successUrl" value="/rest/index" />
 		<property name="unauthorizedUrl" value="/rest/page/401" />
 		<property name="filterChainDefinitions">
@@ -19,6 +19,7 @@
 				/assets/** = anon
 				<!-- 登录页允许访问 -->
 				/rest/user/login = anon
+				/rest/page/singleLogin = anon
 				<!-- 其他资源需要认证 -->
 				/** = authc
 			</value>

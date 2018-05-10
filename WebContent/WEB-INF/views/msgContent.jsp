@@ -39,7 +39,7 @@
 		</div>
 		<c:choose>
 			<c:when test="${msgSponsor.editabled}">
-				<div>
+				<div class="middleTitle2">
 					<textarea cols="100" rows="15" id="${msgSponsor.id}_editor">${msgSponsor.content}</textarea>
 				</div>
 				<div class="middleTitle">
@@ -59,7 +59,7 @@
 				</div>
 			</c:when>
 			<c:otherwise>
-				<div>${msgSponsor.content}</div>
+				<div class="msgContentBox">${msgSponsor.content}</div>
 			</c:otherwise>
 		</c:choose>
 		<div>
@@ -78,11 +78,11 @@
 			</div>
 		</c:if>
 		<c:if test="${msgSponsor.submissions != null}">
-			<div>
+			<div class="middleTitle2">
 				<c:forEach var="submission" items="${msgSponsor.submissions}">
 					<c:choose>
 						<c:when test="${submission.status == 0}">
-							<div>
+							<div class="submissionBox">
 								<div class="submissionTitle">
 									<span class="msgTitle">提请${sessionScope.submissionType[submission.type]}（${sessionScope.submissionStatus[submission.status]}）</span>
 								</div>
@@ -96,7 +96,7 @@
 										</c:otherwise>
 									</c:choose>
 								</div>
-								<div>
+								<div class="middleTitle2">
 									<textarea cols="100" rows="15" id="${submission.id}_editor1">${submission.situation}</textarea>
 									<script type="text/javascript">
 										window.console = window.console
@@ -114,7 +114,7 @@
 									<div>
 										<span class="msgTitle">${sessionScope.submissionType[submission.type]}理由：&emsp;</span>
 									</div>
-									<div>
+									<div class="middleTitle2">
 										<textarea cols="100" rows="15" id="${submission.id}_editor2">${submission.reason}</textarea>
 										<script type="text/javascript">
 											window.console = window.console
@@ -133,7 +133,7 @@
 									<div>
 										<span class="msgTitle">拟采取措施：</span>
 									</div>
-									<div>
+									<div class="middleTitle2">
 										<textarea cols="100" rows="15" id="${submission.id}_editor3">${submission.measure}</textarea>
 										<script type="text/javascript">
 											window.console = window.console
@@ -159,7 +159,7 @@
 							</div>
 						</c:when>
 						<c:otherwise>
-							<div>
+							<div class="submissionBox">
 								<div class="submissionTitle">
 									<span class="msgTitle">提请${sessionScope.submissionType[submission.type]}（${sessionScope.submissionStatus[submission.status]}）</span>
 								</div>
@@ -178,18 +178,18 @@
 										</c:otherwise>
 									</c:choose>
 								</div>
-								<div>${submission.situation}</div>
+								<div class="msgContentBox">${submission.situation}</div>
 								<c:if test="${submission.type == 2 || submission.type == 3}">
 									<div>
 										<span class="msgTitle">${sessionScope.submissionType[submission.type]}理由：&emsp;</span>
 									</div>
-									<div>${submission.reason}</div>
+									<div class="msgContentBox">${submission.reason}</div>
 								</c:if>
 								<c:if test="${submission.type == 2}">
 									<div>
 										<span class="msgTitle">拟采取措施：</span>
 									</div>
-									<div>${submission.measure}</div>
+									<div class="msgContentBox">${submission.measure}</div>
 								</c:if>
 								<div>
 									<span class="msgTitle">提请人：&emsp;&emsp;</span>
@@ -274,7 +274,7 @@
 		</div>
 		<c:choose>
 			<c:when test="${msgCoSponsor.editabled}">
-				<div>
+				<div class="middleTitle2">
 					<textarea cols="100" rows="15" id="${msgCoSponsor.id}_editor">${msgCoSponsor.content}</textarea>
 				</div>
 				<div class="middleTitle">
@@ -294,7 +294,7 @@
 				</div>
 			</c:when>
 			<c:otherwise>
-				<div>${msgCoSponsor.content}</div>
+				<div class="msgContentBox">${msgCoSponsor.content}</div>
 			</c:otherwise>
 		</c:choose>
 		<div>
@@ -313,11 +313,11 @@
 			</div>
 		</c:if>
 		<c:if test="${msgCoSponsor.submissions != null}">
-			<div>
+			<div class="middleTitle2">
 				<c:forEach var="submission" items="${msgCoSponsor.submissions}">
 					<c:choose>
 						<c:when test="${submission.status == 0}">
-							<div>
+							<div class="submissionBox">
 								<div class="submissionTitle">
 									<span class="msgTitle">提请${sessionScope.submissionType[submission.type]}（${sessionScope.submissionStatus[submission.status]}）</span>
 								</div>
@@ -331,7 +331,7 @@
 										</c:otherwise>
 									</c:choose>
 								</div>
-								<div>
+								<div class="middleTitle2">
 									<textarea cols="100" rows="15" id="${submission.id}_editor1">${submission.situation}</textarea>
 									<script type="text/javascript">
 										window.console = window.console
@@ -349,7 +349,7 @@
 									<div>
 										<span class="msgTitle">${sessionScope.submissionType[submission.type]}理由：&emsp;</span>
 									</div>
-									<div>
+									<div class="middleTitle2">
 										<textarea cols="100" rows="15" id="${submission.id}_editor2">${submission.reason}</textarea>
 										<script type="text/javascript">
 											window.console = window.console
@@ -368,7 +368,7 @@
 									<div>
 										<span class="msgTitle">拟采取措施：</span>
 									</div>
-									<div>
+									<div class="middleTitle2">
 										<textarea cols="100" rows="15" id="${submission.id}_editor3">${submission.measure}</textarea>
 										<script type="text/javascript">
 											window.console = window.console
@@ -394,7 +394,7 @@
 							</div>
 						</c:when>
 						<c:otherwise>
-							<div>
+							<div class="submissionBox">
 								<div class="submissionTitle">
 									<span class="msgTitle">提请${sessionScope.submissionType[submission.type]}（${sessionScope.submissionStatus[submission.status]}）</span>
 								</div>
@@ -413,18 +413,18 @@
 										</c:otherwise>
 									</c:choose>
 								</div>
-								<div>${submission.situation}</div>
+								<div class="msgContentBox">${submission.situation}</div>
 								<c:if test="${submission.type == 2 || submission.type == 3}">
 									<div>
 										<span class="msgTitle">${sessionScope.submissionType[submission.type]}理由：&emsp;</span>
 									</div>
-									<div>${submission.reason}</div>
+									<div class="msgContentBox">${submission.reason}</div>
 								</c:if>
 								<c:if test="${submission.type == 2}">
 									<div>
 										<span class="msgTitle">拟采取措施：</span>
 									</div>
-									<div>${submission.measure}</div>
+									<div class="msgContentBox">${submission.measure}</div>
 								</c:if>
 								<div>
 									<span class="msgTitle">提请人：&emsp;&emsp;</span>

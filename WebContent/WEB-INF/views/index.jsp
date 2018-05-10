@@ -127,6 +127,11 @@
 							class="title"> 督查草稿 </span><span class="selected"> </span>
 					</a></li>
 					</shiro:hasAnyRoles>
+					
+					<li class=""><a href="./rest/msg/msgList?submissionStatus=0&pageNo=1"
+						id="btn-dashboard"> <i class="fa fa-recycle"></i><span
+							class="title"> 提请草稿 </span><span class="selected"> </span>
+					</a></li>
 						
 					<shiro:hasRole  name="admin">
 					<li class=""><a href="javascript:;"> <i

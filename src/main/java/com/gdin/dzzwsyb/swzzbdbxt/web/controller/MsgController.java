@@ -1,6 +1,5 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgContractorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample.Criteria;
@@ -39,7 +37,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
@@ -100,14 +97,29 @@ public class MsgController {
 		final Long userId = (Long) session.getAttribute("userId");
 		final MsgExample example = new MsgExample();
 		Criteria criteria = example.createCriteria();
-		if (roleId < 4L && permissionId < 6L) {
-			criteria.andIdIsNotNull();
-		} else if (permissionId < 6L) {
-			msgQuery.setRoleId(roleId);
+		if (msgQuery != null && msgQuery.getSubmissionStatus() != null) {
+			if (msgQuery.getSubmissionStatus() == 1 && roleId < 4L && permissionId < 6L) {
+				msgQuery.setExample(criteria);
+				model.addAttribute("titleName", "待审核");
+			} else if (msgQuery.getSubmissionStatus() == 0 && permissionId < 6L) {
+				msgQuery.setRoleId(roleId);
+				msgQuery.setExample(criteria);
+				model.addAttribute("titleName", "提请草稿");
+			} else if (msgQuery.getSubmissionStatus() == 0 && permissionId == 6L) {
+				msgQuery.setUserId(userId);
+				msgQuery.setExample(criteria);
+				model.addAttribute("titleName", "提请草稿");
+			}
 		} else {
-			msgQuery.setUserId(userId);
+			if (roleId < 4L && permissionId < 6L) {
+				criteria.andIdIsNotNull();
+			} else if (permissionId < 6L) {
+				msgQuery.setRoleId(roleId);
+			} else {
+				msgQuery.setUserId(userId);
+			}
+			msgQuery.setExample(criteria);
 		}
-		msgQuery.setExample(criteria);
 		example.setOrderByClause("sequence asc");
 		List<Msg> msgs = null;
 		Page<Msg> page = null;

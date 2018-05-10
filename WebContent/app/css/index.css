@@ -97,7 +97,7 @@
 	font-size: 12pt;
 	display: table-cell;
 	text-align: center;
-	border-left: 2px solid #FFFFFF;
+	border: 1px solid #EEEEEE;
 }
 
 .msgItem:first-child {
@@ -151,6 +151,7 @@
 .msgTitle {
 	font-family: 微软雅黑;
 	line-height: 24px;
+	margin-left: 5px;
 }
 
 .contentTitle {
@@ -158,8 +159,19 @@
 	font-size: 18px;
 }
 
+.submissionBox {
+	width: 98%;
+	border: 1px solid #EEEEEE;
+	margin-top: 10px;
+}
+
 .submissionTitle {
 	background-color: #EEEEEE !important;
+}
+
+.msgContentBox {
+	margin: 0 1% 0 1% !important;
+	border: 1px solid #EEEEEE;
 }
 
 .submissionTitle>span {
@@ -169,6 +181,10 @@
 
 .middleTitle {
 	text-align: center;
+}
+
+.middleTitle2 {
+	padding: 0 1% 0 1% !important;
 }
 
 #goback {

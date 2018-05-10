@@ -1,6 +1,5 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
-import java.text.ParseException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import org.apache.shiro.authz.annotation.Logical;
@@ -13,17 +12,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
 
 @Controller
 @RequestMapping(value = "/submission")
 public class SubmissionController {
+	
+	@Resource
+	private MsgService msgService;
 	
 	@Resource
 	private MsgSponsorService msgSponsorService;
@@ -78,12 +82,17 @@ public class SubmissionController {
 		return "redirect:/rest/msg/openMsg";
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(value = "/save")
-	public String save(Submission submission, String msgId0, RedirectAttributes model, HttpSession session) throws ParseException {
+	public String save(Submission submission, String msgId0, RedirectAttributes model, HttpSession session) throws Exception {
 		if (submission != null && submission.getId() != null) {
 			if (submission.getStatus() == 1) {
 				submission.setOwnerId((Long) session.getAttribute("userId"));
 				submission.setSendTime(ApplicationUtils.getTime());
+				Msg msg = new Msg();
+				msg.setId(msgId0);
+				msg.setEndTime(submission.getSendTime());
+				msgService.update(msg);
 			} 
 			final int count = submissionService.update(submission);
 			if (count == 1) {
@@ -92,6 +101,7 @@ public class SubmissionController {
 			} else {
 				model.addFlashAttribute("msg1", "保存提请失败！");
 				model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
+				throw new Exception("保存失败");
 			}
 		} else {
 			model.addFlashAttribute("msg1", "保存提请失败！");
