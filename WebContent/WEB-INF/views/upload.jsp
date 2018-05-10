@@ -167,22 +167,19 @@
 		$.ajax({
 			type : "POST",
 			url : 'rest/msg/getData',
-			async : false,
 			data : {
 			name: $("#name").val(),
 			basis: $("#basis").val(),
 			role: $("#role").val(),
 			limitTime: $("#limitTime").val(),
 			createTime: $("#createTime").val(),
-			msgId :$("#msgId").val(),
-			sequenceNumber: $("#sequenceNumber").val(),
-			msgBasis: $("#msgBasis").val(),
+			id :$("#msgId").val(),
+			sequence: $("#sequenceNumber").val(),
+			msgBasis: $("#msgBasis").val()
 			},
-			contentType : false,
-			processData : false,
 			success : function(data) {
 				showData(parentTarget, data);
-			},
+			}
 		});
 	}
 	function doUpload() {
@@ -205,26 +202,23 @@
 	function insert() {
 		disabledAll();
 		if (check(0) && check(1) && check(2) && check(3) && check(4)) {
-			var json ={
-				status: 0,
-				name: $("#name").val(),
-				basis: $("#basis").val(),
-				role: $("#role").val(),
-				assitrole: $("#assitrole").val(),
-				limitTime: $("#limitTime").val(),
-				createTime: $("#createTime").val(),
-				id :$("#msgId").val(),
-				sequenceNumbers: $("#sequenceNumber").val(),
-				msgBasis: $("#msgBasis").val(),
-			}
 			$.ajax({
 				url : 'rest/msg/insert',
 				type : "post",
-				data : json,
+				data : {
+					status: 0,
+					name: $("#name").val(),
+					basis: $("#basis").val(),
+					role: $("#role").val(),
+					assitrole: $("#assitrole").val(),
+					limitTime: $("#limitTime").val(),
+					createTime: $("#createTime").val(),
+					id :$("#msgId").val(),
+					sequence: $("#sequenceNumber").val(),
+					msgBasis: $("#msgBasis").val(),
+				},
 				/* fileElementId: 'file', */
 				cache : false,
-				processData : false,
-				contentType : false,
 				success : function(data) {
 					alert("保存成功！");
 					showData(parentTarget, data);
@@ -274,26 +268,23 @@
 	function send() {
 		disabledAll();
 		if (check(0) && check(1) && check(2) && check(3) && check(4)) {
-			var json ={
-				status: 0,
-				name: $("#name").val(),
-				basis: $("#basis").val(),
-				role: $("#role").val(),
-				assitrole: $("#assitrole").val(),
-				limitTime: $("#limitTime").val(),
-				createTime: $("#createTime").val(),
-				id :$("#msgId").val(),
-				sequenceNumbers: $("#sequenceNumber").val(),
-				msgBasis: $("#msgBasis").val(),
-			}
 			$.ajax({
 				url : 'rest/msg/insert',
 				type : "post",
-				data : form,
+				data : {
+					status: 1,
+					name: $("#name").val(),
+					basis: $("#basis").val(),
+					role: $("#role").val(),
+					assitrole: $("#assitrole").val(),
+					limitTime: $("#limitTime").val(),
+					createTime: $("#createTime").val(),
+					id :$("#msgId").val(),
+					sequence: $("#sequenceNumber").val(),
+					msgBasis: $("#msgBasis").val(),
+				},
 				/* fileElementId: 'file', */
 				cache : false,
-				processData : false,
-				contentType : false,
 				success : function(data) {
 					alert("发布成功");
 					showData(parentTarget, data);

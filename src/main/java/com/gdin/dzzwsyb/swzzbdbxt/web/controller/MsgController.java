@@ -235,8 +235,8 @@ public class MsgController {
 	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String insert(String msgBasis, String id, Integer sequenceNumbers, String role, String name,
-			String basis,Date limitTime,Date createTime, String assitrole,int status,
+	public String insert(MsgExtend msg, @RequestParam(value = "role[]") long[] role, 
+			@RequestParam(value = "assitrole[]") long[] assitrole,
 			Model model, HttpServletRequest request, RedirectAttributes reditectModel)
 			throws Exception {
 		Attach attach;
@@ -246,21 +246,16 @@ public class MsgController {
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
 		List<MsgCoSponsor> msgCoSponsors = new ArrayList<MsgCoSponsor>();;
 		List<MsgSponsor> msgSponsors = new ArrayList<MsgSponsor>();;
-		String basisSelect = basis;
-		Msg msg = new Msg();
-		msg.setBasis(basis);
-		msg.setLimitTime(limitTime);
-		msg.setName(name);
-		msg.setCreateTime(createTime);
-		Integer sequenceNumber = sequenceNumberService.next();
+		String basisSelect = msg.getBasis();
 		List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
 		String msgId = null;
 		// 录入msg类数据库
 		// 是否有id来判断是保存还是修改
 		if (msg.getBasis().equals("自定义")) {
-			msg.setBasis(msgBasis);
+			msg.setBasis(msg.getMsgBasis());
 		}
-		if (id.isEmpty()) {
+		if (msg.getId().isEmpty()) {
+			Integer sequenceNumber = sequenceNumberService.next();
 			msgId = ApplicationUtils.newUUID();
 			msgSponsorSelect = new ArrayList<Long>();
 			msgCoSponsorSelect = new ArrayList<Long>();
@@ -277,30 +272,25 @@ public class MsgController {
 				break;
 			}
 			// 录入msg_co-sponsor数据库
-			String roleIdArr[] = role.split(",");
-			for (int i = 0; i < roleIdArr.length; i++) {
-				long roleId = Long.parseLong(roleIdArr[i]);
-				msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msgId, roleId, 0, 0, "", status);
+			for (int i = 0; i < role.length; i++) {
+				long roleId = role[i];
+				msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msgId, roleId, 0, 0, "", msg.getStatus());
 				msgSponsorSelect.add(roleId);
 				msgSponsorService.insertSelective(msgSponsor);
 				msgSponsors.add(msgSponsor);
 			}
 			// 录入msg_sponsor数据库
-			if (assitrole.equals("null")) {
+			if (assitrole == null || assitrole.length == 0) {
 			} else {
-				String assitroldIdArr[] = assitrole.split(",");
-				for (int i = 0; i < assitroldIdArr.length; i++) {
-					long assitRoldId = Long.parseLong(assitroldIdArr[i]);
-					msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msgId, assitRoldId, 0, 0, "", status);
+				for (int i = 0; i < assitrole.length; i++) {
+					long assitRoldId = assitrole[i];
+					msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msgId, assitRoldId, 0, 0, "", msg.getStatus());
 					msgCoSponsorSelect.add(assitRoldId);
 					msgCoSponsorService.insertSelective(msgCoSponsor);
 					msgCoSponsors.add(msgCoSponsor);
 				}
 			}
 		} else {
-			msgId = id;
-			msg.setId(id);
-			msg.setSequence(sequenceNumbers);
 			final int msgCount = msgService.update(msg);
 			if (msgCount > 0) {
 				msgSponsorSelect = new ArrayList<Long>();
@@ -308,53 +298,51 @@ public class MsgController {
 				// 录入attach数据库
 				while (fileNameLists != null) {
 					for (String fileName : fileNameLists) {
-						attachService.deleteByMsgId(id);
+						attachService.deleteByMsgId(msg.getId());
 						String attachId = ApplicationUtils.newUUID();
-						attach = new Attach(attachId, id, status, fileName, ApplicationUtils.getTime());
+						attach = new Attach(attachId, msg.getId(), msg.getStatus(), fileName, ApplicationUtils.getTime());
 						attachService.insert(attach);
 					}
 					break;
 				}
 				// 录入msg_co-sponsor数据库
-				String roleIdArr[] = role.split(",");
-				for (int i = 0; i < roleIdArr.length; i++) {
-					long roleId = Long.parseLong(roleIdArr[i]);
+				for (int i = 0; i < role.length; i++) {
+					long roleId = role[i];
 					msgSponsorSelect.add(roleId);
-					msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), id, roleId, 0, 0, "", status);
+					msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msg.getId(), roleId, 0, 0, "", msg.getStatus());
 					msgSponsors.add(msgSponsor);
 				}
-				boolean msgSponsorFlag = msgSponsorService.modifyRoleId(id, msgSponsors);
+				boolean msgSponsorFlag = msgSponsorService.modifyRoleId(msg.getId(), msgSponsors);
 				if (!msgSponsorFlag) {
 					throw new Exception("修改主办处室出错，操作回滚");
 				}
 				// 录入msg_sponsor数据库
-				if (assitrole.equals("null")) {
-					msgCoSponsorService.deleteByMgsId(id);
+				if (assitrole == null || assitrole.length == 0) {
+					msgCoSponsorService.deleteByMgsId(msg.getId());
 				} else {
-					String assitroldIdArr[] = assitrole.split(",");
-					for (int i = 0; i < assitroldIdArr.length; i++) {
-						long assitRoldId = Long.parseLong(assitroldIdArr[i]);
+					for (int i = 0; i < assitrole.length; i++) {
+						long assitRoldId = assitrole[i];
 						msgCoSponsorSelect.add(assitRoldId);
-						msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), id, assitRoldId, 0, 0, "", status);
+						msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msg.getId(), assitRoldId, 0, 0, "", msg.getStatus());
 						msgCoSponsors.add(msgCoSponsor);
 					}
-					boolean msgCoSponsorFlag = msgCoSponsorService.modifyRoleId(id, msgCoSponsors);
+					boolean msgCoSponsorFlag = msgCoSponsorService.modifyRoleId(msg.getId(), msgCoSponsors);
 					if (!msgCoSponsorFlag) {
 						throw new Exception("修改主办处室出错，操作回滚");
 					}
 				}
 			}
 		}
-		model.addAttribute("id", msgId);
+		model.addAttribute("id", msg.getId());
 		model.addAttribute("basisSelect", basisSelect);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
 		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
-		model.addAttribute("msgBasis", msgBasis);
-		model.addAttribute("sequenceNumber", sequenceNumber);
+		model.addAttribute("msgBasis", msg.getMsgBasis());
+		model.addAttribute("sequenceNumber", msg.getSequence());
 		model.addAttribute("fileName", fileNameLists);
+		model.addAttribute("msg", msg);
 		request.getSession().removeAttribute("fileNameLists");
-		model.addAttribute("id", msgId);
-		if (status == 0) {
+		if (msg.getStatus() == 0) {
 			//录入提醒表
 			int type = 5;//草稿箱
 			List<Long> roleIdList = new ArrayList<Long>();
@@ -366,7 +354,7 @@ public class MsgController {
 			for(User user2 : roleUsers) {
 					roleUserIds.add(user2.getId());
 			}
-			noticeService.modifyUserId(msgId, roleUserIds,type);
+			noticeService.modifyUserId(msg.getId(), roleUserIds,type);
 			return "upload";
 		} else {
 			//发布之后变为待签收状态
@@ -388,8 +376,9 @@ public class MsgController {
 					roleUserIds.add(user2.getId());
 				}
 			}
-			noticeService.modifyUserId(msgId, roleUserIds,type);
-			return "redirect:/rest/msg/openMsg?id=" + msgId;
+			noticeService.modifyUserId(msg.getId(), roleUserIds,type);
+			reditectModel.addFlashAttribute("msg", msg);
+			return "redirect:/rest/msg/openMsg";
 		}
 
 	}
@@ -397,19 +386,17 @@ public class MsgController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getData")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String get( String msgBasis, String msgId, Integer sequenceNumber, String role, String name,
-					String basis,Date limitTime,Date createTime,Model model, HttpServletResponse resp, HttpServletRequest request) {
+	public String getData( MsgExtend msg, @RequestParam(value = "role[]") long[] role, Model model, HttpServletResponse resp, HttpServletRequest request) {
 
 		String basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>();
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
 		ArrayList<Long> roleList = null;
 		roleList = new ArrayList<Long>();
-		if (role !=null && role.length() > 0) {
-			String roleIdArr[] = role.split(",");
-			for (int i = 0; i < roleIdArr.length; i++) {
+		if (role !=null && role.length > 0) {
+			for (int i = 0; i < role.length; i++) {
 				for (Role role2 : roles) {
-					if (Long.parseLong(roleIdArr[i]) == (role2.getId())) {
+					if (role[i] == (role2.getId())) {
 						roleList.add(role2.getId());
 						msgSponsorSelect.add(role2.getId());
 						break;
@@ -420,10 +407,10 @@ public class MsgController {
 			roleList = null;
 			msgSponsorSelect = null;
 		}
-		basisSelect = basis;
-		model.addAttribute("id", msgId);
-		model.addAttribute("msgBasis", msgBasis);
-		model.addAttribute("sequenceNumber", sequenceNumber);
+		basisSelect = msg.getBasis();
+		model.addAttribute("id", msg.getId());
+		model.addAttribute("msgBasis", msg.getMsgBasis());
+		model.addAttribute("sequenceNumber", msg.getSequence());
 		model.addAttribute("basisSelect", basisSelect);
 		model.addAttribute("roleList", roleList);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
