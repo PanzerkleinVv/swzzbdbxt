@@ -141,6 +141,8 @@
 			submissionStatustatus : 0
 		}, function(data) {
 			showData("#main-content",data);
+		});
+	}
 	</c:if>
 	<c:if test="${titleName == '提醒预览'}">
 	<script type="text/javascript">
