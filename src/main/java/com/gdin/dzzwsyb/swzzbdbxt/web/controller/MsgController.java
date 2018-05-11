@@ -35,6 +35,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
@@ -175,6 +176,7 @@ public class MsgController {
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
 		//标志notice为已读
 		noticeService.updateIsRead(msg.getId(), userId);
+		
 		if (msg != null && msg.getId() != null && !"".equals(msg.getId()) && msg.getStatus() != null
 				&& 0 == msg.getStatus().intValue()) {
 			Msg msg0 = msgService.selectById(msg.getId());
@@ -361,7 +363,7 @@ public class MsgController {
 			for(User user2 : roleUsers) {
 					roleUserIds.add(user2.getId());
 			}
-			noticeService.modifyUserId(msg.getId(), roleUserIds,type);
+			noticeService.modifyUserId(msg.getId(), roleUserIds,type,0);
 			return "upload";
 		} else {
 			//发布之后变为待签收状态
@@ -463,7 +465,7 @@ public class MsgController {
 							roleUserIds.add(user.getId());
 						}
 					}
-					noticeService.modifyUserId(msg.getId(), roleUserIds, type);
+					noticeService.modifyUserId(msg.getId(), roleUserIds, type,0);
 					model.addFlashAttribute("msg1", "签收成功！");
 					model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
 					model.addFlashAttribute("msg", new MsgExtend(msg));
@@ -505,7 +507,7 @@ public class MsgController {
 						roleUserIds.add(user2.getId());
 					}
 				}
-				noticeService.modifyUserId(msgId, roleUserIds,type);
+				noticeService.modifyUserId(msgId, roleUserIds,type,0);
 			}
 			else {
 				reditectModel.addFlashAttribute("msg1", "撤回失败！");
@@ -541,7 +543,9 @@ public class MsgController {
 				}
 				msgContractorService.modifyUserId(msgId, userIds, roleUserIds);
 				//成功删除改督查事项待分派提醒
-				noticeService.noticeByTargetId(msgId);
+				NoticeExample example = new NoticeExample();
+				example.createCriteria().andUserIdIn(roleUserIds).andTargetIdEqualTo(msgId).andTargetTypeEqualTo(0);
+				noticeService.deleteByExample(example);
 				model.addFlashAttribute("msg1", "分派成功！");
 				model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
 				model.addFlashAttribute("msg", msgExtend);
