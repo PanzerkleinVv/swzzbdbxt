@@ -91,7 +91,7 @@ public class MsgController {
 		return "query";
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "null" })
 	@RequestMapping(value = "/msgList")
 	public String msgList(Model model, HttpSession session, MsgQuery msgQuery) {
 		final Long roleId = (Long) session.getAttribute("roleId");
@@ -136,6 +136,18 @@ public class MsgController {
 		msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
 		List<List<String>> ids = submissionService.selectIdsByMsgList(msgs, roleId);
 		msgExtends = attachService.selectMsgExtendByMsgList(msgExtends, ids);
+		//去掉后缀
+		for(MsgExtend msgExtend : msgExtends) {
+			String attachs[] = msgExtend.getAttachs();
+			if(attachs != null && attachs.length>0) {
+				for (int i = 0; i < attachs.length; i++) {
+					String  fileNameArray[] = attachs[i].replace(".",",").split(",");
+					String fileName = fileNameArray[0];
+					attachs[i] = fileName;
+				}
+				msgExtend.setAttachs(attachs);
+			}
+		}
 		model.addAttribute("page", page);
 		model.addAttribute("msgs", msgExtends);
 		if (msgQuery != null && msgQuery.getStatus() != null && msgQuery.getStatus() == 0) {
@@ -376,7 +388,7 @@ public class MsgController {
 					roleUserIds.add(user2.getId());
 				}
 			}
-			noticeService.modifyUserId(msg.getId(), roleUserIds,type);
+			noticeService.modifySendUserId(msg.getId(), roleUserIds,type);
 			reditectModel.addFlashAttribute("msg", msg);
 			return "redirect:/rest/msg/openMsg";
 		}
@@ -408,6 +420,7 @@ public class MsgController {
 			msgSponsorSelect = null;
 		}
 		basisSelect = msg.getBasis();
+		model.addAttribute("msg",msg);
 		model.addAttribute("id", msg.getId());
 		model.addAttribute("msgBasis", msg.getMsgBasis());
 		model.addAttribute("sequenceNumber", msg.getSequence());

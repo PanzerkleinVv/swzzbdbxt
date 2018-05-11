@@ -42,7 +42,6 @@ public class AttachController {
 	private MsgSponsorService msgSponsorService;
 	
 	@RequestMapping(value = "/upload")
-	@RequiresRoles(value = RoleSign.ADMIN)
 	public void upload(Model model,@RequestParam("file")MultipartFile[] file,HttpServletResponse resp,HttpServletRequest request) throws Exception  {
 		attachService.upload(model, file, resp, request);
 	}

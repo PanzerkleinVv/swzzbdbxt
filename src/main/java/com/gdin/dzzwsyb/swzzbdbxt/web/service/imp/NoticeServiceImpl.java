@@ -152,6 +152,19 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 		// TODO Auto-generated method stub
 		final int isRead = 1;//提醒表-未读
 		final int targetType = 0;//提醒表-msg
+		for(Long userId :roleUserIds) {
+			NoticeExample example = new NoticeExample();
+			example.createCriteria().andUserIdEqualTo(userId).andTargetIdEqualTo(msgId);
+			deleteByExample(example);
+			Notice notice = new Notice(userId, type, msgId, targetType, ApplicationUtils.getTime(), isRead);
+			addNotice(notice);
+		}
+	}
+	@Override
+	public void modifySendUserId(String msgId, List<Long> roleUserIds,int type) throws Exception {
+		// TODO Auto-generated method stub
+		final int isRead = 1;//提醒表-未读
+		final int targetType = 0;//提醒表-msg
 		noticeByTargetId(msgId);
 		for(Long userId :roleUserIds) {
 			Notice notice = new Notice(userId, type, msgId, targetType, ApplicationUtils.getTime(), isRead);
