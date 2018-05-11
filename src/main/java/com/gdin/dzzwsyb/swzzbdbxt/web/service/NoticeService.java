@@ -52,4 +52,6 @@ public interface NoticeService extends GenericService<Notice, Long> {
 	void updateIsRead(String msgId,Long userId);
 	
 	void updateByMsgId(String msgId);
+	
+	void modifySendUserId(String msgId, List<Long> roleUserIds,int type) throws Exception;
 }
