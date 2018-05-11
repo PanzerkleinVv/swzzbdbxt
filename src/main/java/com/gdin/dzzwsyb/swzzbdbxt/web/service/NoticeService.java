@@ -47,11 +47,17 @@ public interface NoticeService extends GenericService<Notice, Long> {
 	
 	int deleteByExample(NoticeExample example);
 	
-	void modifyUserId(String msgId,List<Long> roleUserIds,int type) throws Exception ;
+	/**
+	 * 先根据msgid和targetid和targettype删除全部，然后增加
+	 */
+	void modifyUserId(String msgId,List<Long> roleUserIds,int typ,int targetType) throws Exception ;
 	
 	void updateIsRead(String msgId,Long userId);
 	
 	void updateByMsgId(String msgId);
 	
+	/**
+	 * 先根据msgid删除全部，然后增加
+	 */
 	void modifySendUserId(String msgId, List<Long> roleUserIds,int type) throws Exception;
 }
