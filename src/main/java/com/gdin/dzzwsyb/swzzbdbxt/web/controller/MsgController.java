@@ -1,7 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,8 +8,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -53,7 +50,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SequenceNumberService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.UserService;
-import com.sun.xml.internal.bind.v2.model.core.BuiltinLeafInfo;
 
 @Controller
 @RequestMapping(value = "/msg")
@@ -250,7 +246,7 @@ public class MsgController {
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String insert(MsgExtend msg, @RequestParam(value = "role[]") long[] role, 
-			@RequestParam(value = "assitrole[]") long[] assitrole,
+			@RequestParam(value = "assitrole[]", required=false) long[] assitrole,
 			Model model, HttpServletRequest request, RedirectAttributes reditectModel)
 			throws Exception {
 		Attach attach;
@@ -285,7 +281,7 @@ public class MsgController {
 				}
 				break;
 			}
-			// 录入msg_co-sponsor数据库
+			// 录入msg_sponsor数据库
 			for (int i = 0; i < role.length; i++) {
 				long roleId = role[i];
 				msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msgId, roleId, 0, 0, "", msg.getStatus());
@@ -293,9 +289,8 @@ public class MsgController {
 				msgSponsorService.insertSelective(msgSponsor);
 				msgSponsors.add(msgSponsor);
 			}
-			// 录入msg_sponsor数据库
-			if (assitrole == null || assitrole.length == 0) {
-			} else {
+			// 录入msg_co-sponsor数据库
+			if (assitrole != null && assitrole.length != 0) {
 				for (int i = 0; i < assitrole.length; i++) {
 					long assitRoldId = assitrole[i];
 					msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msgId, assitRoldId, 0, 0, "", msg.getStatus());
@@ -319,7 +314,7 @@ public class MsgController {
 					}
 					break;
 				}
-				// 录入msg_co-sponsor数据库
+				// 录入msg_sponsor数据库
 				for (int i = 0; i < role.length; i++) {
 					long roleId = role[i];
 					msgSponsorSelect.add(roleId);
@@ -330,7 +325,7 @@ public class MsgController {
 				if (!msgSponsorFlag) {
 					throw new Exception("修改主办处室出错，操作回滚");
 				}
-				// 录入msg_sponsor数据库
+				// 录入msg_co-sponsor数据库
 				if (assitrole == null || assitrole.length == 0) {
 					msgCoSponsorService.deleteByMgsId(msg.getId());
 				} else {
@@ -445,6 +440,7 @@ public class MsgController {
 		return "upload";
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/sign")
 	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
 			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,

@@ -109,6 +109,7 @@ public class SubmissionController {
 	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(value = "/save")
 	public String save(Submission submission, String msgId0, RedirectAttributes model, HttpSession session) throws Exception {
+		String msgFlag = "保存";
 		if (submission != null && submission.getId() != null) {
 			if (submission.getStatus() == 1) {
 				submission.setOwnerId((Long) session.getAttribute("userId"));
@@ -117,7 +118,6 @@ public class SubmissionController {
 				msg.setId(msgId0);
 				msg.setEndTime(submission.getSendTime());
 				msgService.update(msg);
-				//
 				//审核提请求，提示admin，部领导，办公室
 				int type = 6;//类型为提请草稿-6
 				final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
@@ -137,6 +137,7 @@ public class SubmissionController {
 					}
 				}
 				noticeService.modifyUserId(msgId0, roleUserIds, type2, 1);	
+				msgFlag = "发布";
 			} 
 			else {
 				//保存提请成功就要提醒该处室的所有人
@@ -150,15 +151,15 @@ public class SubmissionController {
 			}
 			final int count = submissionService.update(submission);
 			if (count == 1) {
-				model.addFlashAttribute("msg1", "保存提请成功！");
+				model.addFlashAttribute("msg1", msgFlag + "提请成功！");
 				model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
 			} else {
-				model.addFlashAttribute("msg1", "保存提请失败！");
+				model.addFlashAttribute("msg1", msgFlag + "提请失败！");
 				model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
 				throw new Exception("保存失败");
 			}
 		} else {
-			model.addFlashAttribute("msg1", "保存提请失败！");
+			model.addFlashAttribute("msg1", msgFlag + "提请失败！");
 			model.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
 		}
 		MsgExtend msg = new MsgExtend();

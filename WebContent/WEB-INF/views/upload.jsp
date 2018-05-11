@@ -123,7 +123,7 @@
 				<button id="insert" type="button" class="btn blue"
 					onclick="insert()">保存</button>
 			</span> <span>
-				<button id="delete" type="button" class="btn blue" onclick="dd()">删除</button>
+				<button id="delete" type="button" class="btn red" onclick="dd()">删除</button>
 			</span> <span>
 				<button id="send" type="button" class="btn blue" onclick="send()">发布</button>
 			</span>
