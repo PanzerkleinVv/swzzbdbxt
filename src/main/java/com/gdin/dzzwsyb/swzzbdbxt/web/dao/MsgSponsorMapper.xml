@@ -95,7 +95,7 @@
   <select id="selectRoleIdByMsgId" parameterType="java.lang.String" resultType="java.lang.Long">
     select role_id
     from msg_sponsor
-    where msg_id = #{msgId,jdbcType=VARCHAR}
+    where msg_id = #{msgId,jdbcType=VARCHAR} order by role_id
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from msg_sponsor
