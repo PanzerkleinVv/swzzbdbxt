@@ -24,10 +24,6 @@
 		<span class="msgTitle">协办处室：</span> <span>${msg.coSponsorRoleNames}</span>
 	</div>
 	<div>
-		<span class="msgTitle">办结时限：</span> <span><fmt:formatDate
-				value='${msg.limitTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
-	</div>
-	<div>
 		<span class="msgTitle">附件资料：</span> <span><c:forEach
 				var="attachId" items="${msg.attachIds}" varStatus="status0">
 				<a href="rest/attach/download?id=${attachId}" target="_blank">${msg.attachs[status0.index]}</a>

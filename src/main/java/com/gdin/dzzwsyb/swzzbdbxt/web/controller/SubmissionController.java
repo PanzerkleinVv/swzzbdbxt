@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.annotation.Resources;
 import javax.servlet.http.HttpSession;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -20,7 +19,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
@@ -77,6 +75,7 @@ public class SubmissionController {
 		return "redirect:/rest/msg/openMsg";
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/del")
 	public String del(Submission submission, String msgId0, RedirectAttributes model,HttpSession session) {
 		if (submission != null && submission.getId() != null) {
@@ -106,6 +105,7 @@ public class SubmissionController {
 		return "redirect:/rest/msg/openMsg";
 	}
 
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(value = "/save")
 	public String save(Submission submission, String msgId0, RedirectAttributes model, HttpSession session) throws Exception {

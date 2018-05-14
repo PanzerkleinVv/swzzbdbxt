@@ -1,5 +1,9 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.model;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * 督办事项-承办人关系表模型类
  * 
@@ -7,7 +11,7 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.model;
  *
  */
 public class MsgSponsor {
-    private String id;
+	private String id;
 
 	private String msgId;
 
@@ -17,31 +21,35 @@ public class MsgSponsor {
 
 	private Integer isAssigned;
 
-    private String content;
+	private String content;
 
-    private Integer status;
-    
-    public MsgSponsor() {
-    	
-    }
-    
-    public MsgSponsor(MsgSponsor msgSponsor) {
-    	id = msgSponsor.getId();
-    	msgId = msgSponsor.getMsgId();
-    	roleId = msgSponsor.getRoleId();
-    	isSigned = msgSponsor.getIsSigned();
-    	isAssigned = msgSponsor.getIsAssigned();
-    	content = msgSponsor.getContent();
-    	status = msgSponsor.getStatus();
-    }
+	private Integer status;
 
-    public String getId() {
-        return id;
-    }
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date limitTime;
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
-    }
+	public MsgSponsor() {
+
+	}
+
+	public MsgSponsor(MsgSponsor msgSponsor) {
+		id = msgSponsor.getId();
+		msgId = msgSponsor.getMsgId();
+		roleId = msgSponsor.getRoleId();
+		isSigned = msgSponsor.getIsSigned();
+		isAssigned = msgSponsor.getIsAssigned();
+		content = msgSponsor.getContent();
+		status = msgSponsor.getStatus();
+		limitTime = msgSponsor.getLimitTime();
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id == null ? null : id.trim();
+	}
 
 	public String getMsgId() {
 		return msgId;
@@ -79,20 +87,28 @@ public class MsgSponsor {
 		return content;
 	}
 
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
-    }
+	public void setContent(String content) {
+		this.content = content == null ? null : content.trim();
+	}
 
-    public Integer getStatus() {
-        return status;
-    }
+	public Integer getStatus() {
+		return status;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Date getLimitTime() {
+		return limitTime;
+	}
+
+	public void setLimitTime(Date limitTime) {
+		this.limitTime = limitTime;
+	}
 
 	public MsgSponsor(String id, String msgId, Long roleId, Integer isSigned, Integer isAssigned, String content,
-			Integer status) {
+			Integer status, Date limitTime) {
 		super();
 		this.id = id;
 		this.msgId = msgId;
@@ -101,6 +117,7 @@ public class MsgSponsor {
 		this.isAssigned = isAssigned;
 		this.content = content;
 		this.status = status;
+		this.limitTime = limitTime;
 	}
-    
+
 }

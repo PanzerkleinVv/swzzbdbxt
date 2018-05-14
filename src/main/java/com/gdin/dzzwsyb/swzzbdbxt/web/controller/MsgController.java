@@ -1,6 +1,7 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public class MsgController {
 		return "query";
 	}
 
-	@SuppressWarnings({ "unchecked", "null" })
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/msgList")
 	public String msgList(Model model, HttpSession session, MsgQuery msgQuery) {
 		final Long roleId = (Long) session.getAttribute("roleId");
@@ -180,7 +181,6 @@ public class MsgController {
 		if (msg != null && msg.getId() != null && !"".equals(msg.getId()) && msg.getStatus() != null
 				&& 0 == msg.getStatus().intValue()) {
 			Msg msg0 = msgService.selectById(msg.getId());
-			model.addAttribute("msg", msg0);
 			String msgBasis = null;
 			msgBasis = msg0.getBasis();
 			if (msg0 != null) {
@@ -188,6 +188,9 @@ public class MsgController {
 				msgCoSponsorSelect = msgCoSponsorService.selectRoleIdByMsgId(msg0.getId());
 
 			}
+			Date limitTime = (msgSponsorService.selectMsgSponsorsByMsgId(msg.getId())).get(0).getLimitTime();
+			msg0.setLimitTime(limitTime);
+			model.addAttribute("msg", msg0);
 			model.addAttribute("id", msg.getId());
 			model.addAttribute("msgBasis", msgBasis);
 			model.addAttribute("basisSelect", msgBasis);
@@ -252,6 +255,7 @@ public class MsgController {
 		Attach attach;
 		MsgCoSponsor msgCoSponsor;
 		MsgSponsor msgSponsor;
+		Date limitTime = null;
 		List<Long> msgSponsorSelect = null;// 存储下拉框选中的主处室
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
 		List<MsgCoSponsor> msgCoSponsors = new ArrayList<MsgCoSponsor>();;
@@ -272,6 +276,8 @@ public class MsgController {
 			msgId = ApplicationUtils.newUUID();
 			msg.setId(msgId);
 			msg.setSequence(sequenceNumber);
+			limitTime = msg.getLimitTime();
+			msg.setLimitTime(null);
 			msgService.insertSelective(msg);
 			while (fileNameLists != null) {
 				for (String fileName : fileNameLists) {
@@ -284,7 +290,7 @@ public class MsgController {
 			// 录入msg_sponsor数据库
 			for (int i = 0; i < role.length; i++) {
 				long roleId = role[i];
-				msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msgId, roleId, 0, 0, "", msg.getStatus());
+				msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msgId, roleId, 0, 0, "", msg.getStatus(), limitTime);
 				msgSponsorSelect.add(roleId);
 				msgSponsorService.insertSelective(msgSponsor);
 				msgSponsors.add(msgSponsor);
@@ -293,7 +299,7 @@ public class MsgController {
 			if (assitrole != null && assitrole.length != 0) {
 				for (int i = 0; i < assitrole.length; i++) {
 					long assitRoldId = assitrole[i];
-					msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msgId, assitRoldId, 0, 0, "", msg.getStatus());
+					msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msgId, assitRoldId, 0, 0, "", msg.getStatus(), limitTime);
 					msgCoSponsorSelect.add(assitRoldId);
 					msgCoSponsorService.insertSelective(msgCoSponsor);
 					msgCoSponsors.add(msgCoSponsor);
@@ -318,7 +324,7 @@ public class MsgController {
 				for (int i = 0; i < role.length; i++) {
 					long roleId = role[i];
 					msgSponsorSelect.add(roleId);
-					msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msg.getId(), roleId, 0, 0, "", msg.getStatus());
+					msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msg.getId(), roleId, 0, 0, "", msg.getStatus(), limitTime);
 					msgSponsors.add(msgSponsor);
 				}
 				boolean msgSponsorFlag = msgSponsorService.modifyRoleId(msg.getId(), msgSponsors);
@@ -332,7 +338,7 @@ public class MsgController {
 					for (int i = 0; i < assitrole.length; i++) {
 						long assitRoldId = assitrole[i];
 						msgCoSponsorSelect.add(assitRoldId);
-						msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msg.getId(), assitRoldId, 0, 0, "", msg.getStatus());
+						msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msg.getId(), assitRoldId, 0, 0, "", msg.getStatus(), limitTime);
 						msgCoSponsors.add(msgCoSponsor);
 					}
 					boolean msgCoSponsorFlag = msgCoSponsorService.modifyRoleId(msg.getId(), msgCoSponsors);
@@ -342,6 +348,7 @@ public class MsgController {
 				}
 			}
 		}
+		msg.setLimitTime(limitTime);
 		model.addAttribute("id", msg.getId());
 		model.addAttribute("basisSelect", basisSelect);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
@@ -526,7 +533,7 @@ public class MsgController {
 	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
 			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,
 			PermissionSign.CHU_SHI_FU_ZE_REN }, logical = Logical.OR)
-	public String assign(String msgId, @RequestParam(value = "userIds[]") long[] userIds, RedirectAttributes model,
+	public String assign(String msgId, @RequestParam(value = "userIds[]", required=false) long[] userIds, RedirectAttributes model,
 			HttpSession session) throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");

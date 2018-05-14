@@ -1,6 +1,7 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +83,7 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		List<MsgSponsor> msgSponsors = null;
 		for (MsgExtend msg : msgs) {
 			Integer status = msg.getStatus();
+			Date limitTime = msg.getLimitTime();
 			final MsgSponsorExample example = new MsgSponsorExample();
 			example.createCriteria().andMsgIdEqualTo(msg.getId());
 			msgSponsors = msgSponsorMapper.selectByExample(example);
@@ -105,8 +107,12 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 					} else if (status == 1 && 2 == msgSponsor.getStatus()) {
 						status = msgSponsor.getStatus();
 					}
+					if (limitTime == null || (msgSponsor.getLimitTime() != null && msgSponsor.getLimitTime().before(limitTime))) {
+						limitTime = msgSponsor.getLimitTime();
+					}
 				}
 			}
+			msg.setLimitTime(limitTime);
 			if (sponsorRoleNames != null && sponsorRoleNames.length() > 0) {
 				sponsorRoleNames.substring(0, sponsorRoleNames.lastIndexOf("<br/>"));
 				if (contents != null && contents.length() > 0) {

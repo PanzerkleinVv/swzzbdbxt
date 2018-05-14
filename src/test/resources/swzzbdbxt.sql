@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-04-18 18:43:26
+Date: 2018-05-14 09:56:12
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -42,10 +42,9 @@ CREATE TABLE `msg` (
   `create_time` datetime DEFAULT NULL COMMENT '发布时间',
   `name` varchar(255) DEFAULT NULL COMMENT '督办事项',
   `basis` varchar(255) DEFAULT NULL COMMENT '立项依据',
-  `content` mediumtext COMMENT '办理情况',
+  `content` mediumtext COMMENT '办理情况（作废）',
   `limit_time` datetime DEFAULT NULL COMMENT '办理期限',
   `end_time` datetime DEFAULT NULL COMMENT '办结日期',
-  `status` int(11) DEFAULT NULL COMMENT '办理状态 0--草稿 1--在办 2--逾期 3--阶段性办结 4--办结 5--中止 ',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -58,11 +57,14 @@ CREATE TABLE `msg` (
 -- ----------------------------
 DROP TABLE IF EXISTS `msg_co-sponsor`;
 CREATE TABLE `msg_co-sponsor` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '表id',
+  `id` varchar(255) NOT NULL COMMENT '表id',
   `msg_id` varchar(255) DEFAULT NULL COMMENT '关联督办事项id',
   `role_id` bigint(20) DEFAULT NULL COMMENT '关联处室id',
   `is_signed` int(11) DEFAULT NULL COMMENT '是否签收 0--否 1--是',
   `is_assigned` int(11) DEFAULT NULL COMMENT '是否分派 0--否 1--是',
+  `content` mediumtext COMMENT '办理情况',
+  `status` int(11) DEFAULT NULL,
+  `limit_time` datetime DEFAULT NULL COMMENT '办理期限',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='督办事项协办处室表';
 
@@ -75,7 +77,7 @@ CREATE TABLE `msg_co-sponsor` (
 -- ----------------------------
 DROP TABLE IF EXISTS `msg_contractor`;
 CREATE TABLE `msg_contractor` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '表id',
+  `id` varchar(255) NOT NULL COMMENT '表id',
   `msg_id` varchar(255) DEFAULT NULL COMMENT '关联督办事项id',
   `user_id` bigint(20) DEFAULT NULL COMMENT '关联user_id',
   PRIMARY KEY (`id`)
@@ -90,11 +92,14 @@ CREATE TABLE `msg_contractor` (
 -- ----------------------------
 DROP TABLE IF EXISTS `msg_sponsor`;
 CREATE TABLE `msg_sponsor` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '表id',
+  `id` varchar(255) NOT NULL COMMENT '表id',
   `msg_id` varchar(255) DEFAULT NULL COMMENT '关联督办事项id',
   `role_id` bigint(20) DEFAULT NULL COMMENT '关联处室id',
   `is_signed` int(11) DEFAULT NULL COMMENT '是否签收 0--否 1--是',
   `is_assigned` int(11) DEFAULT NULL COMMENT '是否分派 0--否 1--是',
+  `content` mediumtext COMMENT '办理情况',
+  `status` int(11) DEFAULT NULL,
+  `limit_time` datetime DEFAULT NULL COMMENT '办理期限',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='督办事项主办处室表';
 
@@ -115,7 +120,7 @@ CREATE TABLE `notice` (
   `create_time` datetime DEFAULT NULL COMMENT '生成时间',
   `is_read` int(11) DEFAULT NULL COMMENT '是否已读 0--已读 1--未读',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提醒表';
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COMMENT='提醒表';
 
 -- ----------------------------
 -- Records of notice
@@ -190,6 +195,7 @@ CREATE TABLE `sequence_number` (
 -- ----------------------------
 -- Records of sequence_number
 -- ----------------------------
+INSERT INTO `sequence_number` VALUES ('2018', '70');
 
 -- ----------------------------
 -- Table structure for submission
@@ -197,7 +203,7 @@ CREATE TABLE `sequence_number` (
 DROP TABLE IF EXISTS `submission`;
 CREATE TABLE `submission` (
   `id` varchar(255) NOT NULL COMMENT '表id',
-  `msg_id` varchar(255) DEFAULT NULL COMMENT '关联督办事项id',
+  `msg_id` varchar(255) DEFAULT NULL COMMENT '关联主办、协办id',
   `type` int(11) DEFAULT NULL COMMENT '提请类型 1--办结 2--延期 3--中止 4--阶段性办结',
   `situation` text COMMENT '情况反馈 for：4种提请类型',
   `reason` text COMMENT '理由反馈 for:延期、中止、阶段性办结',
@@ -205,7 +211,7 @@ CREATE TABLE `submission` (
   `owner_id` bigint(20) DEFAULT NULL COMMENT '提请发起人userid',
   `superior_verify_passed` int(11) DEFAULT NULL COMMENT '办公室审核是否通过 0--否 1--是',
   `superior_verifi_user_id` bigint(20) DEFAULT NULL COMMENT '办公室审核人userid',
-  `status` int(11) DEFAULT NULL COMMENT '状态 0--草稿 1--提请 2--处室已审核 3--办公室已审核',
+  `status` int(11) DEFAULT NULL COMMENT '状态 0--草稿 1--提请 2--办公室已审核',
   `send_time` datetime DEFAULT NULL COMMENT '发出时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提请表';
@@ -228,9 +234,13 @@ CREATE TABLE `user` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间 自动生成',
   `role_id` bigint(20) DEFAULT NULL COMMENT '处室id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='用户表';
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'admin', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '信息处技术员', '1', null, '2014-07-17 12:59:08', null);
+INSERT INTO `user` VALUES ('1', 'admin', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '信息处技术员', '1', '1', '2014-07-17 12:59:08', '1');
+INSERT INTO `user` VALUES ('2', '11111', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '研究室内勤', '1', '5', '2018-05-03 12:45:42', '4');
+INSERT INTO `user` VALUES ('3', 'zz21', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '组织二处内勤', '1', '5', '2018-05-09 15:59:46', '6');
+INSERT INTO `user` VALUES ('4', 'zz22', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '组织二处test', '1', '6', '2018-05-09 16:00:13', '6');
+INSERT INTO `user` VALUES ('5', 'bgs', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '办公室', '1', '3', '2018-05-09 18:02:22', '3');

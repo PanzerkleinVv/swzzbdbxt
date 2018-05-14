@@ -1,6 +1,7 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +83,7 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 		List<MsgCoSponsor> msgCoSponsors = null;
 		for (MsgExtend msg : msgs) {
 			Integer status = msg.getStatus();
+			Date limitTime = msg.getLimitTime();
 			final MsgCoSponsorExample example = new MsgCoSponsorExample();
 			example.createCriteria().andMsgIdEqualTo(msg.getId());
 			msgCoSponsors = msgCoSponsorMapper.selectByExample(example);
@@ -105,8 +107,12 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 					} else if (status == 1 && 2 == msgCoSponsor.getStatus()) {
 						status = msgCoSponsor.getStatus();
 					}
+					if (limitTime == null || (msgCoSponsor.getLimitTime() != null && msgCoSponsor.getLimitTime().before(limitTime))) {
+						limitTime = msgCoSponsor.getLimitTime();
+					}
 				}
 			}
+			msg.setLimitTime(limitTime);
 			if (coSponsorRoleNames != null && coSponsorRoleNames.length() > 0) {
 				coSponsorRoleNames.substring(0, coSponsorRoleNames.lastIndexOf("<br/>"));
 				if (contents != null && contents.length() > 0) {
