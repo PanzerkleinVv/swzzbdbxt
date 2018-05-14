@@ -1,6 +1,7 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,8 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.dao.MsgCoSponsorMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 
 @Service
@@ -293,6 +296,25 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 			return msgCoSponsorMapper.selectByExample(example);
 		}
 		return null;
+	}
+
+	@Override
+	public List<MsgCoSponsor> overCoLimitTime() {
+		// TODO Auto-generated method stub
+		MsgCoSponsorExample example = new MsgCoSponsorExample();
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE,0);
+		example.createCriteria().andLimitTimeLessThan(calendar.getTime());
+		return msgCoSponsorMapper.selectByExample(example);
+	}
+
+	@Override
+	public void updateStatus(List<MsgCoSponsor> msgCoSponsors, int status) {
+		// TODO Auto-generated method stub
+		for(MsgCoSponsor msgCoSponsor : msgCoSponsors) {
+			msgCoSponsor.setStatus(status);
+			msgCoSponsorMapper.updateByPrimaryKeySelective(msgCoSponsor);
+		}
 	}
 
 }

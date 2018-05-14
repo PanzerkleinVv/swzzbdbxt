@@ -7,10 +7,10 @@
 			<ul>
 			    <c:if test="${empty noticeCounts}">暂无提醒信息预览</c:if>
 					<c:forEach var="noticeCount" begin="0" items="${noticeCounts}" varStatus="state">
-								<li>类型为:<font size="5" >${noticeType[noticeCount.type]}</font>一共有<font size="6" ><a onclick="notice(${noticeCount.type},0)"> ${noticeCount.oneType} </a></font>项
+								<li>类型为:<font size="5" >${noticeType[noticeCount.type]}</font>一共有<font size="6" ><a style="cursor:pointer;" onclick="notice(${noticeCount.type},0)"> ${noticeCount.oneType} </a></font>项
 								,其中未读：<font size="6" >
 								<c:if test="${empty noticeCount.unRead}">0 </c:if>
-								<a onclick="notice(${noticeCount.type},1)">${noticeCount.unRead} </a></font>项</li>
+								<a style="cursor:pointer;" onclick="notice(${noticeCount.type},1)">${noticeCount.unRead} </a></font>项</li>
 					</c:forEach>
 			</ul>
 		</div>

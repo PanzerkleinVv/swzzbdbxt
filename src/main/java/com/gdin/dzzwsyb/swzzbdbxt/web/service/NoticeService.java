@@ -54,7 +54,7 @@ public interface NoticeService extends GenericService<Notice, Long> {
 	
 	void updateIsRead(String msgId,Long userId);
 	
-	void updateByMsgId(String msgId);
+	void updateByMsgId(String msgId,int style);
 	
 	/**
 	 * 先根据msgid删除全部，然后增加
