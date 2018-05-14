@@ -58,7 +58,12 @@ public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 
 	List<MsgSponsor> selectMsgSponsorsByMsgIdRoleId(String msgId, Long roleId);
 	
+	List<String> selectIdsByMsgIds(List<String> ids);
+	
+	void deleteByTargetIds(List<String> ids);
+
 	List<MsgSponsor> overLimitTime();
 	
 	void updateStatus(List<MsgSponsor> msgSponsors,int status);
+
 }

@@ -56,6 +56,10 @@ public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String
 	
 	List<MsgCoSponsor> selectMsgCoSponsorsByMsgIdRoleId(String msgId, Long roleId);
 	
+	List<String> selectIdsByMsgIds(List<String> ids);
+	
+	void deleteByTargetIds(List<String> ids);
+
 	public List<MsgCoSponsor> overCoLimitTime();
 
 	void updateStatus(List<MsgCoSponsor> msgCoSponsors, int status);

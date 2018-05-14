@@ -133,4 +133,25 @@ public class SubmissionServiceImpl extends GenericServiceImpl<Submission, String
 		return submissionMapper.selectByExample(example);
 	}
 
+	@Override
+	public List<String> selectIdsByMsgIds(List<String> ids) {
+		SubmissionExample example = new SubmissionExample();
+		example.createCriteria().andMsgIdIn(ids);
+		List<Submission> submissions = submissionMapper.selectByExample(example);
+		List<String> ids0 = new ArrayList<String>();
+		if (submissions != null && submissions.size() > 0) {
+			for (Submission submission : submissions) {
+				ids0.add(submission.getId());
+			}
+		}
+		return ids0;
+	}
+
+	@Override
+	public void deleteByTargetIds(List<String> ids) {
+		SubmissionExample example = new SubmissionExample();
+		example.createCriteria().andMsgIdIn(ids);
+		submissionMapper.deleteByExample(example);
+	}
+
 }

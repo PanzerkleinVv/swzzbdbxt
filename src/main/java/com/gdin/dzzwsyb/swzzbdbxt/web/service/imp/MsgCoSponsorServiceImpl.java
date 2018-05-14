@@ -299,8 +299,29 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 	}
 
 	@Override
+
+	public List<String> selectIdsByMsgIds(List<String> ids) {
+		MsgCoSponsorExample example = new MsgCoSponsorExample();
+		example.createCriteria().andMsgIdIn(ids);
+		List<MsgCoSponsor> msgCoSponsors = msgCoSponsorMapper.selectByExample(example);
+		List<String> ids0 = new ArrayList<String>();
+		if (msgCoSponsors != null && msgCoSponsors.size() > 0) {
+			for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
+				ids0.add(msgCoSponsor.getId());
+			}
+		}
+		return ids0;
+	}
+
+	@Override
+	public void deleteByTargetIds(List<String> ids) {
+		MsgCoSponsorExample example = new MsgCoSponsorExample();
+		example.createCriteria().andMsgIdIn(ids);
+		msgCoSponsorMapper.deleteByExample(example);
+  }
+
+  @Override
 	public List<MsgCoSponsor> overCoLimitTime() {
-		// TODO Auto-generated method stub
 		MsgCoSponsorExample example = new MsgCoSponsorExample();
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE,0);
@@ -310,7 +331,6 @@ public class MsgCoSponsorServiceImpl extends GenericServiceImpl<MsgCoSponsor, St
 
 	@Override
 	public void updateStatus(List<MsgCoSponsor> msgCoSponsors, int status) {
-		// TODO Auto-generated method stub
 		for(MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 			msgCoSponsor.setStatus(status);
 			msgCoSponsorMapper.updateByPrimaryKeySelective(msgCoSponsor);

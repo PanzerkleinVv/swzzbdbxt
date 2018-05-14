@@ -26,13 +26,11 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.AttachExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 
-
-
 @Service
 public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implements AttachService {
 	@Resource
 	private AttachMapper attachMapper;
-	
+
 	@Override
 	public int insert(Attach model) {
 		return attachMapper.insertSelective(model);
@@ -70,7 +68,7 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 
 	@Override
 	public List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, List<List<String>> ids) {
-		if(msgs != null && msgs.size() > 0) {
+		if (msgs != null && msgs.size() > 0) {
 			MsgExtend msg = null;
 			List<Attach> attachList = null;
 			for (int i = 0; i < msgs.size(); i++) {
@@ -96,43 +94,45 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	}
 
 	@Override
-	public void upload(Model model, MultipartFile[] file, HttpServletResponse resp, HttpServletRequest request){
-		//储存文件名
-				List<String> fileNameLists = new ArrayList<String>() ;
-				//多文件
-				for(MultipartFile multipartFile : file) {
-					if(multipartFile != null && multipartFile.getSize()>0) {
-						/*String fileNameSuffix = multipartFile.getOriginalFilename();
-						String  fileNameArray[] = fileNameSuffix.replace(".",",").split(",");
-						String fileName = fileNameArray[0];*/
-						String fileName = multipartFile.getOriginalFilename();
-						fileNameLists.add(fileName);
-						//保存的位置临时文件
-						/*String path = request.getSession().getServletContext().getRealPath("files/");
-						File filepath=new File(path);*/
-						 File filepath = new File("C://Users//Administrator//git//swzzbdbxt//WebContent//files",fileName);
-						 if (!filepath.getParentFile().exists()) { 
-							 filepath.getParentFile().mkdirs();
-				            } 	
-						try {
-							multipartFile.transferTo(filepath);
-						} catch (IllegalStateException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-					}
-					//没有选中文件，返回错误页面
-					else {
-						fileNameLists.add(null);
-					}
+	public void upload(Model model, MultipartFile[] file, HttpServletResponse resp, HttpServletRequest request) {
+		// 储存文件名
+		List<String> fileNameLists = new ArrayList<String>();
+		// 多文件
+		for (MultipartFile multipartFile : file) {
+			if (multipartFile != null && multipartFile.getSize() > 0) {
+				/*
+				 * String fileNameSuffix = multipartFile.getOriginalFilename(); String
+				 * fileNameArray[] = fileNameSuffix.replace(".",",").split(","); String fileName
+				 * = fileNameArray[0];
+				 */
+				String fileName = multipartFile.getOriginalFilename();
+				fileNameLists.add(fileName);
+				// 保存的位置临时文件
+				/*
+				 * String path = request.getSession().getServletContext().getRealPath("files/");
+				 * File filepath=new File(path);
+				 */
+				File filepath = new File("C://File", fileName);
+				if (!filepath.getParentFile().exists()) {
+					filepath.getParentFile().mkdirs();
 				}
-				//保存文件名
-				request.getSession().setAttribute("fileNameLists", fileNameLists);
-				
+				try {
+					multipartFile.transferTo(filepath);
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+			// 没有选中文件，返回错误页面
+			else {
+				fileNameLists.add(null);
+			}
+		}
+		// 保存文件名
+		request.getSession().setAttribute("fileNameLists", fileNameLists);
+
 	}
 
 	@Override
@@ -143,65 +143,75 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	@Override
 
 	public void download(String id, Model model, HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
 		Attach attach = attachMapper.selectByPrimaryKey(id);
 		String attachFileName = attach.getAttachFileName();
-		 if (attachFileName != null) {
-			 File filepath = new File("C://Users//Administrator//git//swzzbdbxt//WebContent//files",attachFileName);
-			 if (filepath.exists()) {
-				 response.setContentType("application/force-download;charset=UTF-8");// 设置强制下载不打开
-			     try {
+		if (attachFileName != null) {
+			File filepath = new File("C://File", attachFileName);
+			if (filepath.exists()) {
+				response.setContentType("application/force-download;charset=UTF-8");// 设置强制下载不打开
+				try {
 					response.addHeader("Content-Disposition",
-					                     "attachment;fileName=" + URLEncoder.encode(attachFileName, "UTF-8"));
+							"attachment;fileName=" + URLEncoder.encode(attachFileName, "UTF-8"));
 				} catch (UnsupportedEncodingException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}// 设置文件名
-			     byte[] buffer = new byte[1024];
-			     FileInputStream fis = null;
-			     BufferedInputStream bis = null;
-			     try {
-			    	 fis = new FileInputStream(filepath);
-			    	 bis = new BufferedInputStream(fis);
-			    	 OutputStream os = response.getOutputStream();
-			    	 int i = bis.read(buffer);
-			    	 while (i != -1) {
-			    		 os.write(buffer, 0, i);
-			    		 i = bis.read(buffer);
-			                   }
-			      } catch (Exception e) {
-			                      // TODO: handle exception
-			    	  e.printStackTrace();
-			      } finally {
-			    	  		if (bis != null) {
-			    	  			try {
-			                             bis.close();
-			                         } catch (IOException e) {
-			                             // TODO Auto-generated catch block
-			                            e.printStackTrace();
-			                         }
-			                     }
-			    	  		if (fis != null) {
-			    	  			try {
-			                             fis.close();
-			                         } catch (IOException e) {
-			                             // TODO Auto-generated catch block
-			                             e.printStackTrace();
-			                          }
-			                     }
-			                  }
-			              }
-			 else{
-			 
-			 } 
-			 }
- }
+				} // 设置文件名
+				byte[] buffer = new byte[1024];
+				FileInputStream fis = null;
+				BufferedInputStream bis = null;
+				try {
+					fis = new FileInputStream(filepath);
+					bis = new BufferedInputStream(fis);
+					OutputStream os = response.getOutputStream();
+					int i = bis.read(buffer);
+					while (i != -1) {
+						os.write(buffer, 0, i);
+						i = bis.read(buffer);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					if (bis != null) {
+						try {
+							bis.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					if (fis != null) {
+						try {
+							fis.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
 
 	public List<Attach> selectByTargetId(String targetId) {
 		final AttachExample example = new AttachExample();
 		example.createCriteria().andTargetIdEqualTo(targetId);
 		return attachMapper.selectByExample(example);
 
+	}
+
+	@Override
+	public void deleteByTargetIds(List<String> ids) {
+		if (ids != null && ids.size() > 0) {
+			AttachExample example = new AttachExample();
+			example.createCriteria().andTargetIdIn(ids);
+			List<Attach> attachs = attachMapper.selectByExample(example);
+			if (attachs != null && attachs.size() > 0) {
+				for (Attach attach : attachs) {
+					File filepath = new File("C://File", attach.getAttachFileName());
+					if (filepath.exists()) {
+						filepath.delete();
+					}
+				}
+				attachMapper.deleteByExample(example);
+			}
+		}
 	}
 
 }

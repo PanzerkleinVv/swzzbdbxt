@@ -307,4 +307,25 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		}
 	}
 
+	@Override
+	public List<String> selectIdsByMsgIds(List<String> ids) {
+		MsgSponsorExample example = new MsgSponsorExample();
+		example.createCriteria().andMsgIdIn(ids);
+		List<MsgSponsor> msgSponsors = msgSponsorMapper.selectByExample(example);
+		List<String> ids0 = new ArrayList<String>();
+		if (msgSponsors != null && msgSponsors.size() > 0) {
+			for (MsgSponsor msgSponsor : msgSponsors) {
+				ids0.add(msgSponsor.getId());
+			}
+		}
+		return ids0;
+	}
+
+	@Override
+	public void deleteByTargetIds(List<String> ids) {
+		MsgSponsorExample example = new MsgSponsorExample();
+		example.createCriteria().andMsgIdIn(ids);
+		msgSponsorMapper.deleteByExample(example);
+	}
+
 }

@@ -24,5 +24,9 @@ public interface MsgContractorService extends GenericService<MsgContractor, Stri
 	boolean readable(String msgId, Long userId);
 	
 	List<Long> selectByMsgIdAndRoleUsers(String msgId, List<User> roleUsers);
+	
+	List<String> selectIdsByMsgIds(List<String> ids);
+	
+	void deleteByTargetIds(List<String> ids);
 
 }

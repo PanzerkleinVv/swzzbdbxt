@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -66,6 +67,30 @@ public class MsgServiceImpl extends GenericServiceImpl<Msg, String> implements M
 	@Override
 	public int insertSelective(Msg record) {
 		return msgMapper.insertSelective(record);
+	}
+
+	@Override
+	public List<String> selectOldDataIds() {
+		MsgExample example = new MsgExample();
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR,-3);
+		example.createCriteria().andCreateTimeLessThan(calendar.getTime());
+		List<Msg> msgs = msgMapper.selectByExample(example);
+		List<String> ids = null;
+		if (msgs != null && msgs.size() > 0) {
+			ids = new ArrayList<String>();
+			for (Msg msg : msgs) {
+				ids.add(msg.getId());
+			}
+		}
+		return ids;
+	}
+
+	@Override
+	public void deleteByIds(List<String> ids) {
+		MsgExample example = new MsgExample();
+		example.createCriteria().andIdIn(ids);
+		msgMapper.deleteByExample(example);
 	}
 	
 

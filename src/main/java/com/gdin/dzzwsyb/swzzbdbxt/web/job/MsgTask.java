@@ -4,39 +4,46 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 
-
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.RoleService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.UserService;
 
 public class MsgTask {
-	
+
 	@Resource
 	private MsgService msgService;
-	
+
 	@Resource
 	private MsgSponsorService msgSponsorService;
-	
+
 	@Resource
 	private MsgCoSponsorService msgCoSponsorService;
-	
+
 	@Resource
 	private NoticeService noticeService;
-	
+
 	@Resource
 	private MsgContractorService msgContractorService;
 	
+	@Resource
+	private SubmissionService submissionService;
+	
+	@Resource
+	private AttachService attachService;
+
 	@Resource
 	private UserService userService;
 	
@@ -79,6 +86,26 @@ public class MsgTask {
 		}
 		
 	}
+	}
+
+	public void deleteOldData() {
+		List<String> ids = new ArrayList<String>();
+		List<String> msgIds = null;
+		msgIds = msgService.selectOldDataIds();
+		if (ids != null) {
+			ids.addAll(msgIds);
+			ids.addAll(msgSponsorService.selectIdsByMsgIds(msgIds));
+			ids.addAll(msgCoSponsorService.selectIdsByMsgIds(msgIds));
+			ids.addAll(msgContractorService.selectIdsByMsgIds(msgIds));
+			ids.addAll(submissionService.selectIdsByMsgIds(ids));
+			noticeService.deleteByTargetIds(ids);
+			attachService.deleteByTargetIds(ids);
+			submissionService.deleteByTargetIds(ids);
+			msgContractorService.deleteByTargetIds(msgIds);
+			msgCoSponsorService.deleteByTargetIds(msgIds);
+			msgSponsorService.deleteByTargetIds(msgIds);
+			msgService.deleteByIds(msgIds);
+		}
 	}
 }
 
