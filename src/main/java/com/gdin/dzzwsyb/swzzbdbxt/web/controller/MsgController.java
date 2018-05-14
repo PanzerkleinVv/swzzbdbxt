@@ -522,6 +522,7 @@ public class MsgController {
 				reditectModel.addFlashAttribute("msg1", "撤回失败！");
 				reditectModel.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
 			}
+			
 			reditectModel.addFlashAttribute("msg", msg0);
 			return "redirect:/rest/msg/openMsg";
 		} else {
