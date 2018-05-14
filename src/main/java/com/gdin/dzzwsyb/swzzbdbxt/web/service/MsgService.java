@@ -20,5 +20,9 @@ public interface MsgService extends GenericService<Msg, String> {
 	public  List<Msg>  overMsg();
 	
 	public int  insertSelective(Msg record);
+	
+	public List<String> selectOldDataIds();
+	
+	void deleteByIds(List<String> ids);
 
 }

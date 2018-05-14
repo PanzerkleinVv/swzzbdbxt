@@ -29,6 +29,17 @@
 				<value>deleteMsgTask</value>
 			</property>
 		</bean>
+		<bean id="jobtask2"
+			class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+			<!-- 调用的类 -->
+			<property name="targetObject">
+				<ref bean="msgTask" />
+			</property>
+			<!-- 调用类中的方法 -->
+			<property name="targetMethod">
+				<value>deleteOldData</value>
+			</property>
+		</bean>
 		<!-- 定义触发时间 -->
 		<bean id="doTime1"
 			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -38,12 +49,21 @@
 			<!-- cron表达式 每天24:00运行一次 -->
 			<property name="cronExpression" value="0 7 13 * * ?" />
 		</bean>
+		<bean id="doTime2"
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+			<property name="jobDetail">
+				<ref bean="jobtask2" />
+			</property>
+			<!-- cron表达式 每天24:00运行一次 -->
+			<property name="cronExpression" value="0 0 0 1 1 ?" />
+		</bean>
 		<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
 		<bean id="startQuertz" lazy-init="false" autowire="no"
 			class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 			<property name="triggers">
 				<list>
 					<ref bean="doTime1" />
+					<ref bean="doTime2" />
 				</list>
 			</property>
 		</bean>

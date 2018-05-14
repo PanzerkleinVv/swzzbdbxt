@@ -56,4 +56,8 @@ public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 	int doAssign(String msgId, Long roleId);
 
 	List<MsgSponsor> selectMsgSponsorsByMsgIdRoleId(String msgId, Long roleId);
+	
+	List<String> selectIdsByMsgIds(List<String> ids);
+	
+	void deleteByTargetIds(List<String> ids);
 }

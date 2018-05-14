@@ -129,4 +129,25 @@ public class MsgContractorServiceImpl extends GenericServiceImpl<MsgContractor, 
 		}
 	}
 
+	@Override
+	public List<String> selectIdsByMsgIds(List<String> ids) {
+		MsgContractorExample example = new MsgContractorExample();
+		example.createCriteria().andMsgIdIn(ids);
+		List<MsgContractor> msgContractors = msgContractorMapper.selectByExample(example);
+		List<String> ids0 = new ArrayList<String>();
+		if (msgContractors != null && msgContractors.size() > 0) {
+			for (MsgContractor msgContractor : msgContractors) {
+				ids0.add(msgContractor.getId());
+			}
+		}
+		return ids0;
+	}
+
+	@Override
+	public void deleteByTargetIds(List<String> ids) {
+		MsgContractorExample example = new MsgContractorExample();
+		example.createCriteria().andMsgIdIn(ids);
+		msgContractorMapper.deleteByExample(example);
+	}
+
 }

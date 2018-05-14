@@ -196,4 +196,11 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 		}
 	}
 
+	@Override
+	public void deleteByTargetIds(List<String> ids) {
+		NoticeExample example = new NoticeExample();
+		example.createCriteria().andTargetIdIn(ids);
+		noticeMapper.deleteByExample(example);
+	}
+
 }

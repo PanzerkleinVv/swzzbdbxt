@@ -25,4 +25,6 @@ public interface AttachService extends GenericService<Attach, String> {
 	void deleteByMsgId(String targetId);
 	
 	List<Attach> selectByTargetId(String targetId);
+	
+	void deleteByTargetIds(List<String> ids);
 }
