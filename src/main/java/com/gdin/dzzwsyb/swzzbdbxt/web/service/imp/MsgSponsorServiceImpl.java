@@ -1,6 +1,7 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.MsgSponsorMapper;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
@@ -284,6 +287,24 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 		final MsgSponsorExample example = new MsgSponsorExample();
 		example.createCriteria().andMsgIdEqualTo(msgId).andIsSignedEqualTo(1);
 		return msgSponsorMapper.selectByExample(example);
+	}
+	
+	@Override
+	public List<MsgSponsor> overLimitTime() {
+		MsgSponsorExample example = new MsgSponsorExample();
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE,0);
+		example.createCriteria().andLimitTimeLessThan(calendar.getTime());
+		return msgSponsorMapper.selectByExample(example);
+	}
+
+	@Override
+	public void updateStatus(List<MsgSponsor> msgSponsors,int status) {
+		// TODO Auto-generated method stub
+		for(MsgSponsor msgSponsor : msgSponsors) {
+			msgSponsor.setStatus(status);
+			msgSponsorMapper.updateByPrimaryKeySelective(msgSponsor);
+		}
 	}
 
 	@Override

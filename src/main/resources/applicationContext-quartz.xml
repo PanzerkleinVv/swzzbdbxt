@@ -47,7 +47,7 @@
 				<ref bean="jobtask1" />
 			</property>
 			<!-- cron表达式 每天24:00运行一次 -->
-			<property name="cronExpression" value="0 7 13 * * ?" />
+			<property name="cronExpression" value="0 20 13 * * ?" />
 		</bean>
 		<bean id="doTime2"
 			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">

@@ -59,12 +59,13 @@ public interface NoticeService extends GenericService<Notice, Long> {
 	/**
 	 * 先根据msgid和targetid和targettype删除全部，然后增加
 	 */
+
 	void modifyUserId(String msgId, List<Long> roleUserIds, int typ, int targetType) throws Exception;
 
 	void updateIsRead(String msgId, Long userId);
 
-	void updateByMsgId(String msgId);
-
+	void updateByMsgId(String msgId, int style);
+	
 	/**
 	 * 先根据msgid删除全部，然后增加
 	 */

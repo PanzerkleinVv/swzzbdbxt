@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
@@ -60,4 +61,9 @@ public interface MsgSponsorService extends GenericService<MsgSponsor, String> {
 	List<String> selectIdsByMsgIds(List<String> ids);
 	
 	void deleteByTargetIds(List<String> ids);
+
+	List<MsgSponsor> overLimitTime();
+	
+	void updateStatus(List<MsgSponsor> msgSponsors,int status);
+
 }

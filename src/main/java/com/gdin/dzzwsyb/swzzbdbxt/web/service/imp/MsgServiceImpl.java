@@ -63,16 +63,7 @@ public class MsgServiceImpl extends GenericServiceImpl<Msg, String> implements M
 		msgMapper.selectByExampleAndPage(example, page);
 		return page;
 	}
-
-	@Override
-	public List<Msg> overMsg() {
-		MsgExample example = new MsgExample();
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE,0);
-		example.createCriteria().andLimitTimeLessThan(calendar.getTime());
-		return msgMapper.selectByExample(example);
-	}
-
+	
 	@Override
 	public int insertSelective(Msg record) {
 		return msgMapper.insertSelective(record);

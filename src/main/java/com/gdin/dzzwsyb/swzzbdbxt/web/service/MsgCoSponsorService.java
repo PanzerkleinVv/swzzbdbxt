@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,8 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
 
 public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String> {
 
@@ -56,4 +59,9 @@ public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String
 	List<String> selectIdsByMsgIds(List<String> ids);
 	
 	void deleteByTargetIds(List<String> ids);
+
+	public List<MsgCoSponsor> overCoLimitTime();
+
+	void updateStatus(List<MsgCoSponsor> msgCoSponsors, int status);
+	
 }

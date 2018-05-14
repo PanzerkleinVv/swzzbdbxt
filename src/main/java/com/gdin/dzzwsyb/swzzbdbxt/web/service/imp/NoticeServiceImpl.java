@@ -185,13 +185,13 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 	}
 
 	@Override
-	public void updateByMsgId(String msgId) {
+	public void updateByMsgId(String msgId,int style) {
 		// TODO Auto-generated method stub
 		NoticeExample example = new NoticeExample();
 		example.createCriteria().andTargetIdEqualTo(msgId);
 		List<Notice> notices = noticeMapper.selectByExample(example);
 		for(Notice notice : notices) {
-			notice.setType(1);
+			notice.setType(style);
 			noticeMapper.updateByExample(notice, example);
 		}
 	}
