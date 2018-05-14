@@ -308,6 +308,7 @@ public class MsgController {
 			}
 		} else {
 			final int msgCount = msgService.update(msg);
+			limitTime = msg.getLimitTime();
 			if (msgCount > 0) {
 				msgSponsorSelect = new ArrayList<Long>();
 				msgCoSponsorSelect = new ArrayList<Long>();
