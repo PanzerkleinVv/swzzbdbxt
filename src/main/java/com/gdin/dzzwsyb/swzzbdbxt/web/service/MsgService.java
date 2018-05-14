@@ -16,8 +16,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
 public interface MsgService extends GenericService<Msg, String> {
 
 	public Page<Msg> selectByExampleAndPage(MsgExample example, int pageNo);
-
-	public  List<Msg>  overMsg();
 	
 	public int  insertSelective(Msg record);
 
