@@ -12,6 +12,10 @@
 			<span class="msgTitle">状&emsp;&emsp;态：</span> <span>${sessionScope.msgStatus[msgSponsor.status]}</span>
 		</div>
 		<div>
+			<span class="msgTitle">办理期限：</span> <span><fmt:formatDate
+				value='${msgSponsor.limitTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
+		</div>
+		<div>
 			<span class="msgTitle">承&ensp;办&ensp;人：</span>
 			<c:choose>
 				<c:when test="${msgSponsor.assignable}">
@@ -246,6 +250,10 @@
 		</div>
 		<div>
 			<span class="msgTitle">状&emsp;&emsp;态：</span> <span>${sessionScope.msgStatus[msgCoSponsor.status]}</span>
+		</div>
+		<div>
+			<span class="msgTitle">办理期限：</span> <span><fmt:formatDate
+				value='${msgCoSponsor.limitTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
 		</div>
 		<div>
 			<span class="msgTitle">承&ensp;办&ensp;人：</span>

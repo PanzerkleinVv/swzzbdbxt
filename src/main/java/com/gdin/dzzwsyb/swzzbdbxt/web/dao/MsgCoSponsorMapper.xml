@@ -9,6 +9,7 @@
     <result column="is_assigned" jdbcType="INTEGER" property="isAssigned" />
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="limit_time" jdbcType="TIMESTAMP" property="limitTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, msg_id, role_id, is_signed, is_assigned, content, status
+    id, msg_id, role_id, is_signed, is_assigned, content, status, limit_time
   </sql>
   <select id="selectByExample" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample" resultMap="BaseResultMap">
     select
@@ -109,10 +110,10 @@
   <insert id="insert" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor">
     insert into `msg_co-sponsor` (id, msg_id, role_id, 
       is_signed, is_assigned, content, 
-      status)
+      status, limit_time)
     values (#{id,jdbcType=VARCHAR}, #{msgId,jdbcType=VARCHAR}, #{roleId,jdbcType=BIGINT}, 
-      #{isSigned,jdbcType=INTEGER}, #{isAssigned,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, 
-      #{status,jdbcType=INTEGER})
+      #{isSigned,jdbcType=INTEGER}, #{isAssigned,jdbcType=INTEGER}, #{content,jdbcType=TEXT}, 
+      #{status,jdbcType=INTEGER}, #{limitTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor">
     insert into `msg_co-sponsor`
@@ -138,6 +139,9 @@
       <if test="status != null">
         status,
       </if>
+      <if test="limitTime != null">
+        limit_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -160,6 +164,9 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="limitTime != null">
+        #{limitTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -193,6 +200,9 @@
       <if test="record.status != null">
         status = #{record.status,jdbcType=INTEGER},
       </if>
+      <if test="record.limitTime != null">
+        limit_time = #{record.limitTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -206,7 +216,8 @@
       is_signed = #{record.isSigned,jdbcType=INTEGER},
       is_assigned = #{record.isAssigned,jdbcType=INTEGER},
       content = #{record.content,jdbcType=LONGVARCHAR},
-      status = #{record.status,jdbcType=INTEGER}
+      status = #{record.status,jdbcType=INTEGER},
+      limit_time = #{record.limitTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -232,6 +243,9 @@
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
       </if>
+      <if test="limitTime != null">
+        limit_time = #{limitTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -242,7 +256,8 @@
       is_signed = #{isSigned,jdbcType=INTEGER},
       is_assigned = #{isAssigned,jdbcType=INTEGER},
       content = #{content,jdbcType=LONGVARCHAR},
-      status = #{status,jdbcType=INTEGER}
+      status = #{status,jdbcType=INTEGER},
+      limit_time = #{limitTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <delete id="deleteByMgsId" parameterType="java.lang.String">
