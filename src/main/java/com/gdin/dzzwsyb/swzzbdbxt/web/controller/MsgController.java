@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -784,7 +785,7 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveMsgSponsor")
-	public String saveMsgSponsor(MsgSponsor msgSponsor, RedirectAttributes model, HttpSession session) {
+	public String saveMsgSponsor(MsgSponsor msgSponsor, RedirectAttributes model, HttpSession session) throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
@@ -805,6 +806,17 @@ public class MsgController {
 				if (editabled) {
 					final int count = msgSponsorService.update(msgSponsor);
 					if (count > 0) {
+						//动态更新==0
+						int type = 0;
+						List<User> users = userService.selectByRoleId(msgSponsor0.getRoleId());
+						for(User user : users) {
+							NoticeExample example = new NoticeExample();
+							example.createCriteria().andUserIdEqualTo(user.getId()).andTargetIdEqualTo(msgSponsor0.getMsgId());
+							noticeService.deleteByExample(example);
+							Notice notice  = new Notice(user.getId(), type, msgSponsor0.getMsgId(), 1, ApplicationUtils.getTime(), 1);
+							noticeService.addNotice(notice);
+						}
+						
 						final MsgExtend msgExtend = new MsgExtend();
 						msgExtend.setId(msgSponsor0.getMsgId());
 						model.addFlashAttribute("msg1", "保存办理情况成功！");
@@ -826,7 +838,7 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveMsgCoSponsor")
-	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, RedirectAttributes model, HttpSession session) {
+	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, RedirectAttributes model, HttpSession session) throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
@@ -847,6 +859,16 @@ public class MsgController {
 				if (editabled) {
 					final int count = msgCoSponsorService.update(msgCoSponsor);
 					if (count > 0) {
+						//动态更新==0
+						int type = 0;
+						List<User> users = userService.selectByRoleId(msgCoSponsor0.getRoleId());
+						for(User user : users) {
+							NoticeExample example = new NoticeExample();
+							example.createCriteria().andUserIdEqualTo(user.getId()).andTargetIdEqualTo(msgCoSponsor0.getMsgId());
+							noticeService.deleteByExample(example);
+							Notice notice  = new Notice(user.getId(), type, msgCoSponsor0.getMsgId(), 1, ApplicationUtils.getTime(), 1);
+							noticeService.addNotice(notice);
+						}
 						final MsgExtend msgExtend = new MsgExtend();
 						msgExtend.setId(msgCoSponsor0.getMsgId());
 						model.addFlashAttribute("msg1", "保存办理情况成功！");
