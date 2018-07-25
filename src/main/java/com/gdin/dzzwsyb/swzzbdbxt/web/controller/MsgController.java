@@ -1,6 +1,5 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -43,6 +43,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
+import com.gdin.dzzwsyb.swzzbdbxt.web.properties.SourceURL;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
@@ -81,9 +82,12 @@ public class MsgController {
 	// 立项号
 	@Resource
 	private SequenceNumberService sequenceNumberService;
-	
+
 	@Resource
 	private NoticeService noticeService;
+
+	@Autowired
+	private SourceURL sourceURL;
 
 	@RequestMapping(value = "/query")
 	public String query() {
@@ -135,12 +139,12 @@ public class MsgController {
 		msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
 		List<List<String>> ids = submissionService.selectIdsByMsgList(msgs, roleId);
 		msgExtends = attachService.selectMsgExtendByMsgList(msgExtends, ids);
-		//去掉后缀
-		for(MsgExtend msgExtend : msgExtends) {
+		// 去掉后缀
+		for (MsgExtend msgExtend : msgExtends) {
 			String attachs[] = msgExtend.getAttachs();
-			if(attachs != null && attachs.length>0) {
+			if (attachs != null && attachs.length > 0) {
 				for (int i = 0; i < attachs.length; i++) {
-					String  fileNameArray[] = attachs[i].replace(".",",").split(",");
+					String fileNameArray[] = attachs[i].replace(".", ",").split(",");
 					String fileName = fileNameArray[0];
 					attachs[i] = fileName;
 				}
@@ -176,9 +180,9 @@ public class MsgController {
 		final Long userId = (Long) session.getAttribute("userId");
 		List<Long> msgSponsorSelect = null;// 存储下拉框选中的主处室
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
-		//标志notice为已读
+		// 标志notice为已读
 		noticeService.updateIsRead(msg.getId(), userId);
-		
+
 		if (msg != null && msg.getId() != null && !"".equals(msg.getId()) && msg.getStatus() != null
 				&& 0 == msg.getStatus().intValue()) {
 			Msg msg0 = msgService.selectById(msg.getId());
@@ -249,9 +253,7 @@ public class MsgController {
 	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String insert(MsgExtend msg, @RequestParam(value = "role[]") long[] role, 
-			@RequestParam(value = "assitrole[]", required=false) long[] assitrole,
-			Model model, HttpServletRequest request, RedirectAttributes reditectModel)
+	public String insert(MsgExtend msg, Model model, HttpServletRequest request, RedirectAttributes reditectModel)
 			throws Exception {
 		Attach attach;
 		MsgCoSponsor msgCoSponsor;
@@ -259,8 +261,10 @@ public class MsgController {
 		Date limitTime = null;
 		List<Long> msgSponsorSelect = null;// 存储下拉框选中的主处室
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
-		List<MsgCoSponsor> msgCoSponsors = new ArrayList<MsgCoSponsor>();;
-		List<MsgSponsor> msgSponsors = new ArrayList<MsgSponsor>();;
+		List<MsgCoSponsor> msgCoSponsors = new ArrayList<MsgCoSponsor>();
+		;
+		List<MsgSponsor> msgSponsors = new ArrayList<MsgSponsor>();
+		;
 		String basisSelect = msg.getBasis();
 		List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
 		String msgId = null;
@@ -289,18 +293,20 @@ public class MsgController {
 				break;
 			}
 			// 录入msg_sponsor数据库
-			for (int i = 0; i < role.length; i++) {
-				long roleId = role[i];
-				msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msgId, roleId, 0, 0, "", msg.getStatus(), limitTime);
+			for (int i = 0; i < msg.getRole().size(); i++) {
+				long roleId = msg.getRole().get(i);
+				msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msgId, roleId, 0, 0, "", msg.getStatus(),
+						limitTime);
 				msgSponsorSelect.add(roleId);
 				msgSponsorService.insertSelective(msgSponsor);
 				msgSponsors.add(msgSponsor);
 			}
 			// 录入msg_co-sponsor数据库
-			if (assitrole != null && assitrole.length != 0) {
-				for (int i = 0; i < assitrole.length; i++) {
-					long assitRoldId = assitrole[i];
-					msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msgId, assitRoldId, 0, 0, "", msg.getStatus(), limitTime);
+			if (msg.getAssitrole() != null && msg.getAssitrole().size() != 0) {
+				for (int i = 0; i < msg.getAssitrole().size(); i++) {
+					long assitRoldId = msg.getAssitrole().get(i);
+					msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msgId, assitRoldId, 0, 0, "",
+							msg.getStatus(), limitTime);
 					msgCoSponsorSelect.add(assitRoldId);
 					msgCoSponsorService.insertSelective(msgCoSponsor);
 					msgCoSponsors.add(msgCoSponsor);
@@ -317,16 +323,18 @@ public class MsgController {
 					for (String fileName : fileNameLists) {
 						attachService.deleteByMsgId(msg.getId());
 						String attachId = ApplicationUtils.newUUID();
-						attach = new Attach(attachId, msg.getId(), msg.getStatus(), fileName, ApplicationUtils.getTime());
+						attach = new Attach(attachId, msg.getId(), msg.getStatus(), fileName,
+								ApplicationUtils.getTime());
 						attachService.insert(attach);
 					}
 					break;
 				}
 				// 录入msg_sponsor数据库
-				for (int i = 0; i < role.length; i++) {
-					long roleId = role[i];
+				for (int i = 0; i < msg.getRole().size(); i++) {
+					long roleId = msg.getRole().get(i);
 					msgSponsorSelect.add(roleId);
-					msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msg.getId(), roleId, 0, 0, "", msg.getStatus(), limitTime);
+					msgSponsor = new MsgSponsor(ApplicationUtils.newUUID(), msg.getId(), roleId, 0, 0, "",
+							msg.getStatus(), limitTime);
 					msgSponsors.add(msgSponsor);
 				}
 				boolean msgSponsorFlag = msgSponsorService.modifyRoleId(msg.getId(), msgSponsors);
@@ -334,13 +342,14 @@ public class MsgController {
 					throw new Exception("修改主办处室出错，操作回滚");
 				}
 				// 录入msg_co-sponsor数据库
-				if (assitrole == null || assitrole.length == 0) {
+				if (msg.getAssitrole() == null || msg.getAssitrole().size() == 0) {
 					msgCoSponsorService.deleteByMgsId(msg.getId());
 				} else {
-					for (int i = 0; i < assitrole.length; i++) {
-						long assitRoldId = assitrole[i];
+					for (int i = 0; i < msg.getAssitrole().size(); i++) {
+						long assitRoldId = msg.getAssitrole().get(i);
 						msgCoSponsorSelect.add(assitRoldId);
-						msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msg.getId(), assitRoldId, 0, 0, "", msg.getStatus(), limitTime);
+						msgCoSponsor = new MsgCoSponsor(ApplicationUtils.newUUID(), msg.getId(), assitRoldId, 0, 0, "",
+								msg.getStatus(), limitTime);
 						msgCoSponsors.add(msgCoSponsor);
 					}
 					boolean msgCoSponsorFlag = msgCoSponsorService.modifyRoleId(msg.getId(), msgCoSponsors);
@@ -361,40 +370,40 @@ public class MsgController {
 		model.addAttribute("msg", msg);
 		request.getSession().removeAttribute("fileNameLists");
 		if (msg.getStatus() == 0) {
-			//录入提醒表
-			int type = 5;//草稿箱
+			// 录入提醒表
+			int type = 5;// 草稿箱
 			List<Long> roleIdList = new ArrayList<Long>();
 			roleIdList.add(1L);
 			roleIdList.add(2L);
 			roleIdList.add(3L);
 			List<Long> roleUserIds = new ArrayList<Long>();
 			List<User> roleUsers = userService.selectByRoleIdList(roleIdList);
-			for(User user2 : roleUsers) {
-					roleUserIds.add(user2.getId());
+			for (User user2 : roleUsers) {
+				roleUserIds.add(user2.getId());
 			}
-			noticeService.modifyUserId(msg.getId(), roleUserIds,type,0);
+			noticeService.modifyUserId(msg.getId(), roleUserIds, type, 0);
 			return "upload";
 		} else {
-			//发布之后变为待签收状态
-			int type = 3 ;//待签收
+			// 发布之后变为待签收状态
+			int type = 3;// 待签收
 			List<Long> roleIdList = new ArrayList<Long>();
-			for(MsgSponsor msgSponsor2 : msgSponsors) {
+			for (MsgSponsor msgSponsor2 : msgSponsors) {
 				roleIdList.add(msgSponsor2.getRoleId());
 			}
-			while(msgCoSponsors.size()>0) {
-				for(MsgCoSponsor msgCoSponsor2 : msgCoSponsors) {
+			while (msgCoSponsors.size() > 0) {
+				for (MsgCoSponsor msgCoSponsor2 : msgCoSponsors) {
 					roleIdList.add(msgCoSponsor2.getRoleId());
 				}
 				break;
 			}
 			List<Long> roleUserIds = new ArrayList<Long>();
 			List<User> roleUsers = userService.selectByRoleIdList(roleIdList);
-			for(User user2 : roleUsers) {
-				if(user2.getPermissionId()<6L) {
+			for (User user2 : roleUsers) {
+				if (user2.getPermissionId() < 6L) {
 					roleUserIds.add(user2.getId());
 				}
 			}
-			noticeService.modifySendUserId(msg.getId(), roleUserIds,type);
+			noticeService.modifySendUserId(msg.getId(), roleUserIds, type);
 			reditectModel.addFlashAttribute("msg", msg);
 			return "redirect:/rest/msg/openMsg";
 		}
@@ -405,13 +414,14 @@ public class MsgController {
 	@RequestMapping(value = "/getData")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 
-	public String getData( MsgExtend msg, @RequestParam(value = "role[]") long[] role, Model model, HttpServletResponse resp, HttpServletRequest request) {
+	public String getData(MsgExtend msg, @RequestParam(value = "role[]") long[] role, Model model,
+			HttpServletResponse resp, HttpServletRequest request) {
 		String basisSelect;
 		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>();
 		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
 		ArrayList<Long> roleList = null;
 		roleList = new ArrayList<Long>();
-		if (role !=null && role.length > 0) {
+		if (role != null && role.length > 0) {
 			for (int i = 0; i < role.length; i++) {
 				for (Role role2 : roles) {
 					if (role[i] == (role2.getId())) {
@@ -426,7 +436,7 @@ public class MsgController {
 			msgSponsorSelect = null;
 		}
 		basisSelect = msg.getBasis();
-		model.addAttribute("msg",msg);
+		model.addAttribute("msg", msg);
 		model.addAttribute("id", msg.getId());
 		model.addAttribute("msgBasis", msg.getMsgBasis());
 		model.addAttribute("sequenceNumber", msg.getSequence());
@@ -465,16 +475,16 @@ public class MsgController {
 				count = msgSponsorService.doSign(msg.getId(), roleId);
 				count = count + msgCoSponsorService.doSign(msg.getId(), roleId);
 				if (count == 1) {
-					//签收成功，notice变为待指派
-					int type = 4;//待指派
+					// 签收成功，notice变为待指派
+					int type = 4;// 待指派
 					final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
 					List<Long> roleUserIds = new ArrayList<Long>();
-					for(User user : roleUsers) {
-						if(user.getPermissionId() < 6L) {
+					for (User user : roleUsers) {
+						if (user.getPermissionId() < 6L) {
 							roleUserIds.add(user.getId());
 						}
 					}
-					noticeService.modifyUserId(msg.getId(), roleUserIds, type,0);
+					noticeService.modifyUserId(msg.getId(), roleUserIds, type, 0);
 					model.addFlashAttribute("msg1", "签收成功！");
 					model.addFlashAttribute("msg2", MessageColor.SUCCESS.getColor());
 					model.addFlashAttribute("msg", new MsgExtend(msg));
@@ -490,7 +500,8 @@ public class MsgController {
 
 	@RequestMapping(value = "/callback")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String callBack(@RequestParam("id") String msgId,Model model,HttpSession session, HttpServletRequest request,RedirectAttributes reditectModel) throws Exception {
+	public String callBack(@RequestParam("id") String msgId, Model model, HttpSession session,
+			HttpServletRequest request, RedirectAttributes reditectModel) throws Exception {
 		MsgExtend msg0 = new MsgExtend();
 		msg0.setId(msgId);
 		if (msgId != null) {
@@ -502,8 +513,8 @@ public class MsgController {
 				if (count > 0) {
 					msg0.setStatus(0);
 				}
-				//撤回重新录入notice提醒表
-				int type = 5;//草稿
+				// 撤回重新录入notice提醒表
+				int type = 5;// 草稿
 				noticeService.noticeByTargetId(msgId);
 				List<Long> roleIdList = new ArrayList<Long>();
 				roleIdList.add(1L);
@@ -511,18 +522,17 @@ public class MsgController {
 				roleIdList.add(3L);
 				List<Long> roleUserIds = new ArrayList<Long>();
 				List<User> roleUsers = userService.selectByRoleIdList(roleIdList);
-				for(User user2 : roleUsers) {
-					if(user2.getPermissionId() < 6L) {
+				for (User user2 : roleUsers) {
+					if (user2.getPermissionId() < 6L) {
 						roleUserIds.add(user2.getId());
 					}
 				}
-				noticeService.modifyUserId(msgId, roleUserIds,type,0);
-			}
-			else {
+				noticeService.modifyUserId(msgId, roleUserIds, type, 0);
+			} else {
 				reditectModel.addFlashAttribute("msg1", "撤回失败！");
 				reditectModel.addFlashAttribute("msg2", MessageColor.FAILURE.getColor());
 			}
-			
+
 			reditectModel.addFlashAttribute("msg", msg0);
 			return "redirect:/rest/msg/openMsg";
 		} else {
@@ -536,8 +546,8 @@ public class MsgController {
 	@RequiresPermissions(value = { PermissionSign.ADMIN, PermissionSign.BAN_GONG_SHI_GUAN_LI,
 			PermissionSign.BU_LING_DAO, PermissionSign.CHU_SHI_NEI_QIN,
 			PermissionSign.CHU_SHI_FU_ZE_REN }, logical = Logical.OR)
-	public String assign(String msgId, @RequestParam(value = "userIds[]", required=false) long[] userIds, RedirectAttributes model,
-			HttpSession session) throws Exception {
+	public String assign(String msgId, @RequestParam(value = "userIds[]", required = false) long[] userIds,
+			RedirectAttributes model, HttpSession session) throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
 		final MsgExtend msgExtend = new MsgExtend();
@@ -552,7 +562,7 @@ public class MsgController {
 					roleUserIds.add(roleUser.getId());
 				}
 				msgContractorService.modifyUserId(msgId, userIds, roleUserIds);
-				//成功删除改督查事项待分派提醒
+				// 成功删除改督查事项待分派提醒
 				NoticeExample example = new NoticeExample();
 				example.createCriteria().andUserIdIn(roleUserIds).andTargetIdEqualTo(msgId).andTargetTypeEqualTo(0);
 				noticeService.deleteByExample(example);
@@ -787,7 +797,8 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveMsgSponsor")
-	public String saveMsgSponsor(MsgSponsor msgSponsor, RedirectAttributes model, HttpSession session) throws Exception {
+	public String saveMsgSponsor(MsgSponsor msgSponsor, RedirectAttributes model, HttpSession session)
+			throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
@@ -808,17 +819,19 @@ public class MsgController {
 				if (editabled) {
 					final int count = msgSponsorService.update(msgSponsor);
 					if (count > 0) {
-						//动态更新==0
+						// 动态更新==0
 						int type = 0;
 						List<User> users = userService.selectByRoleId(msgSponsor0.getRoleId());
-						for(User user : users) {
+						for (User user : users) {
 							NoticeExample example = new NoticeExample();
-							example.createCriteria().andUserIdEqualTo(user.getId()).andTargetIdEqualTo(msgSponsor0.getMsgId());
+							example.createCriteria().andUserIdEqualTo(user.getId())
+									.andTargetIdEqualTo(msgSponsor0.getMsgId());
 							noticeService.deleteByExample(example);
-							Notice notice  = new Notice(user.getId(), type, msgSponsor0.getMsgId(), 1, ApplicationUtils.getTime(), 1);
+							Notice notice = new Notice(user.getId(), type, msgSponsor0.getMsgId(), 1,
+									ApplicationUtils.getTime(), 1);
 							noticeService.addNotice(notice);
 						}
-						
+
 						final MsgExtend msgExtend = new MsgExtend();
 						msgExtend.setId(msgSponsor0.getMsgId());
 						model.addFlashAttribute("msg1", "保存办理情况成功！");
@@ -840,7 +853,8 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveMsgCoSponsor")
-	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, RedirectAttributes model, HttpSession session) throws Exception {
+	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, RedirectAttributes model, HttpSession session)
+			throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
@@ -861,14 +875,16 @@ public class MsgController {
 				if (editabled) {
 					final int count = msgCoSponsorService.update(msgCoSponsor);
 					if (count > 0) {
-						//动态更新==0
+						// 动态更新==0
 						int type = 0;
 						List<User> users = userService.selectByRoleId(msgCoSponsor0.getRoleId());
-						for(User user : users) {
+						for (User user : users) {
 							NoticeExample example = new NoticeExample();
-							example.createCriteria().andUserIdEqualTo(user.getId()).andTargetIdEqualTo(msgCoSponsor0.getMsgId());
+							example.createCriteria().andUserIdEqualTo(user.getId())
+									.andTargetIdEqualTo(msgCoSponsor0.getMsgId());
 							noticeService.deleteByExample(example);
-							Notice notice  = new Notice(user.getId(), type, msgCoSponsor0.getMsgId(), 1, ApplicationUtils.getTime(), 1);
+							Notice notice = new Notice(user.getId(), type, msgCoSponsor0.getMsgId(), 1,
+									ApplicationUtils.getTime(), 1);
 							noticeService.addNotice(notice);
 						}
 						final MsgExtend msgExtend = new MsgExtend();
@@ -889,27 +905,28 @@ public class MsgController {
 		}
 		return "404";
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/msgListByNotice")
-	public String noticeList(@RequestParam("pageNo") int pageNo,@RequestParam("status") Integer status,@RequestParam("type") Integer type,Model model, HttpSession session) {
+	public String noticeList(@RequestParam("pageNo") int pageNo, @RequestParam("status") Integer status,
+			@RequestParam("type") Integer type, Model model, HttpSession session) {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
 		final MsgExample example = new MsgExample();
-		List<Notice> notices = null;	
+		List<Notice> notices = null;
 		List<MsgExtend> msgExtends = new ArrayList<MsgExtend>();
 		List<Msg> msgs = new ArrayList<Msg>();
 		List<String> msgIds = new ArrayList<String>();
 		Page<Msg> page = null;
 		example.setOrderByClause("sequence asc");
 		Criteria criteria = example.createCriteria();
-		if(status != null && status == 0) {
-			notices = noticeService.selectMsg(type,userId);
+		if (status != null && status == 0) {
+			notices = noticeService.selectMsg(type, userId);
+		} else {
+			notices = noticeService.selectMsg(type, userId, 1);
 		}
-		else {
-			notices = noticeService.selectMsg(type, userId,1);
-		}
-		for(Notice notice : notices) {
+		for (Notice notice : notices) {
 			Msg msg = msgService.selectById(notice.getTargetId());
 			msgExtends.add(new MsgExtend(msg));
 			msgs.add(msg);
@@ -925,8 +942,8 @@ public class MsgController {
 		model.addAttribute("msgs", msgExtends);
 		model.addAttribute("page", page);
 		model.addAttribute("titleName", "提醒预览");
-		model.addAttribute("status",status);
-		model.addAttribute("type",type);
+		model.addAttribute("status", status);
+		model.addAttribute("type", type);
 		return "msgList";
 	}
 }
