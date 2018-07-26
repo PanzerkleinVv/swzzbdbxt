@@ -12,8 +12,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserExample.Criteria;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.UserService;
-import com.mysql.fabric.xmlrpc.base.Array;
-
 import org.springframework.stereotype.Service;
 
 /**

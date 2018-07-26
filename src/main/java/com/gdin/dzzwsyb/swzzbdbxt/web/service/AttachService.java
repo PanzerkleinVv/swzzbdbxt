@@ -17,14 +17,15 @@ public interface AttachService extends GenericService<Attach, String> {
 	
 	List<MsgExtend> selectMsgExtendByMsgList(List<MsgExtend> msgs, List<List<String>> ids);
 	
-	void upload(Model model,MultipartFile[] file,HttpServletResponse resp,HttpServletRequest request) ;
+	List<Attach> upload(MultipartFile[] files, String targetId, int targetType) throws Exception;
 	
 	void download(String id,Model model, HttpServletRequest request,HttpServletResponse response) ;
 		
-	
 	void deleteByMsgId(String targetId);
 	
-	List<Attach> selectByTargetId(String targetId);
+	List<Attach> selectByTargetId(String targetId, int targetType);
 	
 	void deleteByTargetIds(List<String> ids);
+	
+	Boolean deleteFile(String id) throws Exception;
 }

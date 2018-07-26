@@ -14,22 +14,30 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.HandleFile;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.AttachMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.AttachExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
+import com.gdin.dzzwsyb.swzzbdbxt.web.properties.SourceURL;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 
 @Service
 public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implements AttachService {
 	@Resource
 	private AttachMapper attachMapper;
+
+	@Autowired
+	private SourceURL sourceURL;
 
 	@Override
 	public int insert(Attach model) {
@@ -93,36 +101,18 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 		return msgs;
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public void upload(Model model, MultipartFile[] file, HttpServletResponse resp, HttpServletRequest request) {
-		// 储存文件名
-		List<String> fileNameLists = new ArrayList<String>();
-		// 多文件
-		for (MultipartFile multipartFile : file) {
-			if (multipartFile != null && multipartFile.getSize() > 0) {
-				String fileName = multipartFile.getOriginalFilename();
-				fileNameLists.add(fileName);
-				File filepath = new File("C://File", fileName);
-				if (!filepath.getParentFile().exists()) {
-					filepath.getParentFile().mkdirs();
-				}
-				try {
-					multipartFile.transferTo(filepath);
-				} catch (IllegalStateException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-			}
-			// 没有选中文件，返回错误页面
-			else {
-				fileNameLists.add(null);
-			}
+	public List<Attach> upload(MultipartFile[] files, String targetId, int targetType) throws Exception {
+		List<Attach> attachs = new ArrayList<Attach>();
+		for (MultipartFile file : files) {
+			Attach attach = new Attach(ApplicationUtils.newUUID(), targetId, targetType, file.getOriginalFilename(),
+					ApplicationUtils.getTime());
+			insert(attach);
+			HandleFile.save(file, sourceURL.FILE_URL + attach.getId());
+			attachs.add(attach);
 		}
-		// 保存文件名
-		request.getSession().setAttribute("fileNameLists", fileNameLists);
-
+		return attachs;
 	}
 
 	@Override
@@ -179,9 +169,9 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 		}
 	}
 
-	public List<Attach> selectByTargetId(String targetId) {
+	public List<Attach> selectByTargetId(String targetId, int targetType) {
 		final AttachExample example = new AttachExample();
-		example.createCriteria().andTargetIdEqualTo(targetId);
+		example.createCriteria().andTargetIdEqualTo(targetId).andTargetTypeEqualTo(targetType);
 		return attachMapper.selectByExample(example);
 
 	}
@@ -194,7 +184,7 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 			List<Attach> attachs = attachMapper.selectByExample(example);
 			if (attachs != null && attachs.size() > 0) {
 				for (Attach attach : attachs) {
-					File filepath = new File("C://File", attach.getAttachFileName());
+					File filepath = new File(sourceURL + attach.getId());
 					if (filepath.exists()) {
 						filepath.delete();
 					}
@@ -202,6 +192,14 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 				attachMapper.deleteByExample(example);
 			}
 		}
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Boolean deleteFile(String id) throws Exception {
+		HandleFile.remove(sourceURL + id);
+		delete(id);
+		return true;
 	}
 
 }

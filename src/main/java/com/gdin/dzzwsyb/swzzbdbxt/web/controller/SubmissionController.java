@@ -105,7 +105,7 @@ public class SubmissionController {
 		return "redirect:/rest/msg/openMsg";
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(value = "/save")
 	public String save(Submission submission, String msgId0, RedirectAttributes model, HttpSession session) throws Exception {
@@ -168,6 +168,7 @@ public class SubmissionController {
 		return "redirect:/rest/msg/openMsg";
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/callback")
 	public String callback(Submission submission, String msgId0, RedirectAttributes model,HttpSession session) throws Exception {
 		if (submission != null && submission.getId() != null) {

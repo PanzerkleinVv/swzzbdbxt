@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
@@ -43,7 +43,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
-import com.gdin.dzzwsyb.swzzbdbxt.web.properties.SourceURL;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
@@ -85,9 +84,6 @@ public class MsgController {
 
 	@Resource
 	private NoticeService noticeService;
-
-	@Autowired
-	private SourceURL sourceURL;
 
 	@RequestMapping(value = "/query")
 	public String query() {
@@ -214,7 +210,7 @@ public class MsgController {
 				msgExtends.add(msgExtend);
 				msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
 				msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
-				List<Attach> attachList = attachService.selectByTargetId(msgExtend.getId());
+				List<Attach> attachList = attachService.selectByTargetId(msgExtend.getId(), 0);
 				msgExtend = msgExtends.get(0);
 				String[] attachs = null;
 				String[] attachIds = null;
@@ -249,13 +245,11 @@ public class MsgController {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String insert(MsgExtend msg, Model model, HttpServletRequest request, RedirectAttributes reditectModel)
-			throws Exception {
-		Attach attach;
+	public String insert(MsgExtend msg, @RequestParam(value = "file", required = false) MultipartFile[] files,
+			Model model, HttpServletRequest request, RedirectAttributes reditectModel) throws Exception {
 		MsgCoSponsor msgCoSponsor;
 		MsgSponsor msgSponsor;
 		Date limitTime = null;
@@ -266,7 +260,7 @@ public class MsgController {
 		List<MsgSponsor> msgSponsors = new ArrayList<MsgSponsor>();
 		;
 		String basisSelect = msg.getBasis();
-		List<String> fileNameLists = (List<String>) request.getSession().getAttribute("fileNameLists");
+		List<Attach> attachs = new ArrayList<Attach>();
 		String msgId = null;
 		// 录入msg类数据库
 		// 是否有id来判断是保存还是修改
@@ -284,14 +278,6 @@ public class MsgController {
 			limitTime = msg.getLimitTime();
 			msg.setLimitTime(null);
 			msgService.insertSelective(msg);
-			while (fileNameLists != null) {
-				for (String fileName : fileNameLists) {
-					String attachId = ApplicationUtils.newUUID();
-					attach = new Attach(attachId, msgId, 0, fileName, ApplicationUtils.getTime());
-					attachService.insert(attach);
-				}
-				break;
-			}
 			// 录入msg_sponsor数据库
 			for (int i = 0; i < msg.getRole().size(); i++) {
 				long roleId = msg.getRole().get(i);
@@ -319,15 +305,8 @@ public class MsgController {
 				msgSponsorSelect = new ArrayList<Long>();
 				msgCoSponsorSelect = new ArrayList<Long>();
 				// 录入attach数据库
-				while (fileNameLists != null) {
-					for (String fileName : fileNameLists) {
-						attachService.deleteByMsgId(msg.getId());
-						String attachId = ApplicationUtils.newUUID();
-						attach = new Attach(attachId, msg.getId(), msg.getStatus(), fileName,
-								ApplicationUtils.getTime());
-						attachService.insert(attach);
-					}
-					break;
+				if (files.length > 0) {
+					attachs = attachService.upload(files, msgId, 0);
 				}
 				// 录入msg_sponsor数据库
 				for (int i = 0; i < msg.getRole().size(); i++) {
@@ -366,7 +345,7 @@ public class MsgController {
 		model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 		model.addAttribute("msgBasis", msg.getMsgBasis());
 		model.addAttribute("sequenceNumber", msg.getSequence());
-		model.addAttribute("fileName", fileNameLists);
+		model.addAttribute("attachs", attachs);
 		model.addAttribute("msg", msg);
 		request.getSession().removeAttribute("fileNameLists");
 		if (msg.getStatus() == 0) {
@@ -435,6 +414,7 @@ public class MsgController {
 			roleList = null;
 			msgSponsorSelect = null;
 		}
+		List<Attach> attachs = attachService.selectByTargetId(msg.getId(), 0);
 		basisSelect = msg.getBasis();
 		model.addAttribute("msg", msg);
 		model.addAttribute("id", msg.getId());
@@ -443,6 +423,7 @@ public class MsgController {
 		model.addAttribute("basisSelect", basisSelect);
 		model.addAttribute("roleList", roleList);
 		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
+		model.addAttribute("attachs", attachs);
 		return "upload";
 	}
 
@@ -911,7 +892,6 @@ public class MsgController {
 	public String noticeList(@RequestParam("pageNo") int pageNo, @RequestParam("status") Integer status,
 			@RequestParam("type") Integer type, Model model, HttpSession session) {
 		final Long roleId = (Long) session.getAttribute("roleId");
-		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
 		final MsgExample example = new MsgExample();
 		List<Notice> notices = null;

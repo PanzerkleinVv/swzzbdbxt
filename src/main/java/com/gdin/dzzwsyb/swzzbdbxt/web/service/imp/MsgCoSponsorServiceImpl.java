@@ -19,8 +19,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.dao.MsgCoSponsorMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 
 @Service

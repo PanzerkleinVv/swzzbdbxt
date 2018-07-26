@@ -82,26 +82,14 @@
 			<!-- 	</form> -->
 			<div>
 				<div>
-
-					<table>
-						<tr>
-							<td>请选择文件:</td>
-							<td><input id="fileID" type="file" name="file" /></td>
-							<td><button type="button" onclick="doUpload()">上传</button></td>
-						</tr>
-						<tr>
-							<td><span id='tagMsg'></span></td>
-						</tr>
-						<tr>
-							<td><span id='successMsg'></span><br /></td>
-						</tr>
-						<tr>
-							<td><c:forEach var="fileName" items="${fileName}">
-									<span id='tagMsg' style="color: #00FF00">${fileName}</span>
-								</c:forEach></td>
-						<tr>
-					</table>
-
+					<span class="uploadTitle">附&emsp;&emsp;件：</span>
+					<span class="uploadItem withInput">
+						<c:forEach var="attach" items="${attachs}">
+							<span id='attach_${attach.id}'>
+								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</span>
+						</c:forEach>
+						<button id="addFile" type="button" class="btn green" onclick="addFile()">增加</button>
+					</span>
 				</div>
 			</div>
 			<div class="uploadButton">
@@ -147,6 +135,29 @@
 			} else {
 				$("#msgBasis").hide();
 			}
+		}
+
+		function deleteFile(id) {
+			$.ajax({
+				type : "POST",
+				url : 'rest/attach/delete',
+				data : {
+					'id' : id
+				},
+				success : function(data) {
+					if ("true" == data.match("true")) {
+						$('#attach_' + id).remove();
+					} else {
+						$('#attach_' + id).append(
+								'<i class="red">&emsp;删除失败</i>');
+					}
+				}
+			});
+			return false;
+		}
+		
+		function addFile() {
+			
 		}
 
 		function getData() {

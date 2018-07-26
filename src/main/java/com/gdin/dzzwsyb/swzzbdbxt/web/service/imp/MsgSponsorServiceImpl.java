@@ -16,8 +16,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.MsgSponsorMapper;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
