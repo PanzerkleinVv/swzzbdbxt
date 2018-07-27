@@ -26,7 +26,7 @@
 	<div>
 		<span class="msgTitle">附件资料：</span> <span><c:forEach
 				var="attachId" items="${msg.attachIds}" varStatus="status0">
-				<a href="rest/attach/download?id=${attachId}" target="_blank">${msg.attachs[status0.index]}</a>
+				<a href="rest/attach/download?id=${attachId}" target="_blank" style="display: block; margin-left: 20px;">${msg.attachs[status0.index]}</a>
 			</c:forEach></span>
 	</div>
 	<div>
@@ -94,7 +94,9 @@
 		});
 	}
 
-	function saveContent(id, type) {
+	function saveContent1(target) {
+		var form = $(target).parents("form");
+		var type = form.find("#contentType").val();
 		if (type == 1) {
 			var url = "rest/msg/saveMsgSponsor";
 		} else  if (type == 2) {
@@ -102,12 +104,19 @@
 		} else {
 			return false;
 		}
-		$.post(url, {
-			"id" : id,
-			"content" : UE.getEditor(id + '_editor').getContent()
-		}, function(data) {
-			showData("#msg-content", data);
-		})
+		form.find('input[type="file"]').each(function(i, n) {
+			if (!checkFile(n)) {
+				$(n).parent().remove();
+			}
+		});
+		form.ajaxSubmit({
+			'url' : url,
+			'type' : "post",
+			'cache' : false,
+			'success' : function(data) {
+				showData("#msg-content", data);
+			}
+		});
 	}
 	
 	function addSubmission(type, targetId) {
@@ -199,5 +208,71 @@
 		}, function(data) {
 			showData("#msg-content", data);
 		});
+	}
+	
+	function deleteFile(id) {
+		$.ajax({
+			type : "POST",
+			url : 'rest/attach/delete',
+			data : {
+				'id' : id
+			},
+			dataType : "text",
+			async : false,
+			success : function(msg) {
+				if ("true" == msg.match("true")) {
+					$('#attach_' + id).remove();
+				} else {
+					$('#attach_' + id).append(
+							'<i class="red">&emsp;删除失败</i>');
+				}
+			}
+		});
+		return false;
+	}
+
+	var fileBand = 0;
+
+	function addAttach(target) {
+		$(target)
+				.before(
+						"<div><a class='red' onclick='removeFile(this)'>[删除]</a><label for='file_" + fileBand + "'>请选择文件</label><input type='file' name='files' id='file_"
+								+ fileBand
+								+ "' style='display: none' onchange='fileChange(this)' /></div>");
+		$(target).parent().attr('for', 'file_' + fileBand);
+		fileBand++;
+	}
+
+	function fileChange(target) {
+		if (checkFile(target)) {
+			fileBand++;
+		} else {
+			removeFile($(target));
+		}
+	}
+
+	function checkFile(target) {
+		var msg = $("#msg5");
+		if (target.files.length == 0) {
+			msg.html("请选择文件");
+			msg.css('color', '#FF0000');
+			return false;
+		} else {
+			var fileSize = target.files[0].size;
+			var maxSize = 3 * 1024 * 1024;
+			if (fileSize > maxSize) {
+				msg.html("单个文件不能大于3Mb");
+				msg.css('color', '#FF0000');
+				return false;
+			} else {
+				msg.html("");
+				$(target).prevAll('label').html(target.files[0].name);
+				return true;
+			}
+		}
+	}
+
+	function removeFile(target) {
+		$(target).parent().remove();
 	}
 </script>

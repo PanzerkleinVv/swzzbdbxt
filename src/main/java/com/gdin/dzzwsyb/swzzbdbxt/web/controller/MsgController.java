@@ -213,6 +213,15 @@ public class MsgController {
 				msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
 				attachList = attachService.selectByTargetId(msgExtend.getId(), 0);
 				msgExtend = msgExtends.get(0);
+				if (!msgExtend.getSponsorRoleNames().isEmpty()) {
+					msgExtend.setSponsorRoleNames(msgExtend.getSponsorRoleNames()
+							.substring(0, msgExtend.getSponsorRoleNames().lastIndexOf("<br/>")).replace("<br/>", "、"));
+				}
+				if (!msgExtend.getCoSponsorRoleNames().isEmpty()) {
+					msgExtend.setCoSponsorRoleNames(msgExtend.getCoSponsorRoleNames()
+							.substring(0, msgExtend.getCoSponsorRoleNames().lastIndexOf("<br/>"))
+							.replace("<br/>", "、"));
+				}
 				String[] attachs = null;
 				String[] attachIds = null;
 				if (attachList != null && attachList.size() > 0) {
@@ -548,6 +557,7 @@ public class MsgController {
 					MsgSponsorExtend msgSponsorExtend = null;
 					for (MsgSponsor msgSponsor : msgSponsors) {
 						msgSponsorExtend = new MsgSponsorExtend(msgSponsor);
+						msgSponsorExtend.setAttachs(attachService.selectByTargetId(msgSponsorExtend.getId(), 1));
 						if (msgSponsorExtend.getStatus() > 2
 								|| (msgSponsorExtend.getRoleId() == roleId && msgSponsorExtend.getStatus() < 3)) {
 							msgSponsorExtend.setEditabled(true);
@@ -595,6 +605,7 @@ public class MsgController {
 					MsgCoSponsorExtend msgCoSponsorExtend = null;
 					for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 						msgCoSponsorExtend = new MsgCoSponsorExtend(msgCoSponsor);
+						msgCoSponsorExtend.setAttachs(attachService.selectByTargetId(msgCoSponsorExtend.getId(), 1));
 						if (msgCoSponsorExtend.getStatus() > 2
 								|| (msgCoSponsorExtend.getRoleId() == roleId && msgCoSponsorExtend.getStatus() < 3)) {
 							msgCoSponsorExtend.setEditabled(true);
@@ -653,6 +664,7 @@ public class MsgController {
 					MsgSponsorExtend msgSponsorExtend = null;
 					for (MsgSponsor msgSponsor : msgSponsors) {
 						msgSponsorExtend = new MsgSponsorExtend(msgSponsor);
+						msgSponsorExtend.setAttachs(attachService.selectByTargetId(msgSponsorExtend.getId(), 1));
 						if (msgSponsorExtend.getStatus() < 3) {
 							msgSponsorExtend.setEditabled(true);
 							if (permissionId < 6L) {
@@ -695,6 +707,7 @@ public class MsgController {
 					MsgCoSponsorExtend msgCoSponsorExtend = null;
 					for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 						msgCoSponsorExtend = new MsgCoSponsorExtend(msgCoSponsor);
+						msgCoSponsorExtend.setAttachs(attachService.selectByTargetId(msgCoSponsorExtend.getId(), 1));
 						if (msgCoSponsorExtend.getStatus() < 3) {
 							msgCoSponsorExtend.setEditabled(true);
 							if (permissionId < 6L) {
@@ -742,7 +755,7 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveMsgSponsor")
-	public String saveMsgSponsor(MsgSponsor msgSponsor, RedirectAttributes model, HttpSession session)
+	public String saveMsgSponsor(MsgSponsor msgSponsor, @RequestParam(value = "files", required = false) MultipartFile[] files, RedirectAttributes model, HttpSession session)
 			throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
@@ -764,6 +777,9 @@ public class MsgController {
 				if (editabled) {
 					final int count = msgSponsorService.update(msgSponsor);
 					if (count > 0) {
+						if (files.length > 0) {
+							attachService.upload(files, msgSponsor.getId(), 1);
+						}
 						// 动态更新==0
 						int type = 0;
 						List<User> users = userService.selectByRoleId(msgSponsor0.getRoleId());
@@ -798,7 +814,7 @@ public class MsgController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveMsgCoSponsor")
-	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, RedirectAttributes model, HttpSession session)
+	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, @RequestParam(value = "files", required = false) MultipartFile[] files, RedirectAttributes model, HttpSession session)
 			throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
@@ -820,6 +836,9 @@ public class MsgController {
 				if (editabled) {
 					final int count = msgCoSponsorService.update(msgCoSponsor);
 					if (count > 0) {
+						if (files.length > 0) {
+							attachService.upload(files, msgCoSponsor.getId(), 1);
+						}
 						// 动态更新==0
 						int type = 0;
 						List<User> users = userService.selectByRoleId(msgCoSponsor0.getRoleId());

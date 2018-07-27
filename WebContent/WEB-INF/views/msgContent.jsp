@@ -13,7 +13,7 @@
 		</div>
 		<div>
 			<span class="msgTitle">办理期限：</span> <span><fmt:formatDate
-				value='${msgSponsor.limitTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
+					value='${msgSponsor.limitTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
 		</div>
 		<div>
 			<span class="msgTitle">承&ensp;办&ensp;人：</span>
@@ -41,14 +41,15 @@
 		<div>
 			<span class="msgTitle">办理情况：</span>
 		</div>
+		<form enctype="multipart/form-data">
 		<c:choose>
 			<c:when test="${msgSponsor.editabled}">
 				<div class="middleTitle2">
-					<textarea cols="100" rows="15" id="${msgSponsor.id}_editor">${msgSponsor.content}</textarea>
+					<input type="hidden" name="id" value="${msgSponsor.id}" />
+					<input type="hidden" id="contentType" value="1" />
+					<textarea cols="100" rows="15" id="${msgSponsor.id}_editor" name="content">${msgSponsor.content}</textarea>
 				</div>
 				<div class="middleTitle">
-					<button id="saveContent" type="button" class="btn blue"
-						onclick="saveContent('${msgSponsor.id}','1')">保存修改</button>
 					<script type="text/javascript">
 						window.console = window.console
 								|| (function() {
@@ -67,9 +68,39 @@
 			</c:otherwise>
 		</c:choose>
 		<div>
+			<span class="msgTitle">附件：</span>
+		</div>
+		<c:choose>
+			<c:when test="${msgSponsor.editabled}">
+				<div>
+					<c:forEach var="attach" items="${msgSponsor.attachs}">
+						<div id='attach_${attach.id}'>
+							<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
+					</c:forEach>
+					<label><button id="addFile" type="button" class="btn green"
+							onclick="addAttach(this)">增加</button></label> <span id='msg5'></span>
+				</div>
+				<div class="middleTitle">
+					<button id="saveContent" type="button" class="btn blue"
+						onclick="saveContent1(this)">保存修改</button>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div class="msgContentBox">
+					<c:forEach var="attach" items="${msgSponsor.attachs}">
+						<div>
+							<a href="rest/attach/download?id=${attach.id}" target="_blank">${attach.attachFileName}</a>
+						</div>
+					</c:forEach>
+				</div>
+			</c:otherwise>
+		</c:choose>
+		</form>
+		<div>
 			<span class="msgTitle">处室提请：</span>
 		</div>
-		<c:if test="${msgSponsor.editabled && msgSponsor.status < 3 && sessionScope.roleId == msgSponsor.roleId}">
+		<c:if
+			test="${msgSponsor.editabled && msgSponsor.status < 3 && sessionScope.roleId == msgSponsor.roleId}">
 			<div class="middleTitle">
 				<button id="addSubmission" type="button" class="btn blue"
 					onclick="addSubmission('1','${msgSponsor.id}')">提请办结</button>
@@ -110,8 +141,10 @@
 													};
 													return c;
 												})();
-										UE.delEditor('${submission.id}_editor1');
-										var ue = UE.getEditor('${submission.id}_editor1');
+										UE
+												.delEditor('${submission.id}_editor1');
+										var ue = UE
+												.getEditor('${submission.id}_editor1');
 									</script>
 								</div>
 								<c:if test="${submission.type == 2 || submission.type == 3}">
@@ -128,8 +161,10 @@
 														};
 														return c;
 													})();
-											UE.delEditor('${submission.id}_editor2');
-											var ue = UE.getEditor('${submission.id}_editor2');
+											UE
+													.delEditor('${submission.id}_editor2');
+											var ue = UE
+													.getEditor('${submission.id}_editor2');
 										</script>
 									</div>
 								</c:if>
@@ -147,8 +182,10 @@
 														};
 														return c;
 													})();
-											UE.delEditor('${submission.id}_editor3');
-											var ue = UE.getEditor('${submission.id}_editor3');
+											UE
+													.delEditor('${submission.id}_editor3');
+											var ue = UE
+													.getEditor('${submission.id}_editor3');
 										</script>
 									</div>
 								</c:if>
@@ -168,9 +205,9 @@
 									<span class="msgTitle">提请${sessionScope.submissionType[submission.type]}（${sessionScope.submissionStatus[submission.status]}）</span>
 								</div>
 								<div>
-									<span class="msgTitle">提请时间：&emsp;</span>
-									<span><fmt:formatDate
-											value='${submission.sendTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
+									<span class="msgTitle">提请时间：&emsp;</span> <span><fmt:formatDate
+											value='${submission.sendTime}' type='DATE'
+											pattern='yyyy-MM-dd' /></span>
 								</div>
 								<div>
 									<c:choose>
@@ -196,30 +233,29 @@
 									<div class="msgContentBox">${submission.measure}</div>
 								</c:if>
 								<div>
-									<span class="msgTitle">提请人：&emsp;&emsp;</span>
-									<span>${submission.ownerDesc}</span>
+									<span class="msgTitle">提请人：&emsp;&emsp;</span> <span>${submission.ownerDesc}</span>
 								</div>
 								<c:choose>
 									<c:when test="${submission.status == 1}">
 										<div class="middleTitle">
-										<c:choose>
+											<c:choose>
 												<c:when test="${submission.verifiable}">
 													<button id="pass" type="button" class="btn green"
-															onclick="pass('${submission.id}')">审核通过</button>
+														onclick="pass('${submission.id}')">审核通过</button>
 													<button id="noPass" type="button" class="btn red"
-															onclick="noPass('${submission.id}')">审核不通过</button>
+														onclick="noPass('${submission.id}')">审核不通过</button>
 												</c:when>
 												<c:otherwise>
-													<button id="callbackSubmission" type="button" class="btn blue"
-															onclick="callbackSubmission('${submission.id}')">撤回</button>
+													<button id="callbackSubmission" type="button"
+														class="btn blue"
+														onclick="callbackSubmission('${submission.id}')">撤回</button>
 												</c:otherwise>
 											</c:choose>
 										</div>
 									</c:when>
 									<c:when test="${submission.status == 2}">
 										<div>
-											<span class="msgTitle">审核人：&emsp;&emsp;</span>
-											<span>${submission.superiorVerifiUserDesc}</span>
+											<span class="msgTitle">审核人：&emsp;&emsp;</span> <span>${submission.superiorVerifiUserDesc}</span>
 										</div>
 										<div>
 											<span class="msgTitle">审核结果：&emsp;</span>
@@ -253,7 +289,7 @@
 		</div>
 		<div>
 			<span class="msgTitle">办理期限：</span> <span><fmt:formatDate
-				value='${msgCoSponsor.limitTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
+					value='${msgCoSponsor.limitTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
 		</div>
 		<div>
 			<span class="msgTitle">承&ensp;办&ensp;人：</span>
@@ -280,14 +316,15 @@
 		<div>
 			<span class="msgTitle">办理情况：</span>
 		</div>
+		<form enctype="multipart/form-data">
 		<c:choose>
 			<c:when test="${msgCoSponsor.editabled}">
 				<div class="middleTitle2">
-					<textarea cols="100" rows="15" id="${msgCoSponsor.id}_editor">${msgCoSponsor.content}</textarea>
+					<input type="hidden" name="id" value="${msgCoSponsor.id}" />
+					<input type="hidden" id="contentType" value="2" />
+					<textarea cols="100" rows="15" id="${msgCoSponsor.id}_editor" name="content">${msgCoSponsor.content}</textarea>
 				</div>
 				<div class="middleTitle">
-					<button id="saveContent" type="button" class="btn blue"
-						onclick="saveContent('${msgCoSponsor.id}','2')">保存修改</button>
 					<script type="text/javascript">
 						window.console = window.console
 								|| (function() {
@@ -306,9 +343,39 @@
 			</c:otherwise>
 		</c:choose>
 		<div>
+			<span class="msgTitle">附件：</span>
+		</div>
+		<c:choose>
+			<c:when test="${msgCoSponsor.editabled}">
+				<div>
+					<c:forEach var="attach" items="${msgCoSponsor.attachs}">
+						<div id='attach_${attach.id}'>
+							<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
+					</c:forEach>
+					<label><button id="addFile" type="button" class="btn green"
+							onclick="addAttach(this)">增加</button></label> <span id='msg5'></span>
+				</div>
+				<div class="middleTitle">
+					<button id="saveContent" type="button" class="btn blue"
+						onclick="saveContent1(this)">保存修改</button>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div class="msgContentBox">
+					<c:forEach var="attach" items="${msgCoSponsor.attachs}">
+						<div>
+							<a href="rest/attach/download?id=${attach.id}" target="_blank">${attach.attachFileName}</a>
+						</div>
+					</c:forEach>
+				</div>
+			</c:otherwise>
+		</c:choose>
+		</form>
+		<div>
 			<span class="msgTitle">处室提请：</span>
 		</div>
-		<c:if test="${msgCoSponsor.editabled && msgCoSponsor.status < 3 && sessionScope.roleId == msgCoSponsor.roleId}">
+		<c:if
+			test="${msgCoSponsor.editabled && msgCoSponsor.status < 3 && sessionScope.roleId == msgCoSponsor.roleId}">
 			<div class="middleTitle">
 				<button id="addSubmission" type="button" class="btn blue"
 					onclick="addSubmission('1','${msgCoSponsor.id}')">提请办结</button>
@@ -349,8 +416,10 @@
 													};
 													return c;
 												})();
-										UE.delEditor('${submission.id}_editor1');
-										var ue = UE.getEditor('${submission.id}_editor1');
+										UE
+												.delEditor('${submission.id}_editor1');
+										var ue = UE
+												.getEditor('${submission.id}_editor1');
 									</script>
 								</div>
 								<c:if test="${submission.type == 2 || submission.type == 3}">
@@ -367,8 +436,10 @@
 														};
 														return c;
 													})();
-											UE.delEditor('${submission.id}_editor2');
-											var ue = UE.getEditor('${submission.id}_editor2');
+											UE
+													.delEditor('${submission.id}_editor2');
+											var ue = UE
+													.getEditor('${submission.id}_editor2');
 										</script>
 									</div>
 								</c:if>
@@ -386,8 +457,10 @@
 														};
 														return c;
 													})();
-											UE.delEditor('${submission.id}_editor3');
-											var ue = UE.getEditor('${submission.id}_editor3');
+											UE
+													.delEditor('${submission.id}_editor3');
+											var ue = UE
+													.getEditor('${submission.id}_editor3');
 										</script>
 									</div>
 								</c:if>
@@ -407,9 +480,9 @@
 									<span class="msgTitle">提请${sessionScope.submissionType[submission.type]}（${sessionScope.submissionStatus[submission.status]}）</span>
 								</div>
 								<div>
-									<span class="msgTitle">提请时间：&emsp;</span>
-									<span><fmt:formatDate
-											value='${submission.sendTime}' type='DATE' pattern='yyyy-MM-dd' /></span>
+									<span class="msgTitle">提请时间：&emsp;</span> <span><fmt:formatDate
+											value='${submission.sendTime}' type='DATE'
+											pattern='yyyy-MM-dd' /></span>
 								</div>
 								<div>
 									<c:choose>
@@ -435,30 +508,29 @@
 									<div class="msgContentBox">${submission.measure}</div>
 								</c:if>
 								<div>
-									<span class="msgTitle">提请人：&emsp;&emsp;</span>
-									<span>${submission.ownerDesc}</span>
+									<span class="msgTitle">提请人：&emsp;&emsp;</span> <span>${submission.ownerDesc}</span>
 								</div>
 								<c:choose>
 									<c:when test="${submission.status == 1}">
 										<div class="middleTitle">
-										<c:choose>
+											<c:choose>
 												<c:when test="${submission.verifiable}">
 													<button id="pass" type="button" class="btn green"
-															onclick="pass('${submission.id}')">审核通过</button>
+														onclick="pass('${submission.id}')">审核通过</button>
 													<button id="noPass" type="button" class="btn red"
-															onclick="noPass('${submission.id}')">审核不通过</button>
+														onclick="noPass('${submission.id}')">审核不通过</button>
 												</c:when>
 												<c:otherwise>
-													<button id="callbackSubmission" type="button" class="btn blue"
-															onclick="callbackSubmission('${submission.id}')">撤回</button>
+													<button id="callbackSubmission" type="button"
+														class="btn blue"
+														onclick="callbackSubmission('${submission.id}')">撤回</button>
 												</c:otherwise>
 											</c:choose>
 										</div>
 									</c:when>
 									<c:when test="${submission.status == 2}">
 										<div>
-											<span class="msgTitle">审核人：&emsp;&emsp;</span>
-											<span>${submission.superiorVerifiUserDesc}</span>
+											<span class="msgTitle">审核人：&emsp;&emsp;</span> <span>${submission.superiorVerifiUserDesc}</span>
 										</div>
 										<div>
 											<span class="msgTitle">审核结果：&emsp;</span>
