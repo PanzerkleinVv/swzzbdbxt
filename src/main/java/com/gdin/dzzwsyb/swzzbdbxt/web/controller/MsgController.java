@@ -39,7 +39,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExtend;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
@@ -176,6 +175,7 @@ public class MsgController {
 		final Long userId = (Long) session.getAttribute("userId");
 		List<Long> msgSponsorSelect = null;// 存储下拉框选中的主处室
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
+		List<Attach> attachList = null;
 		// 标志notice为已读
 		noticeService.updateIsRead(msg.getId(), userId);
 
@@ -187,7 +187,7 @@ public class MsgController {
 			if (msg0 != null) {
 				msgSponsorSelect = msgSponsorService.selectRoleIdByMsgId(msg0.getId());
 				msgCoSponsorSelect = msgCoSponsorService.selectRoleIdByMsgId(msg0.getId());
-
+				attachList = attachService.selectByTargetId(msg0.getId(), 0);
 			}
 			Date limitTime = (msgSponsorService.selectMsgSponsorsByMsgId(msg.getId())).get(0).getLimitTime();
 			msg0.setLimitTime(limitTime);
@@ -195,6 +195,7 @@ public class MsgController {
 			model.addAttribute("id", msg.getId());
 			model.addAttribute("msgBasis", msgBasis);
 			model.addAttribute("basisSelect", msgBasis);
+			model.addAttribute("attachs", attachList);
 			model.addAttribute("msgSponsorSelect", msgSponsorSelect);
 			model.addAttribute("msgCoSponsorSelect", msgCoSponsorSelect);
 			return "upload";
@@ -210,7 +211,7 @@ public class MsgController {
 				msgExtends.add(msgExtend);
 				msgExtends = msgSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
 				msgExtends = msgCoSponsorService.selectMsgExtendByMsgList(msgExtends, roleMap, roleId);
-				List<Attach> attachList = attachService.selectByTargetId(msgExtend.getId(), 0);
+				attachList = attachService.selectByTargetId(msgExtend.getId(), 0);
 				msgExtend = msgExtends.get(0);
 				String[] attachs = null;
 				String[] attachIds = null;
@@ -248,7 +249,7 @@ public class MsgController {
 	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public String insert(MsgExtend msg, @RequestParam(value = "file", required = false) MultipartFile[] files,
+	public String insert(MsgExtend msg, @RequestParam(value = "files", required = false) MultipartFile[] files,
 			Model model, HttpServletRequest request, RedirectAttributes reditectModel) throws Exception {
 		MsgCoSponsor msgCoSponsor;
 		MsgSponsor msgSponsor;
@@ -256,9 +257,7 @@ public class MsgController {
 		List<Long> msgSponsorSelect = null;// 存储下拉框选中的主处室
 		List<Long> msgCoSponsorSelect = null;// 存储下拉框选中的协助处室
 		List<MsgCoSponsor> msgCoSponsors = new ArrayList<MsgCoSponsor>();
-		;
 		List<MsgSponsor> msgSponsors = new ArrayList<MsgSponsor>();
-		;
 		String basisSelect = msg.getBasis();
 		List<Attach> attachs = new ArrayList<Attach>();
 		String msgId = null;
@@ -269,7 +268,6 @@ public class MsgController {
 		}
 		if (msg.getId().isEmpty()) {
 			Integer sequenceNumber = sequenceNumberService.next();
-			msgId = ApplicationUtils.newUUID();
 			msgSponsorSelect = new ArrayList<Long>();
 			msgCoSponsorSelect = new ArrayList<Long>();
 			msgId = ApplicationUtils.newUUID();
@@ -278,6 +276,10 @@ public class MsgController {
 			limitTime = msg.getLimitTime();
 			msg.setLimitTime(null);
 			msgService.insertSelective(msg);
+			// 录入attach数据库
+			if (files.length > 0) {
+				attachs = attachService.upload(files, msgId, 0);
+			}
 			// 录入msg_sponsor数据库
 			for (int i = 0; i < msg.getRole().size(); i++) {
 				long roleId = msg.getRole().get(i);
@@ -306,7 +308,7 @@ public class MsgController {
 				msgCoSponsorSelect = new ArrayList<Long>();
 				// 录入attach数据库
 				if (files.length > 0) {
-					attachs = attachService.upload(files, msgId, 0);
+					attachs = attachService.upload(files, msg.getId(), 0);
 				}
 				// 录入msg_sponsor数据库
 				for (int i = 0; i < msg.getRole().size(); i++) {
@@ -387,44 +389,6 @@ public class MsgController {
 			return "redirect:/rest/msg/openMsg";
 		}
 
-	}
-
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/getData")
-	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-
-	public String getData(MsgExtend msg, @RequestParam(value = "role[]") long[] role, Model model,
-			HttpServletResponse resp, HttpServletRequest request) {
-		String basisSelect;
-		ArrayList<Long> msgSponsorSelect = new ArrayList<Long>();
-		List<Role> roles = (List<Role>) request.getSession().getAttribute("roles");
-		ArrayList<Long> roleList = null;
-		roleList = new ArrayList<Long>();
-		if (role != null && role.length > 0) {
-			for (int i = 0; i < role.length; i++) {
-				for (Role role2 : roles) {
-					if (role[i] == (role2.getId())) {
-						roleList.add(role2.getId());
-						msgSponsorSelect.add(role2.getId());
-						break;
-					}
-				}
-			}
-		} else {
-			roleList = null;
-			msgSponsorSelect = null;
-		}
-		List<Attach> attachs = attachService.selectByTargetId(msg.getId(), 0);
-		basisSelect = msg.getBasis();
-		model.addAttribute("msg", msg);
-		model.addAttribute("id", msg.getId());
-		model.addAttribute("msgBasis", msg.getMsgBasis());
-		model.addAttribute("sequenceNumber", msg.getSequence());
-		model.addAttribute("basisSelect", basisSelect);
-		model.addAttribute("roleList", roleList);
-		model.addAttribute("msgSponsorSelect", msgSponsorSelect);
-		model.addAttribute("attachs", attachs);
-		return "upload";
 	}
 
 	// 删除

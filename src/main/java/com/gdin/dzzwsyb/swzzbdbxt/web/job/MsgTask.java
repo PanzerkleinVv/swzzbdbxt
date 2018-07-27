@@ -96,7 +96,11 @@ public class MsgTask {
 			ids.addAll(msgContractorService.selectIdsByMsgIds(msgIds));
 			ids.addAll(submissionService.selectIdsByMsgIds(ids));
 			noticeService.deleteByTargetIds(ids);
-			attachService.deleteByTargetIds(ids);
+			try {
+				attachService.deleteByTargetIds(ids);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			submissionService.deleteByTargetIds(ids);
 			msgContractorService.deleteByTargetIds(msgIds);
 			msgCoSponsorService.deleteByTargetIds(msgIds);

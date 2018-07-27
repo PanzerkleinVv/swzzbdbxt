@@ -1,23 +1,11 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
@@ -28,16 +16,12 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.dao.AttachMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.AttachExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
-import com.gdin.dzzwsyb.swzzbdbxt.web.properties.SourceURL;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 
 @Service
 public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implements AttachService {
 	@Resource
 	private AttachMapper attachMapper;
-
-	@Autowired
-	private SourceURL sourceURL;
 
 	@Override
 	public int insert(Attach model) {
@@ -109,7 +93,7 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 			Attach attach = new Attach(ApplicationUtils.newUUID(), targetId, targetType, file.getOriginalFilename(),
 					ApplicationUtils.getTime());
 			insert(attach);
-			HandleFile.save(file, sourceURL.FILE_URL + attach.getId());
+			HandleFile.save(file, attach.getId());
 			attachs.add(attach);
 		}
 		return attachs;
@@ -121,54 +105,6 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	}
 
 	@Override
-
-	public void download(String id, Model model, HttpServletRequest request, HttpServletResponse response) {
-		Attach attach = attachMapper.selectByPrimaryKey(id);
-		String attachFileName = attach.getAttachFileName();
-		if (attachFileName != null) {
-			File filepath = new File("C://File", attachFileName);
-			if (filepath.exists()) {
-				response.setContentType("application/force-download;charset=UTF-8");// 设置强制下载不打开
-				try {
-					response.addHeader("Content-Disposition",
-							"attachment;fileName=" + URLEncoder.encode(attachFileName, "UTF-8"));
-				} catch (UnsupportedEncodingException e1) {
-					e1.printStackTrace();
-				} // 设置文件名
-				byte[] buffer = new byte[1024];
-				FileInputStream fis = null;
-				BufferedInputStream bis = null;
-				try {
-					fis = new FileInputStream(filepath);
-					bis = new BufferedInputStream(fis);
-					OutputStream os = response.getOutputStream();
-					int i = bis.read(buffer);
-					while (i != -1) {
-						os.write(buffer, 0, i);
-						i = bis.read(buffer);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					if (bis != null) {
-						try {
-							bis.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					if (fis != null) {
-						try {
-							fis.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
-	}
-
 	public List<Attach> selectByTargetId(String targetId, int targetType) {
 		final AttachExample example = new AttachExample();
 		example.createCriteria().andTargetIdEqualTo(targetId).andTargetTypeEqualTo(targetType);
@@ -177,17 +113,14 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	}
 
 	@Override
-	public void deleteByTargetIds(List<String> ids) {
+	public void deleteByTargetIds(List<String> ids) throws Exception {
 		if (ids != null && ids.size() > 0) {
 			AttachExample example = new AttachExample();
 			example.createCriteria().andTargetIdIn(ids);
 			List<Attach> attachs = attachMapper.selectByExample(example);
 			if (attachs != null && attachs.size() > 0) {
 				for (Attach attach : attachs) {
-					File filepath = new File(sourceURL + attach.getId());
-					if (filepath.exists()) {
-						filepath.delete();
-					}
+					HandleFile.remove(attach.getId());
 				}
 				attachMapper.deleteByExample(example);
 			}
@@ -197,7 +130,7 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Boolean deleteFile(String id) throws Exception {
-		HandleFile.remove(sourceURL + id);
+		HandleFile.remove(id);
 		delete(id);
 		return true;
 	}

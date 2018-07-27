@@ -3,104 +3,120 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <div class="mainContent">
-	<form id="uploadForm" enctype="multipart/form-data" method="post">
+	<form id="uploadForm" enctype="multipart/form-data" method="post"
+		autocomplete="off">
 		<div id="uploadBox">
-			<input type='text' id='msgId' name='msgId' value="${id}" style="display: none" class="form-control placeholder-no-fix uploadInput" />
-			<input type='text' id='sequenceNumber' name='sequenceNumber' value="${sequenceNumber}" style="display: none" class="form-control placeholder-no-fix uploadInput" />
+			<input type='text' id='msgId' name='id' value="${id}"
+				style="display: none"
+				class="form-control placeholder-no-fix uploadInput" /> <input
+				type='text' id='sequenceNumber' name='sequence'
+				value="${sequenceNumber}" style="display: none"
+				class="form-control placeholder-no-fix uploadInput" />
 			<div>
 				<div>
-					<span class="uploadTitle">督查事项：</span>
-					<span class="uploadItem withInput">
-						<input type='text' id='name' name='name' value="${msg.name}" class="form-control placeholder-no-fix uploadInput" onblur="check(0)" />
-					</span>
-					<span id='msg0'></span>
+					<span class="uploadTitle">督查事项：</span> <span
+						class="uploadItem withInput"> <input type='text' id='name'
+						name='name' value="${msg.name}"
+						class="form-control placeholder-no-fix uploadInput"
+						onblur="check(0)" />
+					</span> <span id='msg0'></span>
 				</div>
 			</div>
 			<div>
 				<div>
-					<span class="uploadTitle">立项时间：</span>
-					<span class="uploadItem withInput">
-						<input size="16" type="text" id="createTime" name='createTime' value="<fmt:formatDate value='${msg.createTime}'
-						type='DATE' pattern='yyyy-MM-dd' />" readonly class="form_date form-control placeholder-no-fix halfWidth" onblur="check(1)">
-					</span>
-					<span id='msg1'></span>
+					<span class="uploadTitle">立项时间：</span> <span
+						class="uploadItem withInput"> <input size="16" type="text"
+						id="createTime" name='createTime'
+						value="<fmt:formatDate value='${msg.createTime}'
+						type='DATE' pattern='yyyy-MM-dd' />"
+						readonly
+						class="form_date form-control placeholder-no-fix halfWidth"
+						onblur="check(1)">
+					</span> <span id='msg1'></span>
 				</div>
 			</div>
 			<div>
 				<div>
-					<span class="uploadTitle">主办处室：</span>
-					<span class="uploadItem withInput">
-						<select id="role" name="role" multiple="multiple" onblur="check(3)" onchange="getData()">
+					<span class="uploadTitle">主办处室：</span> <span
+						class="uploadItem withInput"> <select id="role" name="role"
+						multiple="multiple" onblur="check(3)">
 							<c:set var='i' value="0"></c:set>
 							<c:forEach var="role" items="${sessionScope.roles}" begin="1">
-								<option value="${role.id}" <c:if test="${msgSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
+								<option id="role_${role.id}" value="${role.id}"
+									<c:if test="${msgSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
 							</c:forEach>
-						</select>
-					</span>
-					<span id='msg3'></span>
+					</select>
+					</span> <span id='msg3'></span>
 				</div>
 			</div>
 			<div>
 				<div>
-					<span class="uploadTitle">协办处室：</span>
-					<span class="uploadItem withInput">
-						<select id="assitrole" name="assitrole" multiple="multiple">
+					<span class="uploadTitle">协办处室：</span> <span
+						class="uploadItem withInput"> <select id="assitrole"
+						name="assitrole" multiple="multiple">
 							<c:set var='i' value="0"></c:set>
 							<c:set var='j' value="0"></c:set>
 							<c:forEach var="role" items="${sessionScope.roles}" begin="1">
-								<option value="${role.id}" <c:if test="${msgCoSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if> <c:if test="${roleList[j] eq role.id}"><c:set var="j" value="${j+1}" />disabled="disabled"</c:if>>${role.roleName}</option>
+								<option id="assitrole_${role.id}" value="${role.id}"
+									<c:if test="${msgCoSponsorSelect[i] eq role.id}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${role.roleName}</option>
 							</c:forEach>
-						</select>
+					</select>
 					</span>
 				</div>
 			</div>
 			<div>
 				<div>
-					<span class="uploadTitle">立项依据：</span>
-					<span class="uploadItem withInput">
-						<select id="basis" name="basis" class="input-sm form-inline" onblur="check(2)" onchange="basisChange()">
+					<span class="uploadTitle">立项依据：</span> <span
+						class="uploadItem withInput"> <select id="basis"
+						name="basis" class="input-sm form-inline" onblur="check(2)"
+						onchange="basisChange()">
 							<option selected="selected"></option>
-							<c:forEach var="basis" items="${sessionScope.Basis}" varStatus="state">
-								<option value="${basis}" <c:if test="${basis eq basisSelect}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${basis}</option>
+							<c:forEach var="basis" items="${sessionScope.Basis}"
+								varStatus="state">
+								<option value="${basis}"
+									<c:if test="${basis eq basisSelect}"><c:set var="i" value="${i+1}" />selected="selected"</c:if>>${basis}</option>
 							</c:forEach>
-						</select>
-						<input type='text' style="display: none;" id='msgBasis' name='msgBasis' value="${msgBasis}" class="input-sm form-inline input-longPlus" onblur="check(2)" />
-					</span>
-					<span id='msg2'></span>
+					</select> <input type='text' style="display: none;" id='msgBasis'
+						name='msgBasis' value="${msgBasis}"
+						class="input-sm form-inline input-longPlus" onblur="check(2)" />
+					</span> <span id='msg2'></span>
 				</div>
 			</div>
 			<div>
 				<div>
-					<span class="uploadTitle">办结时限：</span>
-					<span class="uploadItem withInput">
-						<input size="16" type="text" id="limitTime" name="limitTime" value="<fmt:formatDate value='${msg.limitTime}'
-						type='DATE' pattern='yyyy-MM-dd' />" readonly class="form_date form-control placeholder-no-fix halfWidth" onblur="check(4)" />
-					</span>
-					<span id='msg4'></span>
+					<span class="uploadTitle">办结时限：</span> <span
+						class="uploadItem withInput"> <input size="16" type="text"
+						id="limitTime" name="limitTime"
+						value="<fmt:formatDate value='${msg.limitTime}'
+						type='DATE' pattern='yyyy-MM-dd' />"
+						readonly
+						class="form_date form-control placeholder-no-fix halfWidth"
+						onblur="check(4)" />
+					</span> <span id='msg4'></span>
 				</div>
 			</div>
-			<!-- 	</form> -->
 			<div>
 				<div>
-					<span class="uploadTitle">附&emsp;&emsp;件：</span>
-					<span class="uploadItem withInput">
-						<c:forEach var="attach" items="${attachs}">
-							<span id='attach_${attach.id}'>
-								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</span>
-						</c:forEach>
-						<button id="addFile" type="button" class="btn green" onclick="addFile()">增加</button>
-					</span>
+					<span class="uploadTitle">附&emsp;&emsp;件：</span> <span
+						class="uploadItem withInput"> <c:forEach var="attach"
+							items="${attachs}">
+							<div id='attach_${attach.id}'>
+								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
+						</c:forEach> <label><button id="addFile" type="button"
+								class="btn green" onclick="addAttach(this)">增加</button></label>
+					</span> <span id='msg5'></span>
 				</div>
 			</div>
+			<input type="hidden" id="msgStatus" name="status" value='0' />
 			<div class="uploadButton">
 				<span>
-					<button id="insert" type="button" class="btn blue" onclick="insert()">保存</button>
-				</span>
-				<span>
+					<button id="insert" type="button" class="btn blue"
+						onclick="insertMsg()">保存</button>
+				</span> <span>
 					<button id="delete" type="button" class="btn red" onclick="dd()">删除</button>
-				</span>
-				<span>
-					<button id="send" type="button" class="btn blue" onclick="send()">发布</button>
+				</span> <span>
+					<button id="send" type="button" class="btn blue"
+						onclick="sendMsg()">发布</button>
 				</span>
 			</div>
 		</div>
@@ -144,8 +160,10 @@
 				data : {
 					'id' : id
 				},
-				success : function(data) {
-					if ("true" == data.match("true")) {
+				dataType : "text",
+				async : false,
+				success : function(msg) {
+					if ("true" == msg.match("true")) {
 						$('#attach_' + id).remove();
 					} else {
 						$('#attach_' + id).append(
@@ -155,66 +173,64 @@
 			});
 			return false;
 		}
-		
-		function addFile() {
-			
+
+		var fileBand = 0;
+
+		function addAttach(target) {
+			$(target)
+					.before(
+							"<div><a class='red' onclick='removeFile(this)'>[删除]</a><label for='file_" + fileBand + "'>请选择文件</label><input type='file' name='files' id='file_"
+									+ fileBand
+									+ "' style='display: none' onchange='fileChange(this)' /></div>");
+			$(target).parent().attr('for', 'file_' + fileBand);
+			fileBand++;
 		}
 
-		function getData() {
-			$.ajax({
-				type : "POST",
-				url : 'rest/msg/getData',
-				data : {
-					name : $("#name").val(),
-					basis : $("#basis").val(),
-					role : $("#role").val(),
-					limitTime : $("#limitTime").val(),
-					createTime : $("#createTime").val(),
-					id : $("#msgId").val(),
-					sequence : $("#sequenceNumber").val(),
-					msgBasis : $("#msgBasis").val()
-				},
-				success : function(data) {
-					showData(parentTarget, data);
+		function fileChange(target) {
+			if (checkFile(target)) {
+				fileBand++;
+			} else {
+				removeFile($(target));
+			}
+		}
+
+		function checkFile(target) {
+			var msg = $("#msg5");
+			if (target.files.length == 0) {
+				msg.html("请选择文件");
+				msg.css('color', '#FF0000');
+				return false;
+			} else {
+				var fileSize = target.files[0].size;
+				var maxSize = 3 * 1024 * 1024;
+				if (fileSize > maxSize) {
+					msg.html("单个文件不能大于3Mb");
+					msg.css('color', '#FF0000');
+					return false;
+				} else {
+					msg.html("");
+					$(target).prevAll('label').html(target.files[0].name);
+					return true;
 				}
-			});
+			}
 		}
-		function doUpload() {
-			var successMsg = $('#successMsg');
-			$.ajaxFileUpload({
-				url : 'rest/attach/upload',
-				type : 'POST',
-				data : $('#uploadForm').serialize(),
-				fileElementId : 'fileID', //文件上传域的ID(<input type="file">的id)    
-				async : false,
-				cache : false,
-				contentType : false,
-				processData : false,
-				success : function(returndata) {
-					successMsg.html("上传附件成功");
-					successMsg.css('color', '#00FF00');
-				},
-			});
+
+		function removeFile(target) {
+			$(target).parent().remove();
 		}
-		function insert() {
+
+		function insertMsg() {
 			disabledAll();
+			$("#msgStatus").val("0");
 			if (check(0) && check(1) && check(2) && check(3) && check(4)) {
-				$.ajax({
+				$('input[type="file"]').each(function(i, n) {
+					if (!checkFile(n)) {
+						$(n).parent().remove();
+					}
+				});
+				$('form').ajaxSubmit({
 					url : 'rest/msg/insert',
 					type : "post",
-					data : {
-						status : 0,
-						name : $("#name").val(),
-						basis : $("#basis").val(),
-						role : $("#role").val(),
-						assitrole : $("#assitrole").val(),
-						limitTime : $("#limitTime").val(),
-						createTime : $("#createTime").val(),
-						id : $("#msgId").val(),
-						sequence : $("#sequenceNumber").val(),
-						msgBasis : $("#msgBasis").val(),
-					},
-					/* fileElementId: 'file', */
 					cache : false,
 					success : function(data) {
 						alert("保存成功！");
@@ -236,8 +252,8 @@
 				alert("必需字段不能为空");
 				enabledAll();
 			}
-
 		};
+
 		//删除按钮
 		function dd() {
 			disabledAll();
@@ -262,25 +278,18 @@
 		}
 		//发布按钮
 
-		function send() {
+		function sendMsg() {
 			disabledAll();
+			$("#msgStatus").val("1");
 			if (check(0) && check(1) && check(2) && check(3) && check(4)) {
-				$.ajax({
+				$('input[type="file"]').each(function(i, n) {
+					if (!checkFile(n)) {
+						$(n).parent().remove();
+					}
+				});
+				$('form').ajaxSubmit({
 					url : 'rest/msg/insert',
 					type : "post",
-					data : {
-						status : 1,
-						name : $("#name").val(),
-						basis : $("#basis").val(),
-						role : $("#role").val(),
-						assitrole : $("#assitrole").val(),
-						limitTime : $("#limitTime").val(),
-						createTime : $("#createTime").val(),
-						id : $("#msgId").val(),
-						sequence : $("#sequenceNumber").val(),
-						msgBasis : $("#msgBasis").val(),
-					},
-					/* fileElementId: 'file', */
 					cache : false,
 					success : function(data) {
 						alert("发布成功");
@@ -372,28 +381,69 @@
 			$("#current-page-title").html("督查上传");
 		});
 
-		$(document).ready(function() {
-			$('#role').multiselect({
-				enableFiltering : true,
-				nonSelectedText : '请选择主办处室',
-				filterPlaceholder : '搜索',
-				nSelectedText : '项被选中',
-				includeSelectAllOption : true,
-				selectAllText : '全选/取消全选',
-				allSelectedText : '已选中所有主办处室',
-				maxHeight : 300
-			});
-			$('#assitrole').multiselect({
-				enableFiltering : true,
-				nonSelectedText : '请选择协办处室',
-				filterPlaceholder : '搜索',
-				nSelectedText : '项被选中',
-				includeSelectAllOption : true,
-				selectAllText : '全选/取消全选',
-				allSelectedText : '已选中所有协办处室',
-				maxHeight : 300
-			});
-		});
+		$(document).ready(
+				function() {
+					$('#role option').each(
+							function(i, n) {
+								if ($(n).attr("selected") == 'selected') {
+									$("#assitrole_" + $(n).val()).attr(
+											'disabled', true);
+								} else {
+									$("#assitrole_" + $(n).val()).attr(
+											'disabled', false);
+								}
+							});
+					$('#assitrole option').each(function(i, n) {
+						if ($(n).attr("selected") == 'selected') {
+							$("#role_" + $(n).val()).attr('disabled', true);
+						} else {
+							$("#role_" + $(n).val()).attr('disabled', false);
+						}
+					});
+					$('#role').multiselect(
+							{
+								enableFiltering : true,
+								nonSelectedText : '请选择主办处室',
+								filterPlaceholder : '搜索',
+								nSelectedText : '项被选中',
+								includeSelectAllOption : true,
+								selectAllText : '全选/取消全选',
+								allSelectedText : '已选中所有主办处室',
+								maxHeight : 300,
+								onChange : function(option, checked) {
+									debugger;
+									if (checked) {
+										$("#assitrole_" + $(option).val())
+												.attr('disabled', true);
+									} else {
+										$("#assitrole_" + $(option).val())
+												.attr('disabled', false);
+									}
+									$("#assitrole").multiselect('refresh');
+								}
+							});
+					$('#assitrole').multiselect(
+							{
+								enableFiltering : true,
+								nonSelectedText : '请选择协办处室',
+								filterPlaceholder : '搜索',
+								nSelectedText : '项被选中',
+								includeSelectAllOption : true,
+								selectAllText : '全选/取消全选',
+								allSelectedText : '已选中所有协办处室',
+								maxHeight : 300,
+								onChange : function(option, checked) {
+									if (checked) {
+										$("#role_" + $(option).val()).attr(
+												'disabled', true);
+									} else {
+										$("#role_" + $(option).val()).attr(
+												'disabled', false);
+									}
+									$("#role").multiselect('refresh');
+								}
+							});
+				});
 	</script>
 
 </div>

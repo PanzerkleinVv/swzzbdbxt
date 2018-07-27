@@ -1,8 +1,10 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.HandleFile;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
 
@@ -21,8 +24,18 @@ public class AttachController {
 	private AttachService attachService;
 	
 	@RequestMapping(value = "/download")
-	public void download(@RequestParam("id") String id,Model model, HttpServletRequest request,HttpServletResponse response) throws IOException {
-		attachService.download(id, model, request, response);
+	public void download(@RequestParam("id") String id, HttpServletResponse response) throws IOException {
+		Attach attach = attachService.selectById(id);
+		if (attach != null) {
+			response.setContentType("application/force-download;charset=UTF-8");// 设置强制下载不打开
+			try {
+				response.addHeader("Content-Disposition",
+						"attachment;fileName=" + URLEncoder.encode(attach.getAttachFileName(), "UTF-8"));
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			} // 设置文件名
+			HandleFile.download(attach.getId(), response.getOutputStream());
+		}
 	}
 	
 	@RequestMapping(value = "/delete")
