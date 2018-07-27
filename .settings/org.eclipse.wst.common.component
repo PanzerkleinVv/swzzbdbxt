@@ -12,7 +12,7 @@
                 
         <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
                 
-        <property name="java-output-path" value="/gdzgxx/build/classes"/>
+        <property name="java-output-path" value="/swzzbdbxt/build/classes"/>
         <property name="context-root" value="swzzbdbxt"/>
             
     </wb-module>

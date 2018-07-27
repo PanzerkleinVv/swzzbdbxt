@@ -1,6 +1,5 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +7,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsorExample;
 
 public interface MsgCoSponsorService extends GenericService<MsgCoSponsor, String> {
 

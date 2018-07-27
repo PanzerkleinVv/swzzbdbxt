@@ -1,6 +1,5 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
-import java.text.ParseException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,7 +10,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.NoticeMapper;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;

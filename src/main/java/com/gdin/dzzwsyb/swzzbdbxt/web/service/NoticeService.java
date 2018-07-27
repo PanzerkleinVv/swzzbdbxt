@@ -1,10 +1,8 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service;
 
-import java.text.ParseException;
 import java.util.List;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;

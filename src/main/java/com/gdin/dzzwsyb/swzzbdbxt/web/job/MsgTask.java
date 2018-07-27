@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
@@ -18,7 +17,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.SubmissionService;
-import com.gdin.dzzwsyb.swzzbdbxt.web.service.RoleService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.UserService;
 
 public class MsgTask {
@@ -78,7 +76,6 @@ public class MsgTask {
 					NoticeExample example = new NoticeExample();
 					example.createCriteria().andUserIdEqualTo(user.getId()).andTargetIdEqualTo(msgId);
 					//删除notice
-					List<Notice> notices = noticeService.selectByExample(example);
 					noticeService.deleteByExample(example);
 					Notice notice = new Notice(user.getId(), type, msgId, 0, ApplicationUtils.getTime(), isRead);
 					noticeService.addNotice(notice);
@@ -99,7 +96,11 @@ public class MsgTask {
 			ids.addAll(msgContractorService.selectIdsByMsgIds(msgIds));
 			ids.addAll(submissionService.selectIdsByMsgIds(ids));
 			noticeService.deleteByTargetIds(ids);
-			attachService.deleteByTargetIds(ids);
+			try {
+				attachService.deleteByTargetIds(ids);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			submissionService.deleteByTargetIds(ids);
 			msgContractorService.deleteByTargetIds(msgIds);
 			msgCoSponsorService.deleteByTargetIds(msgIds);

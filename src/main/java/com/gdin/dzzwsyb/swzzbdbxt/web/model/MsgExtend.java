@@ -1,10 +1,16 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.model;
 
+import java.util.List;
+
 public class MsgExtend extends Msg {
 	
 	private String sponsorRoleNames;
 	
 	private String coSponsorRoleNames;
+	
+	private List<Long> role;
+	
+	private List<Long> assitrole;
 	
 	private String contents;
 	
@@ -33,6 +39,8 @@ public class MsgExtend extends Msg {
 		contents = msgExtend.getContents();
 		attachs = msgExtend.getAttachs();
 		attachIds = msgExtend.getAttachIds();
+		role = msgExtend.getRole();
+		assitrole = msgExtend.getAssitrole();
 	}
 
 	public String getSponsorRoleNames() {
@@ -97,6 +105,22 @@ public class MsgExtend extends Msg {
 
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+
+	public List<Long> getRole() {
+		return role;
+	}
+
+	public void setRole(List<Long> role) {
+		this.role = role;
+	}
+
+	public List<Long> getAssitrole() {
+		return assitrole;
+	}
+
+	public void setAssitrole(List<Long> assitrole) {
+		this.assitrole = assitrole;
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +9,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgQuery;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample.Criteria;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 
 /**
@@ -35,8 +27,8 @@ public class NoticeController {
 	
 	@RequestMapping("/dashboard")
 	public String dashboard(Model model, HttpSession session) {
-		final Long roleId = (Long) session.getAttribute("roleId");
-		final Long permissionId = (Long) session.getAttribute("permissionId");
+		session.getAttribute("roleId");
+		session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
 		List<NoticeCount> noticeCounts = new ArrayList<NoticeCount>();
 		noticeCounts = noticeService.countNotice(userId);

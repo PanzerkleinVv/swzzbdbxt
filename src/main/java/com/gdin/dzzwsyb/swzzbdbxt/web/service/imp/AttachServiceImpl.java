@@ -1,25 +1,17 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericDao;
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericServiceImpl;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
+import com.gdin.dzzwsyb.swzzbdbxt.core.util.HandleFile;
 import com.gdin.dzzwsyb.swzzbdbxt.web.dao.AttachMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.AttachExample;
@@ -93,36 +85,18 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 		return msgs;
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public void upload(Model model, MultipartFile[] file, HttpServletResponse resp, HttpServletRequest request) {
-		// 储存文件名
-		List<String> fileNameLists = new ArrayList<String>();
-		// 多文件
-		for (MultipartFile multipartFile : file) {
-			if (multipartFile != null && multipartFile.getSize() > 0) {
-				String fileName = multipartFile.getOriginalFilename();
-				fileNameLists.add(fileName);
-				File filepath = new File("C://File", fileName);
-				if (!filepath.getParentFile().exists()) {
-					filepath.getParentFile().mkdirs();
-				}
-				try {
-					multipartFile.transferTo(filepath);
-				} catch (IllegalStateException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-			}
-			// 没有选中文件，返回错误页面
-			else {
-				fileNameLists.add(null);
-			}
+	public List<Attach> upload(MultipartFile[] files, String targetId, int targetType) throws Exception {
+		List<Attach> attachs = new ArrayList<Attach>();
+		for (MultipartFile file : files) {
+			Attach attach = new Attach(ApplicationUtils.newUUID(), targetId, targetType, file.getOriginalFilename(),
+					ApplicationUtils.getTime());
+			insert(attach);
+			HandleFile.save(file, attach.getId());
+			attachs.add(attach);
 		}
-		// 保存文件名
-		request.getSession().setAttribute("fileNameLists", fileNameLists);
-
+		return attachs;
 	}
 
 	@Override
@@ -131,77 +105,34 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	}
 
 	@Override
-
-	public void download(String id, Model model, HttpServletRequest request, HttpServletResponse response) {
-		Attach attach = attachMapper.selectByPrimaryKey(id);
-		String attachFileName = attach.getAttachFileName();
-		if (attachFileName != null) {
-			File filepath = new File("C://File", attachFileName);
-			if (filepath.exists()) {
-				response.setContentType("application/force-download;charset=UTF-8");// 设置强制下载不打开
-				try {
-					response.addHeader("Content-Disposition",
-							"attachment;fileName=" + URLEncoder.encode(attachFileName, "UTF-8"));
-				} catch (UnsupportedEncodingException e1) {
-					e1.printStackTrace();
-				} // 设置文件名
-				byte[] buffer = new byte[1024];
-				FileInputStream fis = null;
-				BufferedInputStream bis = null;
-				try {
-					fis = new FileInputStream(filepath);
-					bis = new BufferedInputStream(fis);
-					OutputStream os = response.getOutputStream();
-					int i = bis.read(buffer);
-					while (i != -1) {
-						os.write(buffer, 0, i);
-						i = bis.read(buffer);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					if (bis != null) {
-						try {
-							bis.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					if (fis != null) {
-						try {
-							fis.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public List<Attach> selectByTargetId(String targetId) {
+	public List<Attach> selectByTargetId(String targetId, int targetType) {
 		final AttachExample example = new AttachExample();
-		example.createCriteria().andTargetIdEqualTo(targetId);
+		example.createCriteria().andTargetIdEqualTo(targetId).andTargetTypeEqualTo(targetType);
 		return attachMapper.selectByExample(example);
 
 	}
 
 	@Override
-	public void deleteByTargetIds(List<String> ids) {
+	public void deleteByTargetIds(List<String> ids) throws Exception {
 		if (ids != null && ids.size() > 0) {
 			AttachExample example = new AttachExample();
 			example.createCriteria().andTargetIdIn(ids);
 			List<Attach> attachs = attachMapper.selectByExample(example);
 			if (attachs != null && attachs.size() > 0) {
 				for (Attach attach : attachs) {
-					File filepath = new File("C://File", attach.getAttachFileName());
-					if (filepath.exists()) {
-						filepath.delete();
-					}
+					HandleFile.remove(attach.getId());
 				}
 				attachMapper.deleteByExample(example);
 			}
 		}
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Boolean deleteFile(String id) throws Exception {
+		HandleFile.remove(id);
+		delete(id);
+		return true;
 	}
 
 }

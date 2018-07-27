@@ -289,7 +289,7 @@
 		type="text/javascript"></script>
 
 	<script
-		src="assets/plugins/jquery-validation/dist/jquery.validate.min.js"
+		src="assets/plugins/jquery-validation/jquery.validate.min.js"
 		type="text/javascript"></script>
 	<script type="text/javascript"
 		src="assets/plugins/select2/select2.min.js"></script>
@@ -309,6 +309,7 @@
 	<script lang="javaScript">
 		var URL = window.UEDITOR_HOME_URL || "assets/plugins/ueditor/";
 	</script>
+	<script type="text/javascript" src="assets/scripts/jquery.form.js"></script>
 	
 	<!-- <script data-main="app/js/main" src="app/lib/requirejs/require.js"></script> -->
 </body>
