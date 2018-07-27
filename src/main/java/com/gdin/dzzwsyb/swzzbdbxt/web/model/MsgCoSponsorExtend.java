@@ -11,6 +11,8 @@ public class MsgCoSponsorExtend extends MsgCoSponsor {
 	private List<User> users;
 
 	private List<SubmissionExtend> submissions;
+	
+	private List<Attach> attachs;
 
 	public MsgCoSponsorExtend() {
 
@@ -50,5 +52,13 @@ public class MsgCoSponsorExtend extends MsgCoSponsor {
 
 	public void setUsers(List<User> users) {
 		this.users = users;
+	}
+
+	public List<Attach> getAttachs() {
+		return attachs;
+	}
+
+	public void setAttachs(List<Attach> attachs) {
+		this.attachs = attachs;
 	}
 }

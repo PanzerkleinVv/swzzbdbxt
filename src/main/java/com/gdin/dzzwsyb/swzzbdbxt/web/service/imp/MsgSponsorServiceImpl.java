@@ -298,7 +298,6 @@ public class MsgSponsorServiceImpl extends GenericServiceImpl<MsgSponsor, String
 
 	@Override
 	public void updateStatus(List<MsgSponsor> msgSponsors,int status) {
-		// TODO Auto-generated method stub
 		for(MsgSponsor msgSponsor : msgSponsors) {
 			msgSponsor.setStatus(status);
 			msgSponsorMapper.updateByPrimaryKeySelective(msgSponsor);
