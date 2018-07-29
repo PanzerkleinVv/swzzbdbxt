@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : swzzbdbxt
-Source Server Version : 50714
+Source Server         : swzzbdbxy
+Source Server Version : 50721
 Source Host           : localhost:3306
 Source Database       : swzzbdbxt
 
 Target Server Type    : MYSQL
-Target Server Version : 50714
+Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-05-14 09:56:12
+Date: 2018-07-30 01:11:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -30,6 +30,29 @@ CREATE TABLE `attach` (
 
 -- ----------------------------
 -- Records of attach
+-- ----------------------------
+INSERT INTO `attach` VALUES ('01c369a93a863e09b94b7d7cb5c767803c2347d2', 'cd64382336b9fa33031cd913a48406f08829b172', '1', 'ceregreset.exe', '2018-07-28 02:45:18');
+INSERT INTO `attach` VALUES ('0e35c7c521dce97f17db76d932156762998128a2', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '0', '编辑1.TXT', '2018-07-28 01:01:49');
+INSERT INTO `attach` VALUES ('15d9d4d84144e33f5bbe4358736c2e16dec8c24f', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '1', 'allochook-x86_64.dll', '2018-07-28 02:42:10');
+INSERT INTO `attach` VALUES ('2057b0517b67808b16288254c62795191ba1e728', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '0', '光大银行10元观影.png', '2018-07-28 01:01:49');
+INSERT INTO `attach` VALUES ('245bd7a21fa4daeba54df8b32e9e572bfeb0d3c1', 'cd64382336b9fa33031cd913a48406f08829b172', '1', 'celua.txt', '2018-07-28 02:45:07');
+INSERT INTO `attach` VALUES ('612f4e143403cca2adcea7a36ca866c216e7f2a0', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '1', 'ced3d11hook.dll', '2018-07-28 02:42:28');
+
+-- ----------------------------
+-- Table structure for log
+-- ----------------------------
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log` (
+  `id` varchar(255) NOT NULL COMMENT '主键',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '操作用户主键',
+  `target_id` varchar(255) DEFAULT NULL COMMENT '主办或协办处室表单主键',
+  `log_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '日志时间',
+  `content` varchar(255) DEFAULT NULL COMMENT '日志内容',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of log
 -- ----------------------------
 
 -- ----------------------------
@@ -51,6 +74,7 @@ CREATE TABLE `msg` (
 -- ----------------------------
 -- Records of msg
 -- ----------------------------
+INSERT INTO `msg` VALUES ('7effad8c721ceda9505be4ac83d1e9aa6327c50d', '20180071', '2018-07-27 00:00:00', '测试1', '立项依据1', null, '2018-07-29 00:00:00', '2018-07-28 12:49:28');
 
 -- ----------------------------
 -- Table structure for msg_co-sponsor
@@ -71,6 +95,8 @@ CREATE TABLE `msg_co-sponsor` (
 -- ----------------------------
 -- Records of msg_co-sponsor
 -- ----------------------------
+INSERT INTO `msg_co-sponsor` VALUES ('af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '3', '1', '0', '<p>aaaaaaaaaaaaaaaaaaawwwwwwwwwwwwwwwwwwwwwwwwwwwwdaaaaaaadadwaadaa</p>', '1', '2018-07-29 00:00:00');
+INSERT INTO `msg_co-sponsor` VALUES ('f5aab1c56b46e6deb8db5f0d0826db67bb5c6f62', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '5', '0', '0', '', '1', '2018-07-29 00:00:00');
 
 -- ----------------------------
 -- Table structure for msg_contractor
@@ -106,6 +132,9 @@ CREATE TABLE `msg_sponsor` (
 -- ----------------------------
 -- Records of msg_sponsor
 -- ----------------------------
+INSERT INTO `msg_sponsor` VALUES ('081781fb69c4d9ce45033dbd07e529705f2d2b33', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '2', '0', '0', '', '1', '2018-07-29 00:00:00');
+INSERT INTO `msg_sponsor` VALUES ('cd64382336b9fa33031cd913a48406f08829b172', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '4', '1', '0', '<p>啊发送到</p><p>发达撒</p>', '1', '2018-07-29 00:00:00');
+INSERT INTO `msg_sponsor` VALUES ('f25a0a63103fcbe18c6547b531bc8aad17391d04', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '7', '0', '0', '', '1', '2018-07-29 00:00:00');
 
 -- ----------------------------
 -- Table structure for notice
@@ -120,11 +149,14 @@ CREATE TABLE `notice` (
   `create_time` datetime DEFAULT NULL COMMENT '生成时间',
   `is_read` int(11) DEFAULT NULL COMMENT '是否已读 0--已读 1--未读',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COMMENT='提醒表';
+) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8 COMMENT='提醒表';
 
 -- ----------------------------
 -- Records of notice
 -- ----------------------------
+INSERT INTO `notice` VALUES ('109', '2', '0', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '1', '2018-07-28 02:45:18', '0');
+INSERT INTO `notice` VALUES ('111', '1', '2', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '1', '2018-07-28 12:49:28', '1');
+INSERT INTO `notice` VALUES ('112', '5', '2', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '1', '2018-07-28 12:49:28', '0');
 
 -- ----------------------------
 -- Table structure for permission
@@ -195,7 +227,7 @@ CREATE TABLE `sequence_number` (
 -- ----------------------------
 -- Records of sequence_number
 -- ----------------------------
-INSERT INTO `sequence_number` VALUES ('2018', '70');
+INSERT INTO `sequence_number` VALUES ('2018', '71');
 
 -- ----------------------------
 -- Table structure for submission
@@ -213,12 +245,14 @@ CREATE TABLE `submission` (
   `superior_verifi_user_id` bigint(20) DEFAULT NULL COMMENT '办公室审核人userid',
   `status` int(11) DEFAULT NULL COMMENT '状态 0--草稿 1--提请 2--办公室已审核',
   `send_time` datetime DEFAULT NULL COMMENT '发出时间',
+  `limit_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '延期 期限',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提请表';
 
 -- ----------------------------
 -- Records of submission
 -- ----------------------------
+INSERT INTO `submission` VALUES ('f75c2f4a0bcefb8ab843eeb477d017b5159fb36d', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '2', '', '', '', '5', null, null, '1', '2018-07-28 12:49:28', '2018-08-05 00:00:00');
 
 -- ----------------------------
 -- Table structure for user
@@ -244,3 +278,35 @@ INSERT INTO `user` VALUES ('2', '11111', '8d969eef6ecad3c29a3a629280e686cf0c3f5d
 INSERT INTO `user` VALUES ('3', 'zz21', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '组织二处内勤', '1', '5', '2018-05-09 15:59:46', '6');
 INSERT INTO `user` VALUES ('4', 'zz22', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '组织二处test', '1', '6', '2018-05-09 16:00:13', '6');
 INSERT INTO `user` VALUES ('5', 'bgs', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '办公室', '1', '3', '2018-05-09 18:02:22', '3');
+
+-- ----------------------------
+-- Table structure for user_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `user_permission`;
+CREATE TABLE `user_permission` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '表id',
+  `user_id` bigint(20) unsigned DEFAULT NULL COMMENT '角色id',
+  `permission_id` bigint(20) unsigned DEFAULT NULL COMMENT '权限id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='角色与权限关联表';
+
+-- ----------------------------
+-- Records of user_permission
+-- ----------------------------
+INSERT INTO `user_permission` VALUES ('1', '1', '1');
+
+-- ----------------------------
+-- Table structure for user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `user_role`;
+CREATE TABLE `user_role` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '表id',
+  `user_id` bigint(20) unsigned DEFAULT NULL COMMENT '用户id',
+  `role_id` bigint(20) unsigned DEFAULT NULL COMMENT '角色id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='用户与角色关联表';
+
+-- ----------------------------
+-- Records of user_role
+-- ----------------------------
+INSERT INTO `user_role` VALUES ('1', '1', '1');

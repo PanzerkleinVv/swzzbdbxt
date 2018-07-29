@@ -65,5 +65,7 @@
         	<columnOverride column="reason" javaType="java.lang.String" jdbcType="TEXT" />
         	<columnOverride column="measure" javaType="java.lang.String" jdbcType="TEXT" /> 
         </table>
+        <table tableName="log">
+        </table>
     </context>
 </generatorConfiguration>

@@ -26,7 +26,8 @@
 	<div>
 		<span class="msgTitle">附件资料：</span> <span><c:forEach
 				var="attachId" items="${msg.attachIds}" varStatus="status0">
-				<a href="rest/attach/download?id=${attachId}" target="_blank" style="display: block; margin-left: 20px;">${msg.attachs[status0.index]}</a>
+				<a href="rest/attach/download?id=${attachId}" target="_blank"
+					style="display: block; margin-left: 20px;">${msg.attachs[status0.index]}</a>
 			</c:forEach></span>
 	</div>
 	<div>
@@ -77,9 +78,13 @@
 			id : $("#id").val()
 		}, function(data) {
 			$(".titleEnd").after(data);
+			$("#limitTime").datepicker({
+				format : 'yyyy-mm-dd',
+				language : 'zh-CN'
+			});
 		});
 	});
-	
+
 	function assign(id) {
 		var url = "rest/msg/assign";
 		var userIds = [];
@@ -99,7 +104,7 @@
 		var type = form.find("#contentType").val();
 		if (type == 1) {
 			var url = "rest/msg/saveMsgSponsor";
-		} else  if (type == 2) {
+		} else if (type == 2) {
 			var url = "rest/msg/saveMsgCoSponsor";
 		} else {
 			return false;
@@ -118,7 +123,7 @@
 			}
 		});
 	}
-	
+
 	function addSubmission(type, targetId) {
 		var url = "rest/submission/add";
 		$.post(url, {
@@ -129,7 +134,7 @@
 			showData("#msg-content", data);
 		});
 	}
-	
+
 	function saveSubmission(targetId, status, type) {
 		var url = "rest/submission/save";
 		if (type == 1 || type == 4) {
@@ -142,16 +147,22 @@
 				showData("#msg-content", data);
 			});
 		} else if (type == 2) {
-			$.post(url, {
-				"msgId0" : $("#id").val(),
-				"id" : targetId,
-				"status" : status,
-				"situation" : UE.getEditor(targetId + '_editor1').getContent(),
-				"reason" : UE.getEditor(targetId + '_editor2').getContent(),
-				"measure" : UE.getEditor(targetId + '_editor3').getContent()
-			}, function(data) {
-				showData("#msg-content", data);
-			});
+			if (status == 0 || (status == 1 && $("#limitTime").val().length > 0)) {
+				$.post(url, {
+					"msgId0" : $("#id").val(),
+					"id" : targetId,
+					"status" : status,
+					"situation" : UE.getEditor(targetId + '_editor1').getContent(),
+					"reason" : UE.getEditor(targetId + '_editor2').getContent(),
+					"measure" : UE.getEditor(targetId + '_editor3').getContent(),
+					"limitTime" : $("#limitTime").val()
+				}, function(data) {
+					showData("#msg-content", data);
+				});
+			} else {
+				$("#limitTime").parent().next().remove();
+				$("#limitTime").parent().after("<span style='color: #FF0000;'>延期期限不能为空</span>");
+			}
 		} else if (type == 3) {
 			$.post(url, {
 				"msgId0" : $("#id").val(),
@@ -164,7 +175,7 @@
 			});
 		}
 	}
-	
+
 	function delSubmission(targetId) {
 		var url = "rest/submission/del";
 		$.post(url, {
@@ -174,7 +185,7 @@
 			showData("#msg-content", data);
 		});
 	}
-	
+
 	function pass(targetId) {
 		var url = "rest/submission/verify";
 		$.post(url, {
@@ -186,7 +197,7 @@
 			showData("#msg-content", data);
 		});
 	}
-	
+
 	function noPass(targetId) {
 		var url = "rest/submission/verify";
 		$.post(url, {
@@ -198,7 +209,7 @@
 			showData("#msg-content", data);
 		});
 	}
-	
+
 	function callbackSubmission(targetId) {
 		var url = "rest/submission/callback";
 		$.post(url, {
@@ -209,7 +220,7 @@
 			showData("#msg-content", data);
 		});
 	}
-	
+
 	function deleteFile(id) {
 		$.ajax({
 			type : "POST",
@@ -223,8 +234,7 @@
 				if ("true" == msg.match("true")) {
 					$('#attach_' + id).remove();
 				} else {
-					$('#attach_' + id).append(
-							'<i class="red">&emsp;删除失败</i>');
+					$('#attach_' + id).append('<i class="red">&emsp;删除失败</i>');
 				}
 			}
 		});

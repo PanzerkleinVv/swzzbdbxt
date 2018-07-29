@@ -42,59 +42,61 @@
 			<span class="msgTitle">办理情况：</span>
 		</div>
 		<form enctype="multipart/form-data">
-		<c:choose>
-			<c:when test="${msgSponsor.editabled}">
-				<div class="middleTitle2">
-					<input type="hidden" name="id" value="${msgSponsor.id}" />
-					<input type="hidden" id="contentType" value="1" />
-					<textarea cols="100" rows="15" id="${msgSponsor.id}_editor" name="content">${msgSponsor.content}</textarea>
-				</div>
-				<div class="middleTitle">
-					<script type="text/javascript">
-						window.console = window.console
-								|| (function() {
-									var c = {};
-									c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.prfile = c.clear = c.exception = c.trace = c.assert = function() {
-									};
-									return c;
-								})();
-						UE.delEditor('${msgSponsor.id}_editor');
-						var ue = UE.getEditor('${msgSponsor.id}_editor');
-					</script>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="msgContentBox">${msgSponsor.content}</div>
-			</c:otherwise>
-		</c:choose>
-		<div>
-			<span class="msgTitle">附件：</span>
-		</div>
-		<c:choose>
-			<c:when test="${msgSponsor.editabled}">
-				<div>
-					<c:forEach var="attach" items="${msgSponsor.attachs}">
-						<div id='attach_${attach.id}'>
-							<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
-					</c:forEach>
-					<label><button id="addFile" type="button" class="btn green"
-							onclick="addAttach(this)">增加</button></label> <span id='msg5'></span>
-				</div>
-				<div class="middleTitle">
-					<button id="saveContent" type="button" class="btn blue"
-						onclick="saveContent1(this)">保存修改</button>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="msgContentBox">
-					<c:forEach var="attach" items="${msgSponsor.attachs}">
-						<div>
-							<a href="rest/attach/download?id=${attach.id}" target="_blank">${attach.attachFileName}</a>
-						</div>
-					</c:forEach>
-				</div>
-			</c:otherwise>
-		</c:choose>
+			<c:choose>
+				<c:when test="${msgSponsor.editabled}">
+					<div class="middleTitle2">
+						<input type="hidden" name="id" value="${msgSponsor.id}" /> <input
+							type="hidden" id="contentType" value="1" />
+						<textarea cols="100" rows="15" id="${msgSponsor.id}_editor"
+							name="content">${msgSponsor.content}</textarea>
+					</div>
+					<div class="middleTitle">
+						<script type="text/javascript">
+							window.console = window.console
+									|| (function() {
+										var c = {};
+										c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.prfile = c.clear = c.exception = c.trace = c.assert = function() {
+										};
+										return c;
+									})();
+							UE.delEditor('${msgSponsor.id}_editor');
+							var ue = UE.getEditor('${msgSponsor.id}_editor');
+						</script>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="msgContentBox">${msgSponsor.content}</div>
+				</c:otherwise>
+			</c:choose>
+			<div>
+				<span class="msgTitle">附件：</span>
+			</div>
+			<c:choose>
+				<c:when test="${msgSponsor.editabled}">
+					<div>
+						<c:forEach var="attach" items="${msgSponsor.attachs}">
+							<div id='attach_${attach.id}'>
+								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
+						</c:forEach>
+						<label><button id="addFile" type="button"
+								class="btn green" onclick="addAttach(this)">增加</button></label> <span
+							id='msg5'></span>
+					</div>
+					<div class="middleTitle">
+						<button id="saveContent" type="button" class="btn blue"
+							onclick="saveContent1(this)">保存修改</button>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="msgContentBox">
+						<c:forEach var="attach" items="${msgSponsor.attachs}">
+							<div>
+								<a href="rest/attach/download?id=${attach.id}" target="_blank">${attach.attachFileName}</a>
+							</div>
+						</c:forEach>
+					</div>
+				</c:otherwise>
+			</c:choose>
 		</form>
 		<div>
 			<span class="msgTitle">处室提请：</span>
@@ -188,6 +190,12 @@
 													.getEditor('${submission.id}_editor3');
 										</script>
 									</div>
+									<div>
+										<span class="msgTitle">延期期限：</span><span><input
+											type="text" id="limitTime"
+											value="<fmt:formatDate value='${submission.limitTime}'
+						type='DATE' pattern='yyyy-MM-dd' />" /></span>
+									</div>
 								</c:if>
 								<div class="middleTitle">
 									<button id="saveSubmission" type="button" class="btn blue"
@@ -231,6 +239,11 @@
 										<span class="msgTitle">拟采取措施：</span>
 									</div>
 									<div class="msgContentBox">${submission.measure}</div>
+									<div>
+										<span class="msgTitle">延期期限：</span><span><fmt:formatDate
+												value='${submission.limitTime}' type='DATE'
+												pattern='yyyy-MM-dd' /></span>
+									</div>
 								</c:if>
 								<div>
 									<span class="msgTitle">提请人：&emsp;&emsp;</span> <span>${submission.ownerDesc}</span>
@@ -317,59 +330,61 @@
 			<span class="msgTitle">办理情况：</span>
 		</div>
 		<form enctype="multipart/form-data">
-		<c:choose>
-			<c:when test="${msgCoSponsor.editabled}">
-				<div class="middleTitle2">
-					<input type="hidden" name="id" value="${msgCoSponsor.id}" />
-					<input type="hidden" id="contentType" value="2" />
-					<textarea cols="100" rows="15" id="${msgCoSponsor.id}_editor" name="content">${msgCoSponsor.content}</textarea>
-				</div>
-				<div class="middleTitle">
-					<script type="text/javascript">
-						window.console = window.console
-								|| (function() {
-									var c = {};
-									c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.prfile = c.clear = c.exception = c.trace = c.assert = function() {
-									};
-									return c;
-								})();
-						UE.delEditor('${msgCoSponsor.id}_editor');
-						var ue = UE.getEditor('${msgCoSponsor.id}_editor');
-					</script>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="msgContentBox">${msgCoSponsor.content}</div>
-			</c:otherwise>
-		</c:choose>
-		<div>
-			<span class="msgTitle">附件：</span>
-		</div>
-		<c:choose>
-			<c:when test="${msgCoSponsor.editabled}">
-				<div>
-					<c:forEach var="attach" items="${msgCoSponsor.attachs}">
-						<div id='attach_${attach.id}'>
-							<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
-					</c:forEach>
-					<label><button id="addFile" type="button" class="btn green"
-							onclick="addAttach(this)">增加</button></label> <span id='msg5'></span>
-				</div>
-				<div class="middleTitle">
-					<button id="saveContent" type="button" class="btn blue"
-						onclick="saveContent1(this)">保存修改</button>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="msgContentBox">
-					<c:forEach var="attach" items="${msgCoSponsor.attachs}">
-						<div>
-							<a href="rest/attach/download?id=${attach.id}" target="_blank">${attach.attachFileName}</a>
-						</div>
-					</c:forEach>
-				</div>
-			</c:otherwise>
-		</c:choose>
+			<c:choose>
+				<c:when test="${msgCoSponsor.editabled}">
+					<div class="middleTitle2">
+						<input type="hidden" name="id" value="${msgCoSponsor.id}" /> <input
+							type="hidden" id="contentType" value="2" />
+						<textarea cols="100" rows="15" id="${msgCoSponsor.id}_editor"
+							name="content">${msgCoSponsor.content}</textarea>
+					</div>
+					<div class="middleTitle">
+						<script type="text/javascript">
+							window.console = window.console
+									|| (function() {
+										var c = {};
+										c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.prfile = c.clear = c.exception = c.trace = c.assert = function() {
+										};
+										return c;
+									})();
+							UE.delEditor('${msgCoSponsor.id}_editor');
+							var ue = UE.getEditor('${msgCoSponsor.id}_editor');
+						</script>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="msgContentBox">${msgCoSponsor.content}</div>
+				</c:otherwise>
+			</c:choose>
+			<div>
+				<span class="msgTitle">附件：</span>
+			</div>
+			<c:choose>
+				<c:when test="${msgCoSponsor.editabled}">
+					<div>
+						<c:forEach var="attach" items="${msgCoSponsor.attachs}">
+							<div id='attach_${attach.id}'>
+								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
+						</c:forEach>
+						<label><button id="addFile" type="button"
+								class="btn green" onclick="addAttach(this)">增加</button></label> <span
+							id='msg5'></span>
+					</div>
+					<div class="middleTitle">
+						<button id="saveContent" type="button" class="btn blue"
+							onclick="saveContent1(this)">保存修改</button>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="msgContentBox">
+						<c:forEach var="attach" items="${msgCoSponsor.attachs}">
+							<div>
+								<a href="rest/attach/download?id=${attach.id}" target="_blank">${attach.attachFileName}</a>
+							</div>
+						</c:forEach>
+					</div>
+				</c:otherwise>
+			</c:choose>
 		</form>
 		<div>
 			<span class="msgTitle">处室提请：</span>
@@ -463,6 +478,12 @@
 													.getEditor('${submission.id}_editor3');
 										</script>
 									</div>
+									<div>
+										<span class="msgTitle">延期期限：</span><span><input
+											type="text" id="limitTime"
+											value="<fmt:formatDate value='${submission.limitTime}'
+						type='DATE' pattern='yyyy-MM-dd' />" /></span>
+									</div>
 								</c:if>
 								<div class="middleTitle">
 									<button id="saveSubmission" type="button" class="btn blue"
@@ -506,6 +527,11 @@
 										<span class="msgTitle">拟采取措施：</span>
 									</div>
 									<div class="msgContentBox">${submission.measure}</div>
+									<div>
+										<span class="msgTitle">延期期限：</span><span><fmt:formatDate
+												value='${submission.limitTime}' type='DATE'
+												pattern='yyyy-MM-dd' /></span>
+									</div>
 								</c:if>
 								<div>
 									<span class="msgTitle">提请人：&emsp;&emsp;</span> <span>${submission.ownerDesc}</span>
