@@ -73,7 +73,7 @@
 			</div>
 			<c:choose>
 				<c:when test="${msgSponsor.editabled}">
-					<div>
+					<div class="msgContentBox">
 						<c:forEach var="attach" items="${msgSponsor.attachs}">
 							<div id='attach_${attach.id}'>
 								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
@@ -191,7 +191,7 @@
 										</script>
 									</div>
 									<div>
-										<span class="msgTitle">延期期限：</span><span><input
+										<span class="msgTitle">延期期限：&emsp;</span><span><input
 											type="text" id="limitTime"
 											value="<fmt:formatDate value='${submission.limitTime}'
 						type='DATE' pattern='yyyy-MM-dd' />" /></span>
@@ -240,7 +240,7 @@
 									</div>
 									<div class="msgContentBox">${submission.measure}</div>
 									<div>
-										<span class="msgTitle">延期期限：</span><span><fmt:formatDate
+										<span class="msgTitle">延期期限：&emsp;</span><span><fmt:formatDate
 												value='${submission.limitTime}' type='DATE'
 												pattern='yyyy-MM-dd' /></span>
 									</div>
@@ -361,7 +361,7 @@
 			</div>
 			<c:choose>
 				<c:when test="${msgCoSponsor.editabled}">
-					<div>
+					<div class="msgContentBox">
 						<c:forEach var="attach" items="${msgCoSponsor.attachs}">
 							<div id='attach_${attach.id}'>
 								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
@@ -479,7 +479,7 @@
 										</script>
 									</div>
 									<div>
-										<span class="msgTitle">延期期限：</span><span><input
+										<span class="msgTitle">延期期限：&emsp;</span><span><input
 											type="text" id="limitTime"
 											value="<fmt:formatDate value='${submission.limitTime}'
 						type='DATE' pattern='yyyy-MM-dd' />" /></span>
@@ -528,7 +528,7 @@
 									</div>
 									<div class="msgContentBox">${submission.measure}</div>
 									<div>
-										<span class="msgTitle">延期期限：</span><span><fmt:formatDate
+										<span class="msgTitle">延期期限：&emsp;</span><span><fmt:formatDate
 												value='${submission.limitTime}' type='DATE'
 												pattern='yyyy-MM-dd' /></span>
 									</div>

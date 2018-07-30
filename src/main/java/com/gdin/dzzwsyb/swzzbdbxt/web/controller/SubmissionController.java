@@ -174,7 +174,8 @@ public class SubmissionController {
 		if (submission != null && submission.getId() != null) {
 			Submission submission0 = submissionService.selectById(submission.getId());
 			if (submission0 != null && submission0.getStatus() == 1) {
-				final int count = submissionService.update(submission);
+				submission0.setStatus(0);
+				final int count = submissionService.update(submission0);
 				if (count == 1) {
 					//撤回提请删除notice相关
 					int type = 6;//类型为提请草稿-6
