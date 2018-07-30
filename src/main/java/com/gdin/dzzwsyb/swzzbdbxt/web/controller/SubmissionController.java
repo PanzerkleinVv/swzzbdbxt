@@ -212,8 +212,10 @@ public class SubmissionController {
 		if (submission != null && submission.getId() != null) {
 			Submission submission0 = submissionService.selectById(submission.getId());
 			if (submission0 != null && submission0.getStatus() == 1) {
-				submission.setSuperiorVerifiUserId((Long) session.getAttribute("userId"));
-				final int count = submissionService.update(submission);
+				submission0.setSuperiorVerifiUserId((Long) session.getAttribute("userId"));
+				submission0.setSuperiorVerifyPassed(submission.getSuperiorVerifyPassed());
+				submission0.setStatus(submission.getStatus());
+				final int count = submissionService.update(submission0);
 				if (count == 1) {
 					if (submission.getSuperiorVerifyPassed() == 1) {
 						MsgSponsor msgSponsor = new MsgSponsor();

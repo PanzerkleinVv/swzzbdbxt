@@ -13,6 +13,8 @@ public class MsgCoSponsorExtend extends MsgCoSponsor {
 	private List<SubmissionExtend> submissions;
 	
 	private List<Attach> attachs;
+	
+	private List<Log> logs;
 
 	public MsgCoSponsorExtend() {
 
@@ -60,5 +62,13 @@ public class MsgCoSponsorExtend extends MsgCoSponsor {
 
 	public void setAttachs(List<Attach> attachs) {
 		this.attachs = attachs;
+	}
+
+	public List<Log> getLogs() {
+		return logs;
+	}
+
+	public void setLogs(List<Log> logs) {
+		this.logs = logs;
 	}
 }

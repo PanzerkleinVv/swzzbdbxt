@@ -10,6 +10,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.LogService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
@@ -44,6 +45,9 @@ public class MsgTask {
 
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private LogService logService;
 	
 	public void deleteMsgTask() throws Exception {
 		final int type =  1 ;
@@ -96,6 +100,7 @@ public class MsgTask {
 			ids.addAll(msgContractorService.selectIdsByMsgIds(msgIds));
 			ids.addAll(submissionService.selectIdsByMsgIds(ids));
 			noticeService.deleteByTargetIds(ids);
+			logService.deleteByTargetIds(ids);
 			try {
 				attachService.deleteByTargetIds(ids);
 			} catch (Exception e) {

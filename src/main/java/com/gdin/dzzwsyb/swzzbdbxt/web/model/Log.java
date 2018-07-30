@@ -12,6 +12,17 @@ public class Log {
     private Date logTime;
 
     private String content;
+    
+    public Log() {
+    	
+    }
+    
+    public Log(String id, Long userId, String targetId, String content) {
+    	this.id = id;
+    	this.userId = userId;
+    	this.targetId = targetId;
+    	this.content = content;
+    }
 
     public String getId() {
         return id;
