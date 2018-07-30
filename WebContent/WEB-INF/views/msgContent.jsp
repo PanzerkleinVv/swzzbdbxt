@@ -104,7 +104,7 @@
 		</div>
 		<div class="msgContentBox">
 			<c:forEach var="log" items="${msgSponsor.logs}">
-				<span style="margin-left: 5px; margin-right: 5px;">
+				<span style="margin-left: 5px; margin-right: 5px; font-family: '楷体';">
 					<abbr title="<fmt:formatDate value='${log.logTime}' type='DATE' pattern='yyyy年MM月dd日 HH时mm分' />">${log.content}</abbr>
 				</span>
 			</c:forEach>
