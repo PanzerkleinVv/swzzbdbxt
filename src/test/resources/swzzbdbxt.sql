@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : swzzbdbxy
-Source Server Version : 50721
+Source Server         : swzzbdbxt
+Source Server Version : 50714
 Source Host           : localhost:3306
 Source Database       : swzzbdbxt
 
 Target Server Type    : MYSQL
-Target Server Version : 50721
+Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-07-30 01:11:25
+Date: 2018-07-30 14:18:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -54,6 +54,11 @@ CREATE TABLE `log` (
 -- ----------------------------
 -- Records of log
 -- ----------------------------
+INSERT INTO `log` VALUES ('60df600431c113dc4f4508a948c63fa36a70025d', '2', 'cd64382336b9fa33031cd913a48406f08829b172', '2018-07-30 11:04:09', '研究室内勤');
+INSERT INTO `log` VALUES ('c293ae6f1bf9b27c19f9042c1613616d44a39dee', '2', 'cd64382336b9fa33031cd913a48406f08829b172', '2018-07-30 10:53:33', '研究室内勤');
+INSERT INTO `log` VALUES ('e2a3d3ebe2d286e421cc3af6db2f4aaab1f63e0a', '5', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '2018-07-30 11:01:27', '办公室');
+INSERT INTO `log` VALUES ('ed0704f76dbbd6c8290d8e33d5257f761bf81e39', '5', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '2018-07-30 11:01:35', '办公室');
+INSERT INTO `log` VALUES ('f9d9daf3e89553f72d73a9647859325364cb6f17', '5', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '2018-07-30 11:02:10', '办公室');
 
 -- ----------------------------
 -- Table structure for msg
@@ -74,7 +79,7 @@ CREATE TABLE `msg` (
 -- ----------------------------
 -- Records of msg
 -- ----------------------------
-INSERT INTO `msg` VALUES ('7effad8c721ceda9505be4ac83d1e9aa6327c50d', '20180071', '2018-07-27 00:00:00', '测试1', '立项依据1', null, '2018-07-29 00:00:00', '2018-07-28 12:49:28');
+INSERT INTO `msg` VALUES ('7effad8c721ceda9505be4ac83d1e9aa6327c50d', '20180071', '2018-07-27 00:00:00', '测试1', '立项依据1', null, '2018-07-29 00:00:00', '2018-07-30 11:09:27');
 
 -- ----------------------------
 -- Table structure for msg_co-sponsor
@@ -95,7 +100,7 @@ CREATE TABLE `msg_co-sponsor` (
 -- ----------------------------
 -- Records of msg_co-sponsor
 -- ----------------------------
-INSERT INTO `msg_co-sponsor` VALUES ('af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '3', '1', '0', '<p>aaaaaaaaaaaaaaaaaaawwwwwwwwwwwwwwwwwwwwwwwwwwwwdaaaaaaadadwaadaa</p>', '1', '2018-07-29 00:00:00');
+INSERT INTO `msg_co-sponsor` VALUES ('af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '3', '1', '0', '<p>aaaaaaaaaaaaaaaaaaawwwwwwwwwwwwwwwwwwwwdaaaaaaadadaa</p>', '1', '2018-11-22 00:00:00');
 INSERT INTO `msg_co-sponsor` VALUES ('f5aab1c56b46e6deb8db5f0d0826db67bb5c6f62', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '5', '0', '0', '', '1', '2018-07-29 00:00:00');
 
 -- ----------------------------
@@ -133,7 +138,7 @@ CREATE TABLE `msg_sponsor` (
 -- Records of msg_sponsor
 -- ----------------------------
 INSERT INTO `msg_sponsor` VALUES ('081781fb69c4d9ce45033dbd07e529705f2d2b33', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '2', '0', '0', '', '1', '2018-07-29 00:00:00');
-INSERT INTO `msg_sponsor` VALUES ('cd64382336b9fa33031cd913a48406f08829b172', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '4', '1', '0', '<p>啊发送到</p><p>发达撒</p>', '1', '2018-07-29 00:00:00');
+INSERT INTO `msg_sponsor` VALUES ('cd64382336b9fa33031cd913a48406f08829b172', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '4', '1', '0', '<p>啊发送到</p><p>发达撒adadsaafa</p>', '1', '2018-09-20 00:00:00');
 INSERT INTO `msg_sponsor` VALUES ('f25a0a63103fcbe18c6547b531bc8aad17391d04', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '7', '0', '0', '', '1', '2018-07-29 00:00:00');
 
 -- ----------------------------
@@ -149,14 +154,12 @@ CREATE TABLE `notice` (
   `create_time` datetime DEFAULT NULL COMMENT '生成时间',
   `is_read` int(11) DEFAULT NULL COMMENT '是否已读 0--已读 1--未读',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8 COMMENT='提醒表';
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COMMENT='提醒表';
 
 -- ----------------------------
 -- Records of notice
 -- ----------------------------
-INSERT INTO `notice` VALUES ('109', '2', '0', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '1', '2018-07-28 02:45:18', '0');
-INSERT INTO `notice` VALUES ('111', '1', '2', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '1', '2018-07-28 12:49:28', '1');
-INSERT INTO `notice` VALUES ('112', '5', '2', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '1', '2018-07-28 12:49:28', '0');
+INSERT INTO `notice` VALUES ('129', '2', '0', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '1', '2018-07-30 11:04:09', '0');
 
 -- ----------------------------
 -- Table structure for permission
@@ -252,7 +255,10 @@ CREATE TABLE `submission` (
 -- ----------------------------
 -- Records of submission
 -- ----------------------------
-INSERT INTO `submission` VALUES ('f75c2f4a0bcefb8ab843eeb477d017b5159fb36d', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '2', '', '', '', '5', null, null, '1', '2018-07-28 12:49:28', '2018-08-05 00:00:00');
+INSERT INTO `submission` VALUES ('483a60e5566f68faf886f5f9432c401370b4b127', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '2', '', '', '', '5', '1', '5', '2', '2018-07-30 11:09:27', '2018-11-22 00:00:00');
+INSERT INTO `submission` VALUES ('95480ed5b73ea898954ad909a393419969745a50', 'cd64382336b9fa33031cd913a48406f08829b172', '2', '', '', '', '2', '1', '5', '2', '2018-07-30 09:42:02', '2018-07-30 09:42:20');
+INSERT INTO `submission` VALUES ('f75c2f4a0bcefb8ab843eeb477d017b5159fb36d', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '2', '', '', '', '5', '1', '1', '2', '2018-07-28 12:49:28', '2018-07-30 09:05:54');
+INSERT INTO `submission` VALUES ('fcd6a1e659cac0665022514945f77ed78b2d9ee7', 'af09e40076a4398262c1afdfb9ae57d7ac1f8a6b', '2', '', '', '', '5', '1', '5', '2', '2018-07-30 09:42:48', '2018-07-30 09:42:55');
 
 -- ----------------------------
 -- Table structure for user
@@ -310,3 +316,9 @@ CREATE TABLE `user_role` (
 -- Records of user_role
 -- ----------------------------
 INSERT INTO `user_role` VALUES ('1', '1', '1');
+
+-- ----------------------------
+-- View structure for analysis_all_role
+-- ----------------------------
+DROP VIEW IF EXISTS `analysis_all_role`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`swzzbdbxt`@`` SQL SECURITY DEFINER  VIEW `analysis_all_role` AS SELECT role_id, type, sum( CASE WHEN STATUS = 1 THEN 1 ELSE 0 END ) AS onwork, sum( CASE WHEN STATUS = 2 THEN 1 ELSE 0 END ) AS overtime, sum( CASE WHEN STATUS > 2 THEN 1 ELSE 0 END ) AS done, 0 AS YEAR, 0 AS MONTH FROM (( SELECT t0.*, 0 AS type FROM msg_sponsor t0 ) UNION ( SELECT t1.*, 1 AS type FROM `msg_co-sponsor` t1 )) main GROUP BY role_id, type ORDER BY role_id, type ASC ;
