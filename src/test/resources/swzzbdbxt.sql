@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-07-30 14:18:59
+Date: 2018-07-31 14:28:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -154,7 +154,7 @@ CREATE TABLE `notice` (
   `create_time` datetime DEFAULT NULL COMMENT '生成时间',
   `is_read` int(11) DEFAULT NULL COMMENT '是否已读 0--已读 1--未读',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COMMENT='提醒表';
+) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8 COMMENT='提醒表';
 
 -- ----------------------------
 -- Records of notice
@@ -321,4 +321,16 @@ INSERT INTO `user_role` VALUES ('1', '1', '1');
 -- View structure for analysis_all_role
 -- ----------------------------
 DROP VIEW IF EXISTS `analysis_all_role`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`swzzbdbxt`@`` SQL SECURITY DEFINER  VIEW `analysis_all_role` AS SELECT role_id, type, sum( CASE WHEN STATUS = 1 THEN 1 ELSE 0 END ) AS onwork, sum( CASE WHEN STATUS = 2 THEN 1 ELSE 0 END ) AS overtime, sum( CASE WHEN STATUS > 2 THEN 1 ELSE 0 END ) AS done, 0 AS YEAR, 0 AS MONTH FROM (( SELECT t0.*, 0 AS type FROM msg_sponsor t0 ) UNION ( SELECT t1.*, 1 AS type FROM `msg_co-sponsor` t1 )) main GROUP BY role_id, type ORDER BY role_id, type ASC ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`swzzbdbxt`@`` SQL SECURITY DEFINER  VIEW `analysis_all_role` AS SELECT role_id, type, sum( CASE WHEN STATUS = 1 THEN 1 ELSE 0 END ) AS onwork, sum( CASE WHEN STATUS = 2 THEN 1 ELSE 0 END ) AS overtime, sum( CASE WHEN STATUS = 3 THEN 1 ELSE 0 END ) AS partial_done, sum( CASE WHEN STATUS = 4 THEN 1 ELSE 0 END ) AS done, sum( CASE WHEN STATUS = 5 THEN 1 ELSE 0 END ) AS `stop`, 0 AS `year`, 0 AS `month` FROM (( SELECT t0.*, 1 AS type FROM msg_sponsor t0 ) UNION ( SELECT t1.*, 2 AS type FROM `msg_co-sponsor` t1 )) main GROUP BY role_id, type ORDER BY role_id, type ASC ;
+
+-- ----------------------------
+-- View structure for analysis_all_year
+-- ----------------------------
+DROP VIEW IF EXISTS `analysis_all_year`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`swzzbdbxt`@``  VIEW `analysis_all_year` AS SELECT 0 AS role_id, 0 AS type, sum( CASE WHEN STATUS = 1 THEN 1 ELSE 0 END ) AS onwork, sum( CASE WHEN STATUS = 2 THEN 1 ELSE 0 END ) AS overtime, sum( CASE WHEN STATUS = 3 THEN 1 ELSE 0 END ) AS partial_done, sum( CASE WHEN STATUS = 4 THEN 1 ELSE 0 END ) AS done, sum( CASE WHEN STATUS = 5 THEN 1 ELSE 0 END ) AS `stop`, `year`, `month` FROM ( SELECT YEAR, MONTH, ct.id AS id, CASE WHEN FIND_IN_SET(2, GROUP_CONCAT(STATUS)) > 0 THEN 2 WHEN FIND_IN_SET(1, GROUP_CONCAT(STATUS)) > 0 THEN 1 WHEN FIND_IN_SET(3, GROUP_CONCAT(STATUS)) > 0 THEN 3 WHEN FIND_IN_SET(4, GROUP_CONCAT(STATUS)) > 0 THEN 4 ELSE 5 END AS STATUS FROM (( SELECT t0.* FROM msg_sponsor t0 WHERE STATUS <> 0 ) UNION ( SELECT t1.* FROM `msg_co-sponsor` t1 WHERE STATUS <> 0 )) main LEFT OUTER JOIN ( SELECT date_format(create_time, '%Y') AS YEAR, date_format(create_time, '%m') AS MONTH, id FROM msg ) ct ON main.msg_id = ct.id GROUP BY YEAR, MONTH, id ) status_table GROUP BY YEAR, MONTH, id ORDER BY YEAR DESC, MONTH ASC ;
+
+-- ----------------------------
+-- View structure for analysis_year_role
+-- ----------------------------
+DROP VIEW IF EXISTS `analysis_year_role`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`swzzbdbxt`@``  VIEW `analysis_year_role` AS SELECT role_id, type, sum( CASE WHEN STATUS = 1 THEN 1 ELSE 0 END ) AS onwork, sum( CASE WHEN STATUS = 2 THEN 1 ELSE 0 END ) AS overtime, sum( CASE WHEN STATUS = 3 THEN 1 ELSE 0 END ) AS partial_done, sum( CASE WHEN STATUS = 4 THEN 1 ELSE 0 END ) AS done, sum( CASE WHEN STATUS = 5 THEN 1 ELSE 0 END ) AS `stop`, `year`, `month` FROM (( SELECT t0.*, 1 AS type FROM msg_sponsor t0 WHERE STATUS <> 0 ) UNION ( SELECT t1.*, 2 AS type FROM `msg_co-sponsor` t1 WHERE STATUS <> 0 )) main LEFT OUTER JOIN ( SELECT date_format(create_time, '%Y') AS YEAR, date_format(create_time, '%m') AS MONTH, id FROM msg ) ct ON main.msg_id = ct.id GROUP BY YEAR, MONTH, role_id, type ORDER BY YEAR DESC, MONTH ASC, role_id ASC, type ASC ;
