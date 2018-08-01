@@ -99,14 +99,14 @@
 					</shiro:lacksRole>
 					
 					<shiro:hasAnyRoles name="1">
-						<li class="start active"><a href="./rest/analysis/analysis" id="btn-dashboard"> <i class="fa fa-home"></i>
+						<li class="start active"><a href="./rest/analysis/index" id="btn-dashboard"> <i class="fa fa-home"></i>
 							<span class="title"> 首页 </span>
 								<span class="selected"> </span>
 						</a></li>
 					</shiro:hasAnyRoles>
 						
 					<shiro:hasAnyRoles name="admin,2">
-						<li class=""><a href="./rest/analysis/analysis"> <i class="fa fa-bar-chart"></i>
+						<li class=""><a href="./rest/analysis/index"> <i class="fa fa-bar-chart"></i>
 							<span class="title"> 统计分析 </span>
 								<span class="selected"> </span>
 						</a></li>

@@ -75,6 +75,7 @@
 		select distinct
 		date_format(create_time, '%Y') AS YEAR
 		from msg
+		order by year desc
 	</select>
 	<select id="getMonths" parameterType="java.lang.Integer"
 		resultType="java.lang.Integer">
@@ -82,5 +83,6 @@
 		date_format(create_time, '%m') AS MONTH
 		from msg
 		where date_format(create_time, '%Y') = #{year,jdbcType=INTEGER}
+		order by MONTH asc
 	</select>
 </mapper>
