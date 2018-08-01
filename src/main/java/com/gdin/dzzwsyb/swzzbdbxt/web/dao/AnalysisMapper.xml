@@ -5,15 +5,15 @@
 	<resultMap id="BaseResultMap"
 		type="com.gdin.dzzwsyb.swzzbdbxt.web.model.Analysis">
 		<result column="role_id" jdbcType="BIGINT" property="roleId" />
-		<result column="type" jdbcType="INT" property="type" />
-		<result column="onwork" jdbcType="INT" property="onwork" />
-		<result column="overtime" jdbcType="INT" property="overtime" />
-		<result column="partialDone" jdbcType="INT"
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="onwork" jdbcType="INTEGER" property="onwork" />
+		<result column="overtime" jdbcType="INTEGER" property="overtime" />
+		<result column="partialDone" jdbcType="INTEGER"
 			property="partial_done" />
-		<result column="done" jdbcType="INT" property="done" />
-		<result column="stop" jdbcType="INT" property="stop" />
-		<result column="year" jdbcType="INT" property="year" />
-		<result column="month" jdbcType="INT" property="month" />
+		<result column="done" jdbcType="INTEGER" property="done" />
+		<result column="stop" jdbcType="INTEGER" property="stop" />
+		<result column="year" jdbcType="INTEGER" property="year" />
+		<result column="month" jdbcType="INTEGER" property="month" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		role_id, type, onwork, overtime, partical_done, done, stop, year, month
@@ -34,20 +34,20 @@
 		select
 		<include refid="Base_Column_List" />
 		from analysis_all_year
-		where year = #{year,jdbcType=INT}
+		where year = #{year,jdbcType=INTEGER}
 		UNION
 		select 0 as role_id, 0 as type, IFNULL(sum(onwork),0) as onwork,
 		IFNULL(sum(overtime),0) as overtime, IFNULL(SUM(partial_done),0) as
 		partial_done, IFNULL(SUM(done),0) as done, IFNULL(SUM(stop),0) as
-		`stop`, #{year,jdbcType=INT} as `year`, 0 as `month` from
-		analysis_all_year where year &lt; #{year,jdbcType=INT}
+		`stop`, #{year,jdbcType=INTEGER} as `year`, 0 as `month` from
+		analysis_all_year where year &lt; #{year,jdbcType=INTEGER}
 	</select>
 	<select id="AnalysisRoleByYear" parameterType="java.lang.Integer"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from from analysis_year_role
-		where year = #{year,jdbcType=INT}
+		where year = #{year,jdbcType=INTEGER}
 	</select>
 	<select id="AnalysisRoleByMonth"
 		resultMap="BaseResultMap">
@@ -61,7 +61,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from from analysis_year_role
-		where year = #{year,jdbcType=INT} and type = 1
+		where year = #{year,jdbcType=INTEGER} and type = 1
 	</select>
 	<select id="AnalysisRoleByMonthMain"
 		resultMap="BaseResultMap">
@@ -71,9 +71,16 @@
 		where year = #{year} and month = #{month} and type = 1
 	</select>
 	<select id="getYears"
-		resultMap="java.lang.Integer">
+		resultType="java.lang.Integer">
 		select distinct
 		date_format(create_time, '%Y') AS YEAR
 		from msg
+	</select>
+	<select id="getMonths" parameterType="java.lang.Integer"
+		resultType="java.lang.Integer">
+		select distinct
+		date_format(create_time, '%m') AS MONTH
+		from msg
+		where date_format(create_time, '%Y') = #{year,jdbcType=INTEGER}
 	</select>
 </mapper>

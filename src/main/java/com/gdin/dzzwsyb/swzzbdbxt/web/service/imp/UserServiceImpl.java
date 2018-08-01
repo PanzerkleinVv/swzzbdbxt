@@ -120,7 +120,6 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
 
 	@Override
 	public List<User> selectByRoleIdList(List<Long> roleIdList) {
-		// TODO Auto-generated method stub
 		List<User> users = new ArrayList<User>();
 		for(Long roleId : roleIdList) {
 			UserExample example = new UserExample();

@@ -70,5 +70,10 @@ public class AnalysisServiceImpl implements AnalysisService {
 	public List<Integer> getYears() {
 		return analysisMapper.getYears();
 	}
+	
+	@Override
+	public List<Integer> getMonths(Integer year){
+		return analysisMapper.getMonths(year);
+	}
 
 }

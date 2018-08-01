@@ -91,10 +91,26 @@
 						<div class="sidebar-toggler hidden-phone"></div> <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
 					</li>
 
-					<li class="start active"><a href="./rest/notice/dashboard" id="btn-dashboard"> <i class="fa fa-home"></i>
-						<span class="title"> 首页 </span>
-							<span class="selected"> </span>
-					</a></li>
+					<shiro:lacksRole name="1">
+						<li class="start active"><a href="./rest/notice/dashboard" id="btn-dashboard"> <i class="fa fa-home"></i>
+							<span class="title"> 首页 </span>
+								<span class="selected"> </span>
+						</a></li>
+					</shiro:lacksRole>
+					
+					<shiro:hasAnyRoles name="1">
+						<li class="start active"><a href="./rest/analysis/analysis" id="btn-dashboard"> <i class="fa fa-home"></i>
+							<span class="title"> 首页 </span>
+								<span class="selected"> </span>
+						</a></li>
+					</shiro:hasAnyRoles>
+						
+					<shiro:hasAnyRoles name="admin,2">
+						<li class=""><a href="./rest/analysis/analysis"> <i class="fa fa-bar-chart"></i>
+							<span class="title"> 统计分析 </span>
+								<span class="selected"> </span>
+						</a></li>
+					</shiro:hasAnyRoles>
 
 					<li class=""><a href="./rest/msg/query"> <i class="fa fa-search"></i>
 						<span class="title"> 督察事项检索 </span>
@@ -102,7 +118,7 @@
 					</a></li>
 
 					<shiro:hasAnyRoles name="admin,1,2">
-						<li class=""><a href="./rest/msg/upload" id="btn-dashboard"> <i class="fa fa-upload"></i>
+						<li class=""><a href="./rest/msg/upload"> <i class="fa fa-upload"></i>
 							<span class="title"> 督查立项 </span>
 								<span class="selected"> </span>
 						</a></li>

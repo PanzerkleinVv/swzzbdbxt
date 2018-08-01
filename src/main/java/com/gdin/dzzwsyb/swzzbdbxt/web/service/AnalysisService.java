@@ -15,5 +15,7 @@ public interface AnalysisService {
 	List<Analysis> AnalysisRoleByMonth(Integer year, Integer month, Integer flag);
 	
 	List<Integer> getYears();
+	
+	List<Integer> getMonths(Integer year);
 
 }

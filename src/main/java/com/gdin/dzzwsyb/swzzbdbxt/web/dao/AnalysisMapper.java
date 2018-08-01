@@ -22,5 +22,7 @@ public interface AnalysisMapper {
 	List<Analysis> AnalysisRoleByMonthMain(@Param("year") Integer year, @Param("month") Integer month);
 	
 	List<Integer> getYears();
+	
+	List<Integer> getMonths(Integer year);
 
 }
