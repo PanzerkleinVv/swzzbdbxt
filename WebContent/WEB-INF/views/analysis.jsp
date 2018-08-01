@@ -136,6 +136,7 @@
 					$("#analysisForm button").html("统计");
 				}
 			});
+			return false;
 		});
 	</script>
 </div>

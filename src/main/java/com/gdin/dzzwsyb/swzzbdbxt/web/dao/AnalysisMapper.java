@@ -7,19 +7,19 @@ import org.apache.ibatis.annotations.Param;
 
 public interface AnalysisMapper {
 
-	List<Analysis> AnalysisByRoleAll();
+	List<Analysis> analysisByRoleAll();
 
-	List<Analysis> AnalysisByRoleMain();
+	List<Analysis> analysisByRoleMain();
 
-	List<Analysis> AnalysisByYear(Integer year);
+	List<Analysis> analysisByYear(Integer year);
 
-	List<Analysis> AnalysisRoleByYear(Integer year);
+	List<Analysis> analysisRoleByYear(Integer year);
 
-	List<Analysis> AnalysisRoleByMonth(@Param("year") Integer year, @Param("month") Integer month);
+	List<Analysis> analysisRoleByMonth(@Param("year") Integer year, @Param("month") Integer month);
 
-	List<Analysis> AnalysisRoleByYearMain(Integer year);
+	List<Analysis> analysisRoleByYearMain(Integer year);
 
-	List<Analysis> AnalysisRoleByMonthMain(@Param("year") Integer year, @Param("month") Integer month);
+	List<Analysis> analysisRoleByMonthMain(@Param("year") Integer year, @Param("month") Integer month);
 	
 	List<Integer> getYears();
 	

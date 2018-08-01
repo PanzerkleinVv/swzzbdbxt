@@ -8,28 +8,28 @@
 		<result column="type" jdbcType="INTEGER" property="type" />
 		<result column="onwork" jdbcType="INTEGER" property="onwork" />
 		<result column="overtime" jdbcType="INTEGER" property="overtime" />
-		<result column="partialDone" jdbcType="INTEGER"
-			property="partial_done" />
+		<result column="partial_done" jdbcType="INTEGER"
+			property="partialDone" />
 		<result column="done" jdbcType="INTEGER" property="done" />
 		<result column="stop" jdbcType="INTEGER" property="stop" />
 		<result column="year" jdbcType="INTEGER" property="year" />
 		<result column="month" jdbcType="INTEGER" property="month" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		role_id, type, onwork, overtime, partical_done, done, stop, year, month
+		role_id, type, onwork, overtime, partial_done, done, stop, year, month
 	</sql>
-	<select id="AnalysisByRoleAll" resultMap="BaseResultMap">
+	<select id="analysisByRoleAll" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from analysis_all_role
 	</select>
-	<select id="AnalysisByRoleMain" resultMap="BaseResultMap">
+	<select id="analysisByRoleMain" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from analysis_all_role
 		where type = 1
 	</select>
-	<select id="AnalysisByYear" parameterType="java.lang.Integer"
+	<select id="analysisByYear" parameterType="java.lang.Integer"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
@@ -42,32 +42,32 @@
 		`stop`, #{year,jdbcType=INTEGER} as `year`, 0 as `month` from
 		analysis_all_year where year &lt; #{year,jdbcType=INTEGER}
 	</select>
-	<select id="AnalysisRoleByYear" parameterType="java.lang.Integer"
+	<select id="analysisRoleByYear" parameterType="java.lang.Integer"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from from analysis_year_role
+		from analysis_year_role
 		where year = #{year,jdbcType=INTEGER}
 	</select>
-	<select id="AnalysisRoleByMonth"
+	<select id="analysisRoleByMonth"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from from analysis_year_role
+		from analysis_year_role
 		where year = #{year} and month = #{month}
 	</select>
-	<select id="AnalysisRoleByYearMain" parameterType="java.lang.Integer"
+	<select id="analysisRoleByYearMain" parameterType="java.lang.Integer"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from from analysis_year_role
+		from analysis_year_role
 		where year = #{year,jdbcType=INTEGER} and type = 1
 	</select>
-	<select id="AnalysisRoleByMonthMain"
+	<select id="analysisRoleByMonthMain"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from from analysis_year_role
+		from analysis_year_role
 		where year = #{year} and month = #{month} and type = 1
 	</select>
 	<select id="getYears"

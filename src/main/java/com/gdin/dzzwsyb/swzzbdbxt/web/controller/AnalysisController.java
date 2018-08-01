@@ -1,8 +1,7 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.apache.shiro.authz.annotation.Logical;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Analysis;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.AnalysisResult;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.SimpleAnalysis;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AnalysisService;
 
@@ -40,18 +41,18 @@ public class AnalysisController {
 	@RequestMapping(value = "/analysis")
 	@ResponseBody
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
-	public Map<Integer, List<Analysis>> analysis(Analysis condition) {
+	public AnalysisResult analysis(Analysis condition) {
 		if (condition != null) {
-			List<Analysis> result;
-			Integer type = condition.getType();
-			Integer year = condition.getYear();
-			Integer month = condition.getMonth();
-			if (type != null && year != null && month != null && month != 0) {
-				result = analysisService.AnalysisRoleByMonth(year, month, type);
-			} else if (type != null && year != null && month == 0) {
-				result = analysisService.AnalysisRoleByMonth(year, month, type);
+			List<Analysis> results = analysisService.analysis(condition);
+			List<SimpleAnalysis> simpleResults = new ArrayList<SimpleAnalysis>(); 
+			if (results != null) {
+				for (Analysis result : results) {
+					simpleResults.add(new SimpleAnalysis(result));
+				}
+			} else {
+				simpleResults = null;
 			}
-			return null;
+			return new AnalysisResult(results, simpleResults);
 		} else {
 			return null;
 		}
