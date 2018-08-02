@@ -292,6 +292,7 @@
 		var URL = window.UEDITOR_HOME_URL || "assets/plugins/ueditor/";
 	</script>
 	<script type="text/javascript" src="assets/scripts/jquery.form.js"></script>
+	<script type="text/javascript" src="assets/scripts/echarts.js"></script>
 
 	<!-- <script data-main="app/js/main" src="app/lib/requirejs/require.js"></script> -->
 </body>

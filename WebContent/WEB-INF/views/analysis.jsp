@@ -126,7 +126,118 @@
 				cache : false,
 				dataType : "json",
 				success : function(data) {
-					alert(data);
+					var analysisChart = $("#analysisChart");
+					var analysisTable = $("#analysisTable");
+					if (data.results == null) {
+						analysisChart.html("无数据");
+						analysisTable.html("无数据");
+					} else {
+						var flagRoleId = data.results[0].roleId;
+						var flagYear = data.results[0].year;
+						var flagMonth = data.results[0].month;
+						analysisChart.html("<div class='analysisEchart'></div>");
+						var analysisEchart = echarts.init($(".analysisEchart")[0]);
+						analysisTable.html("<table></table>");
+						var table = analysisTable.find("table");
+						if (flagRoleId == 0 && flagYear != 0 && flagMonth != 0) {
+							var stops = [];
+							var onworks = [];
+							var overtimes = [];
+							var j = 0;
+							var xText = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月',flagYear + '年以前'];
+							table.append("<tr><th>月份</th><th>在办</th><th>逾期</th><th>阶段性办结</th><th>办结</th><th>中止</th></tr>");
+							for (var i = 0; i < 13; i++){
+								table.append("<tr></tr>");
+								table.find("tr").last().append("<td>" + xText[i] + "</td>");
+								if ((j < data.simpleResults.length && i + 1 == data.simpleResults[j].month) || (j < data.simpleResults.length && data.simpleResults[j].month == 0)) {
+				            		stops.push(data.simpleResults[j].stop);
+				            		onworks.push(data.simpleResults[j].onwork);
+				            		overtimes.push(data.simpleResults[j].overtime);
+				            		table.find("tr").last().append("<td>" + data.results[j].onwork + "</td>");
+				            		table.find("tr").last().append("<td>" + data.results[j].overtime + "</td>");
+				            		table.find("tr").last().append("<td>" + data.results[j].partialDone + "</td>");
+				            		table.find("tr").last().append("<td>" + data.results[j].done + "</td>");
+				            		table.find("tr").last().append("<td>" + data.results[j].stop + "</td>");
+				            		j++;
+				            	} else {
+				            		stops.push(0);
+				            		onworks.push(0);
+				            		overtimes.push(0);
+				            		table.find("tr").last().append("<td>" + 0 + "</td>");
+				            		table.find("tr").last().append("<td>" + 0 + "</td>");
+				            		table.find("tr").last().append("<td>" + 0 + "</td>");
+				            		table.find("tr").last().append("<td>" + 0 + "</td>");
+				            		table.find("tr").last().append("<td>" + 0 + "</td>");
+				            	}
+							}
+							option = {
+								title : {
+									text: flagYear + '年立项事项统计'
+								},
+								tooltip : {
+									trigger: 'axis',
+									axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+										type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+									},
+									formatter: function (params){
+										return params[0].name + '<br/>' + params[0].seriesName + ' : ' + params[0].value + '<br/>' + params[1].seriesName + ' : ' + params[1].value + '<br/>' + params[2].seriesName + ' : ' + params[2].value;
+									}
+								},
+								legend: {
+									selectedMode:false,
+									data:['在办', '逾期', '不在办']
+								},
+								xAxis : [
+									{
+										type : 'category',
+										data : xText
+									}
+								],
+								yAxis : [
+									{
+										type : 'value'
+									}
+								],
+								series : [
+									{
+										name:'不在办',
+										type:'bar',
+										stack: '总量',
+										barCategoryGap: '50%',
+										itemStyle: {
+											normal: {
+								 				color: 'gray',
+								 			}
+										},
+										data: stops
+									},
+									{
+										name:'在办',
+										type:'bar',
+										stack: '总量',
+										itemStyle: {
+											normal: {
+												color: 'deepskyblue',
+											}
+										},
+										data: onworks
+									},
+									{
+										name:'逾期',
+										type:'bar',
+										stack: '总量',
+										itemStyle: {
+											normal: {
+												color: 'indianred',
+											}
+										},
+										data: overtimes
+									}
+								]
+							};
+							analysisEchart.setOption(option);
+						}
+					}
 					$("#analysisForm button").attr("disabled", false);
 					$("#analysisForm button").html("统计");
 				},

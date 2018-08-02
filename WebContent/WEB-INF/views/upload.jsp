@@ -126,7 +126,8 @@
 		$(document).ready(function() {
 			$(".form_date").datepicker({
 				format : 'yyyy-mm-dd',
-				language : 'zh-CN'
+				language : 'zh-CN',
+				autoclose : true
 			});
 		});
 		$(document).ready(function() {

@@ -80,7 +80,8 @@
 			$(".titleEnd").after(data);
 			$("#limitTime").datepicker({
 				format : 'yyyy-mm-dd',
-				language : 'zh-CN'
+				language : 'zh-CN',
+				autoclose : true
 			});
 		});
 	});
