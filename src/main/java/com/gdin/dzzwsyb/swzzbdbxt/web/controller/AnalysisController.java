@@ -3,6 +3,7 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -56,6 +57,13 @@ public class AnalysisController {
 		} else {
 			return null;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/getRoleNames")
+	@ResponseBody
+	public List<String> getRoleNames(HttpSession session) {
+		return (List<String>)session.getAttribute("roles");
 	}
 
 }
