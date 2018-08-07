@@ -13,6 +13,7 @@
     <result column="superior_verifi_user_id" jdbcType="BIGINT" property="superiorVerifiUserId" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="limit_time" jdbcType="TIMESTAMP" property="limitTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -74,7 +75,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, msg_id, type, situation, reason, measure, owner_id, superior_verify_passed, superior_verifi_user_id, 
-    status, send_time
+    status, send_time, limit_time
   </sql>
   <select id="selectByExample" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExample" resultMap="BaseResultMap">
     select
@@ -110,11 +111,13 @@
     insert into submission (id, msg_id, type, 
       situation, reason, measure, 
       owner_id, superior_verify_passed, superior_verifi_user_id, 
-      status, send_time)
+      status, send_time, limit_time
+      )
     values (#{id,jdbcType=VARCHAR}, #{msgId,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
       #{situation,jdbcType=LONGVARCHAR}, #{reason,jdbcType=LONGVARCHAR}, #{measure,jdbcType=LONGVARCHAR}, 
       #{ownerId,jdbcType=BIGINT}, #{superiorVerifyPassed,jdbcType=INTEGER}, #{superiorVerifiUserId,jdbcType=BIGINT}, 
-      #{status,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP})
+      #{status,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP}, #{limitTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission">
     insert into submission
@@ -152,6 +155,9 @@
       <if test="sendTime != null">
         send_time,
       </if>
+      <if test="limitTime != null">
+        limit_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -186,6 +192,9 @@
       </if>
       <if test="sendTime != null">
         #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="limitTime != null">
+        #{limitTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -231,6 +240,9 @@
       <if test="record.sendTime != null">
         send_time = #{record.sendTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.limitTime != null">
+        limit_time = #{record.limitTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -248,7 +260,8 @@
       superior_verify_passed = #{record.superiorVerifyPassed,jdbcType=INTEGER},
       superior_verifi_user_id = #{record.superiorVerifiUserId,jdbcType=BIGINT},
       status = #{record.status,jdbcType=INTEGER},
-      send_time = #{record.sendTime,jdbcType=TIMESTAMP}
+      send_time = #{record.sendTime,jdbcType=TIMESTAMP},
+      limit_time = #{record.limitTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -286,6 +299,9 @@
       <if test="sendTime != null">
         send_time = #{sendTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="limitTime != null">
+        limit_time = #{limitTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -300,7 +316,8 @@
       superior_verify_passed = #{superiorVerifyPassed,jdbcType=INTEGER},
       superior_verifi_user_id = #{superiorVerifiUserId,jdbcType=BIGINT},
       status = #{status,jdbcType=INTEGER},
-      send_time = #{sendTime,jdbcType=TIMESTAMP}
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      limit_time = #{limitTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

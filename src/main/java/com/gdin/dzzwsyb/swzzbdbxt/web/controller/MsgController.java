@@ -26,6 +26,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.feature.orm.mybatis.Page;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.ApplicationUtils;
 import com.gdin.dzzwsyb.swzzbdbxt.web.enums.MessageColor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Log;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Msg;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgCoSponsorExtend;
@@ -43,6 +44,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.Submission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.SubmissionExtend;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.LogService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgService;
@@ -76,6 +78,9 @@ public class MsgController {
 
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private LogService logService;
 
 	// 立项号
 	@Resource
@@ -558,6 +563,10 @@ public class MsgController {
 					for (MsgSponsor msgSponsor : msgSponsors) {
 						msgSponsorExtend = new MsgSponsorExtend(msgSponsor);
 						msgSponsorExtend.setAttachs(attachService.selectByTargetId(msgSponsorExtend.getId(), 1));
+						msgSponsorExtend.setLogs(logService.getLogsByTargetId(msgSponsorExtend.getId()));
+						if (msgSponsorExtend.getLogs() != null && msgSponsorExtend.getLogs().size() > 0) {
+							msgSponsorExtend.getLogs().get(0).setContent(msgSponsorExtend.getLogs().get(0).getContent() + "（最新）");
+						}
 						if (msgSponsorExtend.getStatus() > 2
 								|| (msgSponsorExtend.getRoleId() == roleId && msgSponsorExtend.getStatus() < 3)) {
 							msgSponsorExtend.setEditabled(true);
@@ -606,6 +615,10 @@ public class MsgController {
 					for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 						msgCoSponsorExtend = new MsgCoSponsorExtend(msgCoSponsor);
 						msgCoSponsorExtend.setAttachs(attachService.selectByTargetId(msgCoSponsorExtend.getId(), 1));
+						msgCoSponsorExtend.setLogs(logService.getLogsByTargetId(msgCoSponsorExtend.getId()));
+						if (msgCoSponsorExtend.getLogs() != null && msgCoSponsorExtend.getLogs().size() > 0) {
+							msgCoSponsorExtend.getLogs().get(0).setContent(msgCoSponsorExtend.getLogs().get(0).getContent() + "（最新）");
+						}
 						if (msgCoSponsorExtend.getStatus() > 2
 								|| (msgCoSponsorExtend.getRoleId() == roleId && msgCoSponsorExtend.getStatus() < 3)) {
 							msgCoSponsorExtend.setEditabled(true);
@@ -665,6 +678,10 @@ public class MsgController {
 					for (MsgSponsor msgSponsor : msgSponsors) {
 						msgSponsorExtend = new MsgSponsorExtend(msgSponsor);
 						msgSponsorExtend.setAttachs(attachService.selectByTargetId(msgSponsorExtend.getId(), 1));
+						msgSponsorExtend.setLogs(logService.getLogsByTargetId(msgSponsorExtend.getId()));
+						if (msgSponsorExtend.getLogs() != null && msgSponsorExtend.getLogs().size() > 0) {
+							msgSponsorExtend.getLogs().get(0).setContent(msgSponsorExtend.getLogs().get(0).getContent() + "（最新）");
+						}
 						if (msgSponsorExtend.getStatus() < 3) {
 							msgSponsorExtend.setEditabled(true);
 							if (permissionId < 6L) {
@@ -708,6 +725,10 @@ public class MsgController {
 					for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 						msgCoSponsorExtend = new MsgCoSponsorExtend(msgCoSponsor);
 						msgCoSponsorExtend.setAttachs(attachService.selectByTargetId(msgCoSponsorExtend.getId(), 1));
+						msgCoSponsorExtend.setLogs(logService.getLogsByTargetId(msgCoSponsorExtend.getId()));
+						if (msgCoSponsorExtend.getLogs() != null && msgCoSponsorExtend.getLogs().size() > 0) {
+							msgCoSponsorExtend.getLogs().get(0).setContent(msgCoSponsorExtend.getLogs().get(0).getContent() + "（最新）");
+						}
 						if (msgCoSponsorExtend.getStatus() < 3) {
 							msgCoSponsorExtend.setEditabled(true);
 							if (permissionId < 6L) {
@@ -760,6 +781,7 @@ public class MsgController {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
+		final User userInfo = (User) session.getAttribute("userInfo");
 		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
 		if (msgSponsor != null && msgSponsor.getId() != null) {
 			final MsgSponsor msgSponsor0 = msgSponsorService.selectById(msgSponsor.getId());
@@ -780,6 +802,7 @@ public class MsgController {
 						if (files.length > 0) {
 							attachService.upload(files, msgSponsor.getId(), 1);
 						}
+						logService.log(new Log(ApplicationUtils.newUUID(), userId, msgSponsor.getId(), userInfo.getUserdesc()));
 						// 动态更新==0
 						int type = 0;
 						List<User> users = userService.selectByRoleId(msgSponsor0.getRoleId());
@@ -819,6 +842,7 @@ public class MsgController {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
+		final User userInfo = (User) session.getAttribute("userInfo");
 		final List<User> roleUsers = (List<User>) session.getAttribute("roleUsers");
 		if (msgCoSponsor != null && msgCoSponsor.getId() != null) {
 			final MsgCoSponsor msgCoSponsor0 = msgCoSponsorService.selectById(msgCoSponsor.getId());
@@ -839,6 +863,7 @@ public class MsgController {
 						if (files.length > 0) {
 							attachService.upload(files, msgCoSponsor.getId(), 1);
 						}
+						logService.log(new Log(ApplicationUtils.newUUID(), userId, msgCoSponsor.getId(), userInfo.getUserdesc()));
 						// 动态更新==0
 						int type = 0;
 						List<User> users = userService.selectByRoleId(msgCoSponsor0.getRoleId());

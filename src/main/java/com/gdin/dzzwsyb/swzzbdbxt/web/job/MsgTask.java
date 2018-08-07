@@ -10,6 +10,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgSponsor;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
+import com.gdin.dzzwsyb.swzzbdbxt.web.service.LogService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgCoSponsorService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.MsgContractorService;
@@ -35,54 +36,55 @@ public class MsgTask {
 
 	@Resource
 	private MsgContractorService msgContractorService;
-	
+
 	@Resource
 	private SubmissionService submissionService;
-	
+
 	@Resource
 	private AttachService attachService;
 
 	@Resource
 	private UserService userService;
-	
-	public void deleteMsgTask() throws Exception {
-		final int type =  1 ;
+
+	@Resource
+	private LogService logService;
+
+	public void overLimitTime() throws Exception {
+		final int type = 1;
 		final int isRead = 1;
 		List<MsgSponsor> msgSponsors = msgSponsorService.overLimitTime();
 		List<MsgCoSponsor> msgCoSponsors = msgCoSponsorService.overCoLimitTime();
-		//把主处室和副处室表的status改为逾期-status=2
-		if(msgSponsors != null && msgSponsors.size()>0) {
+		// 把主处室和副处室表的status改为逾期-status=2
+		if (msgSponsors != null && msgSponsors.size() > 0) {
 			msgSponsorService.updateStatus(msgSponsors, 2);
-			for(MsgSponsor msgSponsor : msgSponsors) {
+			for (MsgSponsor msgSponsor : msgSponsors) {
 				String msgId = msgSponsor.getMsgId();
 				List<User> roleUsers = userService.selectByRoleId(msgSponsor.getRoleId());
-				for(User user : roleUsers) {
+				for (User user : roleUsers) {
 					NoticeExample example = new NoticeExample();
 					example.createCriteria().andUserIdEqualTo(user.getId()).andTargetIdEqualTo(msgId);
-					//删除notice
+					// 删除notice
 					noticeService.deleteByExample(example);
 					Notice notice = new Notice(user.getId(), type, msgId, 0, ApplicationUtils.getTime(), isRead);
 					noticeService.addNotice(notice);
-					
 				}
 			}
 		}
-		if(msgCoSponsors != null && msgCoSponsors.size()>0) {
+		if (msgCoSponsors != null && msgCoSponsors.size() > 0) {
 			msgCoSponsorService.updateStatus(msgCoSponsors, 2);
-			for(MsgCoSponsor msgCoSponsor : msgCoSponsors) {
+			for (MsgCoSponsor msgCoSponsor : msgCoSponsors) {
 				String msgId = msgCoSponsor.getMsgId();
 				List<User> roleUsers = userService.selectByRoleId(msgCoSponsor.getRoleId());
-				for(User user : roleUsers) {
+				for (User user : roleUsers) {
 					NoticeExample example = new NoticeExample();
 					example.createCriteria().andUserIdEqualTo(user.getId()).andTargetIdEqualTo(msgId);
-					//删除notice
+					// 删除notice
 					noticeService.deleteByExample(example);
 					Notice notice = new Notice(user.getId(), type, msgId, 0, ApplicationUtils.getTime(), isRead);
 					noticeService.addNotice(notice);
 				}
+			}
 		}
-		
-	}
 	}
 
 	public void deleteOldData() {
@@ -96,6 +98,7 @@ public class MsgTask {
 			ids.addAll(msgContractorService.selectIdsByMsgIds(msgIds));
 			ids.addAll(submissionService.selectIdsByMsgIds(ids));
 			noticeService.deleteByTargetIds(ids);
+			logService.deleteByTargetIds(ids);
 			try {
 				attachService.deleteByTargetIds(ids);
 			} catch (Exception e) {
@@ -109,4 +112,3 @@ public class MsgTask {
 		}
 	}
 }
-

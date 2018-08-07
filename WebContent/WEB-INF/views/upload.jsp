@@ -126,7 +126,8 @@
 		$(document).ready(function() {
 			$(".form_date").datepicker({
 				format : 'yyyy-mm-dd',
-				language : 'zh-CN'
+				language : 'zh-CN',
+				autoclose : true
 			});
 		});
 		$(document).ready(function() {
@@ -411,7 +412,6 @@
 								allSelectedText : '已选中所有主办处室',
 								maxHeight : 300,
 								onChange : function(option, checked) {
-									debugger;
 									if (checked) {
 										$("#assitrole_" + $(option).val())
 												.attr('disabled', true);

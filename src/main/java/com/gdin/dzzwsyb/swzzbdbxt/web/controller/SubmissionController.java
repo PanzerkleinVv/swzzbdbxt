@@ -174,7 +174,8 @@ public class SubmissionController {
 		if (submission != null && submission.getId() != null) {
 			Submission submission0 = submissionService.selectById(submission.getId());
 			if (submission0 != null && submission0.getStatus() == 1) {
-				final int count = submissionService.update(submission);
+				submission0.setStatus(0);
+				final int count = submissionService.update(submission0);
 				if (count == 1) {
 					//撤回提请删除notice相关
 					int type = 6;//类型为提请草稿-6
@@ -211,27 +212,32 @@ public class SubmissionController {
 		if (submission != null && submission.getId() != null) {
 			Submission submission0 = submissionService.selectById(submission.getId());
 			if (submission0 != null && submission0.getStatus() == 1) {
-				submission.setSuperiorVerifiUserId((Long) session.getAttribute("userId"));
-				final int count = submissionService.update(submission);
+				submission0.setSuperiorVerifiUserId((Long) session.getAttribute("userId"));
+				submission0.setSuperiorVerifyPassed(submission.getSuperiorVerifyPassed());
+				submission0.setStatus(submission.getStatus());
+				final int count = submissionService.update(submission0);
 				if (count == 1) {
 					if (submission.getSuperiorVerifyPassed() == 1) {
-						Integer msgStutus = null;
-						if (submission0.getType() == 1) {
-							msgStutus = 4;
-						} else if (submission0.getType() == 2) {
-							msgStutus = 1;
-						} else if (submission0.getType() == 3) {
-							msgStutus = 5;
-						} else if (submission0.getType() == 4) {
-							msgStutus = 3;
-						}
 						MsgSponsor msgSponsor = new MsgSponsor();
-						msgSponsor.setId(submission0.getMsgId());
-						msgSponsor.setStatus(msgStutus);
-						int count0 = msgSponsorService.update(msgSponsor);
 						MsgCoSponsor msgCoSponsor = new MsgCoSponsor();
+						if (submission0.getType() == 1) {
+							msgSponsor.setStatus(4);
+							msgCoSponsor.setStatus(4);
+						} else if (submission0.getType() == 2) {
+							msgSponsor.setStatus(1);
+							msgSponsor.setLimitTime(submission0.getLimitTime());
+							msgCoSponsor.setStatus(1);
+							msgCoSponsor.setLimitTime(submission0.getLimitTime());
+						} else if (submission0.getType() == 3) {
+							msgSponsor.setStatus(5);
+							msgCoSponsor.setStatus(5);
+						} else if (submission0.getType() == 4) {
+							msgSponsor.setStatus(3);
+							msgCoSponsor.setStatus(3);
+						}
+						msgSponsor.setId(submission0.getMsgId());
 						msgCoSponsor.setId(submission0.getMsgId());
-						msgCoSponsor.setStatus(msgStutus);
+						int count0 = msgSponsorService.update(msgSponsor);
 						count0 = count0 + msgCoSponsorService.update(msgCoSponsor);
 						if (count0 != 1) {
 							throw new Exception("审核出错");

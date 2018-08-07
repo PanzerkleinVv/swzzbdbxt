@@ -26,7 +26,7 @@
 			</property>
 			<!-- 调用类中的方法 -->
 			<property name="targetMethod">
-				<value>deleteMsgTask</value>
+				<value>overLimitTime</value>
 			</property>
 		</bean>
 		<bean id="jobtask2"
@@ -47,7 +47,7 @@
 				<ref bean="jobtask1" />
 			</property>
 			<!-- cron表达式 每天24:00运行一次 -->
-			<property name="cronExpression" value="0 17 14 * * ?" />
+			<property name="cronExpression" value="0 0 1 * * ?" />
 		</bean>
 		<bean id="doTime2"
 			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">

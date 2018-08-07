@@ -27,6 +27,9 @@ public class Submission {
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date sendTime;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date limitTime;
 
 	public Submission() {
 
@@ -44,6 +47,7 @@ public class Submission {
 		superiorVerifiUserId = submission.getSuperiorVerifiUserId();
 		status = submission.getStatus();
 		sendTime = submission.getSendTime();
+		limitTime = submission.getLimitTime();
 	}
 
 	public String getId() {
@@ -130,7 +134,15 @@ public class Submission {
 		return sendTime;
 	}
 
-	public void setSendTime(Date sendTime) {
-		this.sendTime = sendTime;
-	}
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
+    }
+
+    public Date getLimitTime() {
+        return limitTime;
+    }
+
+    public void setLimitTime(Date limitTime) {
+        this.limitTime = limitTime;
+    }
 }

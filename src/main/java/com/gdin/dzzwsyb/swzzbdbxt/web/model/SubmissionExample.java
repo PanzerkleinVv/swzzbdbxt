@@ -814,6 +814,66 @@ public class SubmissionExample {
             addCriterion("send_time not between", value1, value2, "sendTime");
             return (Criteria) this;
         }
+
+        public Criteria andLimitTimeIsNull() {
+            addCriterion("limit_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeIsNotNull() {
+            addCriterion("limit_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeEqualTo(Date value) {
+            addCriterion("limit_time =", value, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeNotEqualTo(Date value) {
+            addCriterion("limit_time <>", value, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeGreaterThan(Date value) {
+            addCriterion("limit_time >", value, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("limit_time >=", value, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeLessThan(Date value) {
+            addCriterion("limit_time <", value, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeLessThanOrEqualTo(Date value) {
+            addCriterion("limit_time <=", value, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeIn(List<Date> values) {
+            addCriterion("limit_time in", values, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeNotIn(List<Date> values) {
+            addCriterion("limit_time not in", values, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeBetween(Date value1, Date value2) {
+            addCriterion("limit_time between", value1, value2, "limitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLimitTimeNotBetween(Date value1, Date value2) {
+            addCriterion("limit_time not between", value1, value2, "limitTime");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
