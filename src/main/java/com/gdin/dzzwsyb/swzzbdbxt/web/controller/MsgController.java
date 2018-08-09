@@ -261,7 +261,7 @@ public class MsgController {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	@RequestMapping(value = "/insert", method = RequestMethod.POST)
+	@RequestMapping(value = "/insert", method = RequestMethod.POST, produces="text/plain")
 	@RequiresRoles(value = { RoleSign.ADMIN, RoleSign.BAN_GONG_SHI, RoleSign.BU_LING_DAO }, logical = Logical.OR)
 	public String insert(MsgExtend msg, @RequestParam(value = "files", required = false) MultipartFile[] files,
 			Model model, HttpServletRequest request, RedirectAttributes reditectModel) throws Exception {

@@ -167,6 +167,9 @@ public class MsgQuery {
 			if (status != null) {
 				subConditions1.add(" status = " + status + " ");
 				subConditions2.add(" status = " + status + " ");
+			} else {
+				subConditions1.add(" status <> 0 ");
+				subConditions2.add(" status <> 0 ");
 			}
 			if (limitTimeBegin != null) {
 				subConditions1.add(" limit_time >= str_to_date('" + dateToString(limitTimeBegin) + "', '%Y-%m-%d') ");
