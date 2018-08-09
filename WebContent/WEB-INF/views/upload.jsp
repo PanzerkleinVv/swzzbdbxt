@@ -444,6 +444,10 @@
 								}
 							});
 				});
+		$("label").click(function(e){
+		    e.preventDefault(); 
+		    $("#"+$(this).attr("for")).click().change(); 
+		});
 	</script>
 
 </div>

@@ -286,4 +286,8 @@
 	function removeFile(target) {
 		$(target).parent().remove();
 	}
+	$("label").click(function(e){
+	    e.preventDefault(); 
+	    $("#"+$(this).attr("for")).click().change(); 
+	});
 </script>
