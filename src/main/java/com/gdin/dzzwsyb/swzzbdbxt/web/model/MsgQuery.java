@@ -37,7 +37,7 @@ public class MsgQuery {
 
 	private Long roleId;
 
-	private Long assistroleId;
+	private Integer type;
 
 	private Long userId;
 
@@ -107,12 +107,12 @@ public class MsgQuery {
 		this.roleId = roleId;
 	}
 
-	public Long getAssistroleId() {
-		return assistroleId;
+	public Integer getType() {
+		return type;
 	}
 
-	public void setAssistroleId(Long assistroleId) {
-		this.assistroleId = assistroleId;
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 	public Long getUserId() {
@@ -153,71 +153,30 @@ public class MsgQuery {
 			criteria.addCriterion(condition);
 		}
 
-		if (roleId != null || assistroleId != null || status != null || limitTimeBegin != null || limitTimeEnd != null) {
-			String condition1 = " (id in (select msg_id from msg_sponsor where $$$1)) ";
-			String condition2 =  " (id in (select msg_id from `msg_co-sponsor` where $$$2)) ";
-			List<String> subConditions1 = new ArrayList<String>();
-			List<String> subConditions2 = new ArrayList<String>();
-			if (roleId != null) {
-				subConditions1.add(" role_id = " + roleId + " ");
-			}
-			if (assistroleId != null) {
-				subConditions2.add(" role_id = " + assistroleId + " ");
-			}
-			if (status != null) {
-				subConditions1.add(" status = " + status + " ");
-				subConditions2.add(" status = " + status + " ");
-			} else {
-				subConditions1.add(" status <> 0 ");
-				subConditions2.add(" status <> 0 ");
-			}
-			if (limitTimeBegin != null) {
-				subConditions1.add(" limit_time >= str_to_date('" + dateToString(limitTimeBegin) + "', '%Y-%m-%d') ");
-				subConditions2.add(" limit_time >= str_to_date('" + dateToString(limitTimeBegin) + "', '%Y-%m-%d') ");
-			}
-			if (!subConditions1.isEmpty()) {
-				String subCondition = subConditions1.get(0);
-				for (int i = 1; i < subConditions1.size(); i++) {
-					subCondition += " and " + subConditions1.get(i);
-				}
-				condition1 = condition1.replace("$$$1", subCondition);
-			}
-			if (!subConditions2.isEmpty()) {
-				String subCondition = subConditions2.get(0);
-				for (int i = 1; i < subConditions2.size(); i++) {
-					subCondition += " and " + subConditions2.get(i);
-				}
-				condition2 = condition2.replace("$$$2", subCondition);
-			}
-			if (condition1.indexOf("$$$1") != -1 && condition2.indexOf("$$$2") == -1) {
-				criteria.addCriterion(condition2);
-			} else if (condition1.indexOf("$$$1") == -1 && condition2.indexOf("$$$2") != -1) {
-				criteria.addCriterion(condition1);
-			} else if (condition1.indexOf("$$$1") == -1 && condition2.indexOf("$$$2") == -1) {
-				criteria.addCriterion(" (" + condition1 + " OR " + condition2 + ") ");
-			} 
-		}
-		
-		if (assistroleId != null || status != null || limitTimeBegin != null || limitTimeEnd != null) {
-			String condition = " (id in (select msg_id from `msg_co-sponsor` where $$$)) ";
+		if (roleId != null || type != null || status != null || limitTimeBegin != null || limitTimeEnd != null) {
+			String condition = " (id in (select msg_id from msg_role where $$$)) ";
 			List<String> subConditions = new ArrayList<String>();
-			if (assistroleId != null) {
-				subConditions.add(" role_id = " + assistroleId + " ");
+			if (roleId != null) {
+				subConditions.add(" role_id = " + roleId + " ");
+			}
+			if (type != null && type != 0) {
+				subConditions.add(" type = " + type + " ");
 			}
 			if (status != null) {
 				subConditions.add(" status = " + status + " ");
+			} else {
+				subConditions.add(" status <> 0 ");
 			}
 			if (limitTimeBegin != null) {
 				subConditions.add(" limit_time >= str_to_date('" + dateToString(limitTimeBegin) + "', '%Y-%m-%d') ");
 			}
-			if (limitTimeEnd != null) {
-				subConditions.add(" limit_time <= str_to_date('" + dateToString(limitTimeEnd) + "', '%Y-%m-%d') ");
+			if (!subConditions.isEmpty()) {
+				String subCondition = subConditions.get(0);
+				for (int i = 1; i < subConditions.size(); i++) {
+					subCondition += " and " + subConditions.get(i);
+				}
+				condition = condition.replace("$$$", subCondition);
 			}
-			String subCondition = subConditions.get(0);
-			for (int i = 1; i < subConditions.size(); i++) {
-				subCondition += " and " + subConditions.get(i);
-			}
-			condition = condition.replace("$$$", subCondition);
 			criteria.addCriterion(condition);
 		}
 

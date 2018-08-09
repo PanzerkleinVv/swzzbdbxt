@@ -41,13 +41,12 @@
 				</shiro:hasAnyRoles>
 				
 				<shiro:hasAnyRoles name="admin,1,2">
-				<span class="queryItem queryTitle">协办处室：</span>
+				<span class="queryItem queryTitle">办理类别：</span>
 				<span>
-					<select id="assistroleIdQuery" class="input-sm form-inline">
-						<option></option>
-						<c:forEach var="role" begin="1" items="${sessionScope.roles}">
-							<option value="${role.id}">${role.roleName}</option>
-						</c:forEach>
+					<select id="typeQuery" class="input-sm form-inline">
+						<option value="0">所有</option>
+						<option value="1">主办</option>
+						<option value="2">协办</option>
 					</select>
 				</span>
 				</shiro:hasAnyRoles>
@@ -106,7 +105,7 @@
 			limitTimeBegin : $("#limitTimeBeginQuery").val(),
 			limitTimeEnd : $("#limitTimeEndQuery").val(),
 			roleId : $("#roleIdQuery").val(),
-			assistroleId : $("#assistroleIdQuery").val(),
+			type : $("#typeQuery").val(),
 			status : $("#statusQuery").val(),
 			userId : $("#userIdQuery").val()
 		}, function(data) {
@@ -123,7 +122,7 @@
 		$("#limitTimeBeginQuery").val("");
 		$("#limitTimeEndQuery").val("");
 		$("#roleIdQuery").val("");
-		$("#assistroleIdQuery").val("");
+		$("#typeQuery").val("");
 		$("#statusQuery").val("");
 		$("#userIdQuery").val("");
 	}
