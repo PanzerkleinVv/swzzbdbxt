@@ -29,7 +29,7 @@
 						class="form_date input-sm form-inline">
 				</span>
 				<shiro:hasAnyRoles name="admin,1,2">
-				<span class="queryItem queryTitle">经办处室：</span>
+				<span class="queryItem queryTitle">主办处室：</span>
 				<span>
 					<select id="roleIdQuery" class="input-sm form-inline">
 						<option></option>
@@ -39,6 +39,40 @@
 					</select>
 				</span>
 				</shiro:hasAnyRoles>
+				
+				<shiro:hasAnyRoles name="admin,1,2">
+				<span class="queryItem queryTitle">协办处室：</span>
+				<span>
+					<select id="assistroleIdQuery" class="input-sm form-inline">
+						<option></option>
+						<c:forEach var="role" begin="1" items="${sessionScope.roles}">
+							<option value="${role.id}">${role.roleName}</option>
+						</c:forEach>
+					</select>
+				</span>
+				</shiro:hasAnyRoles>
+				
+			</div>
+			<div class="queryLine">				
+				<span class="queryItem queryTitle">办结期限：</span>
+				<span>
+					<input size="16" type="text" id="limitTimeBeginQuery" value="" readonly
+						class="form_date input-sm form-inline"> <span
+						class="middleSpan">至</span> <input size="16" type="text"
+						id="limitTimeEndQuery" value="" readonly
+						class="form_date input-sm form-inline">
+				</span>
+				<shiro:lacksPermission name="3">
+					<span class="queryItem queryTitle">经办人：</span>
+					<span>
+						<select id="userIdQuery" class="input-sm form-inline">
+							<option></option>
+							<c:forEach var="user" items="${sessionScope.roleUsers}">
+								<option value="${user.id}">${user.userdesc}</option>
+							</c:forEach>
+						</select>
+					</span>
+				</shiro:lacksPermission>
 				<span class="queryItem queryTitle">信息状态：</span>
 				<span>
 					<select id="statusQuery" class="input-sm form-inline">
@@ -48,19 +82,6 @@
 						</c:forEach>
 					</select>
 				</span>
-			</div>
-			<div class="queryLine">
-			<shiro:lacksPermission name="3">
-				<span class="queryItem queryTitle">经办人：</span>
-				<span>
-					<select id="userIdQuery" class="input-sm form-inline">
-						<option></option>
-						<c:forEach var="user" items="${sessionScope.roleUsers}">
-							<option value="${user.id}">${user.userdesc}</option>
-						</c:forEach>
-					</select>
-				</span>
-			</shiro:lacksPermission>
 				<span class="queryTitle">
 					<button id="querySubmit" type="button" class="btn blue"
 						onclick="query(1)">检索</button>
@@ -82,7 +103,10 @@
 			name : $("#nameQuery").val(),
 			createTimeBegin : $("#createTimeBeginQuery").val(),
 			createTimeEnd : $("#createTimeEndQuery").val(),
+			limitTimeBegin : $("#limitTimeBeginQuery").val(),
+			limitTimeEnd : $("#limitTimeEndQuery").val(),
 			roleId : $("#roleIdQuery").val(),
+			assistroleId : $("#assistroleIdQuery").val(),
 			status : $("#statusQuery").val(),
 			userId : $("#userIdQuery").val()
 		}, function(data) {
@@ -96,7 +120,10 @@
 		$("#nameQuery").val("");
 		$("#createTimeBeginQuery").val("");
 		$("#createTimeEndQuery").val("");
+		$("#limitTimeBeginQuery").val("");
+		$("#limitTimeEndQuery").val("");
 		$("#roleIdQuery").val("");
+		$("#assistroleIdQuery").val("");
 		$("#statusQuery").val("");
 		$("#userIdQuery").val("");
 	}
@@ -111,7 +138,8 @@
 
 	$(".form_date").datepicker({
 		format : 'yyyy-mm-dd',
-		language : 'zh-CN'
+		language : 'zh-CN',
+		autoclose : true
 	});
 
 	$(function() {
