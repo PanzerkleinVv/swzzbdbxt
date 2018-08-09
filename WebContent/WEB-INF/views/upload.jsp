@@ -182,7 +182,7 @@
 					.before(
 							"<div><a class='red' onclick='removeFile(this)'>[删除]</a><label for='file_" + fileBand + "'>请选择文件</label><input type='file' name='files' id='file_"
 									+ fileBand
-									+ "' style='display: none' onchange='fileChange(this)' /></div>");
+									+ "' style='filter:alpha(opacity=0);opacity:0;height:0;' onchange='fileChange(this)' /></div>");
 			$(target).parent().attr('for', 'file_' + fileBand);
 			fileBand++;
 		}
@@ -197,12 +197,19 @@
 
 		function checkFile(target) {
 			var msg = $("#msg5");
-			if (target.files.length == 0) {
+			if (target.value == "") {
 				msg.html("请选择文件");
 				msg.css('color', '#FF0000');
 				return false;
 			} else {
-				var fileSize = target.files[0].size;
+				var fileSize;
+				if (window.navigator.userAgent.indexOf("MSIE")>=1) {
+					var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+					var file = fileSystem.GetFile(target.value);
+					fileSize = file.size;
+				} else {
+					fileSize = target.files[0].size;
+				}
 				var maxSize = 3 * 1024 * 1024;
 				if (fileSize > maxSize) {
 					msg.html("单个文件不能大于3Mb");
@@ -210,7 +217,10 @@
 					return false;
 				} else {
 					msg.html("");
-					$(target).prevAll('label').html(target.files[0].name);
+					var filepath = target.value;
+					var pos = filepath.lastIndexOf("\\");
+					var filename = filepath.substring(pos + 1);
+					$(target).prevAll('label').html(filename);
 					return true;
 				}
 			}
@@ -444,10 +454,6 @@
 								}
 							});
 				});
-		$("label").click(function(e){
-		    e.preventDefault(); 
-		    $("#"+$(this).attr("for")).click().change(); 
-		});
 	</script>
 
 </div>
