@@ -35,7 +35,7 @@
 				</span>
 			</div>
 			<div class="analysis-method-bar">
-				<button class="btn green" type="submit">统计</button>
+				<button id="analysisBut" class="btn green" type="submit">统计</button>
 			</div>
 		</form>
 	</div>
@@ -374,6 +374,9 @@
 				}
 			});
 			return false;
+		});
+		$(function() {
+			$("#analysisBut").click();
 		});
 	</script>
 </div>
