@@ -836,7 +836,7 @@ public class MsgController {
 	}
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/saveMsgCoSponsor")
+	@RequestMapping(value = "/saveMsgCoSponsor", produces="text/plain")
 	public String saveMsgCoSponsor(MsgCoSponsor msgCoSponsor, @RequestParam(value = "files", required = false) MultipartFile[] files, RedirectAttributes model, HttpSession session)
 			throws Exception {
 		final Long roleId = (Long) session.getAttribute("roleId");
