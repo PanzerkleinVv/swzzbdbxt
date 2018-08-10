@@ -24,7 +24,7 @@
 				</span> <span class="msgItem content">${msg0.contents}</span> <span
 					class="msgItem attach"> <c:forEach var="attachId"
 						items="${msg0.attachIds}" varStatus="status0">
-						<a href="rest/attach/download?id=${attachId}" onclick="downFile()" target="_blank">${msg0.attachs[status0.index]}</a>
+						<a href="rest/attach/download?id=${attachId}" onclick="downloadFile()" target="_blank">${msg0.attachs[status0.index]}</a>
 					</c:forEach>
 				</span> <span class="msgItem"> <fmt:formatDate
 						value='${msg0.endTime}' type='DATE' pattern='yyyy-MM-dd' />
@@ -143,8 +143,9 @@
 			showData("#main-content",data);
 		});
 	}
-	</c:if>
-	<c:if test="${titleName == '提醒预览'}">
+	</script>
+</c:if>
+<c:if test="${titleName == '提醒预览'}">
 	<script type="text/javascript">
 	$(function() {
 		$("#index-page-title").html("提醒预览");
