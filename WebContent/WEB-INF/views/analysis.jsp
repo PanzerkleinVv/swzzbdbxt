@@ -57,9 +57,10 @@
 				dataType : "json",
 				success : function(msg) {
 					$.each(msg, function(i, n) {
-						roleNames.push(n.roleName);
+						if (i > 0) {
+							roleNames.push(n.roleName);
+						}
 					});
-					roleNames[0] = '';
 				}
 			});
 		});
@@ -260,7 +261,7 @@
 							var overtimes = [];
 							var xText = roleNames;
 							table.append("<tr>处室<th></th><th>在办</th><th>逾期</th><th>阶段性办结</th><th>办结</th><th>中止</th></tr>");
-							for (var i = 1; i < xText.length; i++) {
+							for (var i = 0; i < xText.length; i++) {
 								table.append("<tr></tr>");
 								table.find("tr").last().append("<td>" + xText[i] + "</td>");
 								var onwork = 0;
@@ -272,7 +273,7 @@
 								var simpleOnwork = 0;
 								var simpleOvertime = 0;
 								for (var j = 0; j < data.simpleResults.length; j++) {
-									if (i == data.simpleResults[j].roleId) {
+									if (i + 2 == data.simpleResults[j].roleId) {
 										simpleStop += data.simpleResults[j].stop;
 										simpleOnwork += data.simpleResults[j].onwork;
 										simpleOvertime += data.simpleResults[j].overtime;

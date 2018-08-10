@@ -27,8 +27,8 @@ public class NoticeController {
 	
 	@RequestMapping("/dashboard")
 	public String dashboard(Model model, HttpSession session) {
-		session.getAttribute("roleId");
-		session.getAttribute("permissionId");
+		final Long roleId = (Long) session.getAttribute("roleId");
+		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
 		List<NoticeCount> noticeCounts = new ArrayList<NoticeCount>();
 		noticeCounts = noticeService.countNotice(userId);
