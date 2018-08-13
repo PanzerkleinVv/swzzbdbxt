@@ -42,6 +42,8 @@ public class MsgQuery {
 	private Long userId;
 
 	private Integer submissionStatus;
+	
+	private Boolean onwork;
 
 	public Date getCreateTimeBegin() {
 		return createTimeBegin;
@@ -153,7 +155,7 @@ public class MsgQuery {
 			criteria.addCriterion(condition);
 		}
 
-		if (roleId != null || type != null || status != null || limitTimeBegin != null || limitTimeEnd != null) {
+		if (roleId != null || type != null || status != null || limitTimeBegin != null || limitTimeEnd != null || onwork != null) {
 			String condition = " (id in (select msg_id from msg_role where $$$)) ";
 			List<String> subConditions = new ArrayList<String>();
 			if (roleId != null) {
@@ -167,8 +169,18 @@ public class MsgQuery {
 			} else {
 				subConditions.add(" status <> 0 ");
 			}
+			if (onwork != null) {
+				if (onwork) {
+					subConditions.add(" status in (1, 2) ");
+				} else {
+					subConditions.add(" status in (3, 4, 5) ");
+				}
+			}
 			if (limitTimeBegin != null) {
 				subConditions.add(" limit_time >= str_to_date('" + dateToString(limitTimeBegin) + "', '%Y-%m-%d') ");
+			}
+			if (limitTimeEnd != null) {
+				subConditions.add(" limit_time <= str_to_date('" + dateToString(limitTimeEnd) + "', '%Y-%m-%d') ");
 			}
 			if (!subConditions.isEmpty()) {
 				String subCondition = subConditions.get(0);
@@ -229,6 +241,14 @@ public class MsgQuery {
 	public static String formatDate(Date date) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return sdf.format(date);
+	}
+
+	public Boolean getOnwork() {
+		return onwork;
+	}
+
+	public void setOnwork(Boolean onwork) {
+		this.onwork = onwork;
 	}
 
 }

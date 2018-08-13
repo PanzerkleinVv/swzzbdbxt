@@ -13,6 +13,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.dao.NoticeMapper;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Statistics;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 
 @Service
@@ -199,6 +200,11 @@ public class NoticeServiceImpl extends GenericServiceImpl<Notice, Long> implemen
 		NoticeExample example = new NoticeExample();
 		example.createCriteria().andTargetIdIn(ids);
 		noticeMapper.deleteByExample(example);
+	}
+
+	@Override
+	public Statistics statistics(Long roleId, Long userId) {
+		return noticeMapper.msgStatistics(roleId, userId);
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Statistics;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 
 /**
@@ -30,16 +31,21 @@ public class NoticeController {
 		final Long roleId = (Long) session.getAttribute("roleId");
 		final Long permissionId = (Long) session.getAttribute("permissionId");
 		final Long userId = (Long) session.getAttribute("userId");
+		Statistics statistics = null;
+		if (permissionId == 6L) {
+			statistics = noticeService.statistics(roleId, userId);
+		} else {
+			statistics = noticeService.statistics(roleId, null);
+		}
 		List<NoticeCount> noticeCounts = new ArrayList<NoticeCount>();
 		noticeCounts = noticeService.countNotice(userId);
 		String[] noticeType = SelectArray.getNoticeType();
 		//计算提醒信息
+		model.addAttribute("statistics", statistics);
+		model.addAttribute("roleId", roleId);
 		model.addAttribute("noticeCounts",noticeCounts);
 		model.addAttribute("noticeType",noticeType);
 		return "dashboard";
 	}
-	
-	
-	
 	
 }

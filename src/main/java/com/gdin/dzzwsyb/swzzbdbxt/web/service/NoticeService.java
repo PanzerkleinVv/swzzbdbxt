@@ -6,6 +6,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Notice;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeExample;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.Statistics;
 
 public interface NoticeService extends GenericService<Notice, Long> {
 
@@ -70,4 +71,6 @@ public interface NoticeService extends GenericService<Notice, Long> {
 	void modifySendUserId(String msgId, List<Long> roleUserIds, int type) throws Exception;
 
 	void deleteByTargetIds(List<String> ids);
+	
+	Statistics statistics(Long roleId, Long userId);
 }

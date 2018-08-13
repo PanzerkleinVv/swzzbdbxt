@@ -15,6 +15,14 @@
 		<result column="onetype" jdbcType="INTEGER" property="oneType" />
 		<result column="unread" jdbcType="INTEGER" property="unRead" />
 	</resultMap>
+	<resultMap id="statisticsMap" type="com.gdin.dzzwsyb.swzzbdbxt.web.model.Statistics">
+		<result column="total" jdbcType="INTEGER" property="total" />
+		<result column="onwork" jdbcType="INTEGER" property="onwork" />
+		<result column="stop" jdbcType="INTEGER" property="stop" />
+		<result column="month" jdbcType="INTEGER" property="month" />
+		<result column="week" jdbcType="INTEGER" property="week" />
+		<result column="overtime" jdbcType="INTEGER" property="overtime" />
+	</resultMap>
 	
 	<sql id="Example_Where_Clause">
 		<where>
@@ -265,5 +273,21 @@
 						(select type, count(1) unread  from notice where user_id = #{userId,jdbcType=BIGINT} and is_read=1  GROUP BY type ) t2
 							on t1.type=t2.type    order by t1.type 			
 			
+	</select>
+	
+	<select id="msgStatistics" resultMap="statisticsMap">
+			select
+				sum(case when status &lt;&gt; 0 then 1 else 0 end) as total,
+				sum(case when status &gt; 0 and status &lt; 3 then 1 else 0 end) as onwork,
+				sum(case when status &gt; 2 then 1 else 0 end) as stop,
+				sum(case when TO_DAYS(now() + INTERVAL 1 MONTH) &gt;= TO_DAYS(limit_time) and status = 1 then 1 else 0 end) as month,
+				sum(case when TO_DAYS(now() + INTERVAL 1 WEEK) &gt;= TO_DAYS(limit_time) and status = 1 then 1 else 0 end) as week,
+				sum(case when status = 2 then 1 else 0 end) as overtime
+			from 
+				(select * from sponsor_count where role_id = #{roleId} 
+				<if test="userId != null">
+					and msg_id in (select msg_id from msg_contractor where user_id = #{userId})
+				</if>
+				) as main
 	</select>
 </mapper>

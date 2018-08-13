@@ -10,7 +10,7 @@ public class SelectArray {
 	private static String[] submissionStatus = new String[] { "草稿", "待审核", "已审核" };
 	private static String[] msgBasis = new String[] { "立项依据1", "立项依据2", "立项依据3", "自定义" };
 	private static String[] msgStatus = new String[] { "草稿", "在办", "逾期", "阶段性办结", "办结", "中止" };
-	private static String[] noticeType = new String[] { "动态更新", "逾期", "待审核", "待签收", "待指派", "督查草稿", "提请草稿" };
+	private static String[] noticeType = new String[] { "动态更新", "逾期", "待审核", "待签收", "待指派", "立项草稿", "提请草稿" };
 	private static String[] noticeTarget = new String[] { "msg", "submission", "sponsor", "co-sponsor" };
 	private static String[] resdStatus = new String[] { "已读", "未读" };
 
