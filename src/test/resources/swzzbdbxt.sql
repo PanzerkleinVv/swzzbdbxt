@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2018-08-10 18:07:35
+Date: 2018-08-13 14:48:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -119,6 +119,7 @@ CREATE TABLE `msg_contractor` (
 -- ----------------------------
 -- Records of msg_contractor
 -- ----------------------------
+INSERT INTO `msg_contractor` VALUES ('b7a9e71346d7dc92c37e9ae743110a7070a37724', '7effad8c721ceda9505be4ac83d1e9aa6327c50d', '5');
 
 -- ----------------------------
 -- Table structure for msg_sponsor
@@ -347,3 +348,9 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`swzzbdbxt`@``  VIEW `analysis_year_role` AS 
 -- ----------------------------
 DROP VIEW IF EXISTS `msg_role`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`swzzbdbxt`@``  VIEW `msg_role` AS select * , 1 as type from msg_sponsor union select * , 2 as type from `msg_co-sponsor` ;
+
+-- ----------------------------
+-- View structure for sponsor_count
+-- ----------------------------
+DROP VIEW IF EXISTS `sponsor_count`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`swzzbdbxt`@``  VIEW `sponsor_count` AS SELECT msg_id, role_id, STATUS, limit_time FROM msg_sponsor UNION SELECT msg_id, role_id, STATUS, limit_time FROM `msg_co-sponsor` ;
