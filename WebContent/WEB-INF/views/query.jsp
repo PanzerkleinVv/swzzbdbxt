@@ -14,7 +14,7 @@
 				<span>
 					<input type='text' id='basisQuery' value='' class="input-sm form-inline input-long" />
 				</span>
-				<span class="queryItem queryTitle">督查事项：</span>
+				<span class="queryItem queryTitle">督察事项：</span>
 				<span>
 					<input type='text' id='nameQuery' value='' class="input-sm form-inline input-long" />
 				</span>
@@ -142,7 +142,7 @@
 	});
 
 	$(function() {
-		$("#index-page-title").html("信息查询");
-		$("#current-page-title").html("信息查询");
+		$("#index-page-title").html("督察事项检索");
+		$("#current-page-title").html("督察事项检索");
 	});
 </script>

@@ -3,9 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <div class="mainContent">
-	<div class="freezenWindow">
-		<div class="freezenAlert">文件扫描中……请稍候</div>
-	</div>
 	<form id="uploadForm" enctype="multipart/form-data" method="post"
 		autocomplete="off">
 		<div id="uploadBox">
@@ -17,7 +14,7 @@
 				class="form-control placeholder-no-fix uploadInput" />
 			<div>
 				<div>
-					<span class="uploadTitle">督查事项：</span> <span
+					<span class="uploadTitle">督察事项：</span> <span
 						class="uploadItem withInput"> <input type='text' id='name'
 						name='name' value="${msg.name}"
 						class="form-control placeholder-no-fix uploadInput"
@@ -207,20 +204,13 @@
 			} else {
 				var fileSize;
 				if (window.navigator.userAgent.indexOf("MSIE")>=1) {
-					$(".freezenWindow").show();
-					$.ajaxFileUpload({
-						url: 'rest/attach/checkFileSize',
-						secureuri: false,
-			            fileElementId: $(target).attr("id"),
-						dataType: 'json',
-						success: function(data, status) {
-							fileSize = data;
-							$(".freezenWindow").hide();
-						},
-						error: function(data, status, e) {
-							$(".freezenWindow").hide();
-						}
-					});
+					msg.html("注意：单个文件不能大于3Mb");
+					msg.css('color', '#000000');
+					var filepath = target.value;
+					var pos = filepath.lastIndexOf("\\");
+					var filename = filepath.substring(pos + 1);
+					$(target).prevAll('label').html(filename);
+					return true;
 				} else {
 					fileSize = target.files[0].size;
 				}
@@ -270,6 +260,7 @@
 						})
 					},
 					error : function(data) {
+						alert("请检查附件大小");
 						enabledAll();
 					}
 				});
@@ -321,6 +312,7 @@
 						showData(parentTarget, data);
 					},
 					error : function(data) {
+						alert("请检查附件大小");
 						enabledAll();
 					}
 				});
@@ -402,8 +394,8 @@
 		}
 
 		$(function() {
-			$("#index-page-title").html("督查上传");
-			$("#current-page-title").html("督查上传");
+			$("#index-page-title").html("督察立项");
+			$("#current-page-title").html("督察立项");
 		});
 
 		$(document).ready(

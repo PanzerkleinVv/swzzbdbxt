@@ -11,8 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.HandleFile;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.AttachService;
@@ -47,12 +45,6 @@ public class AttachController {
 		} catch (Exception e) {
 			return false;
 		}
-	}
-	
-	@RequestMapping(value = "/checkFileSize")
-	@ResponseBody
-	public Long checkFileSize(@RequestParam("file") MultipartFile file) {
-		return file.getSize();
 	}
 }
 

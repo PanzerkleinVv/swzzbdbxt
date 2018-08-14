@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <div class="msgTable">
 	<div class="msg msgHeader">
-		<span class="msgItem">立项号</span> <span class="msgItem">督查事项</span> <span
+		<span class="msgItem">立项号</span> <span class="msgItem">督察事项</span> <span
 			class="msgItem">立项时间</span> <span class="msgItem">立项依据</span> <span
 			class="msgItem">主办处室</span><span class="msgItem">协办处室</span><span
 			class="msgItem">办结时限</span><span class="msgItem">办理情况</span><span

@@ -124,6 +124,9 @@
 			'cache' : false,
 			'success' : function(data) {
 				showData("#msg-content", data);
+			},
+			'error' : function(data) {
+				alert("请检查附件大小");
 			}
 		});
 	}
@@ -274,20 +277,13 @@
 		} else {
 			var fileSize;
 			if (window.navigator.userAgent.indexOf("MSIE")>=1) {
-				$(".freezenWindow").show();
-				$.ajaxFileUpload({
-					url: 'rest/attach/checkFileSize',
-					secureuri: false,
-		            fileElementId: $(target).attr("id"),
-					dataType: 'json',
-					success: function(data, status) {
-						fileSize = data;
-						$(".freezenWindow").hide();
-					},
-					error: function(data, status, e) {
-						$(".freezenWindow").hide();
-					}
-				});
+				msg.html("注意：单个文件不能大于3Mb");
+				msg.css('color', '#333333');
+				var filepath = target.value;
+				var pos = filepath.lastIndexOf("\\");
+				var filename = filepath.substring(pos + 1);
+				$(target).prevAll('label').html(filename);
+				return true;
 			} else {
 				fileSize = target.files[0].size;
 			}

@@ -17,7 +17,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta charset="utf-8" />
-<title>中共广东省委组织部督察事项管理系统</title>
+<title>中共广东省委组织部督察系统</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <meta content="" name="description" />
@@ -55,7 +55,7 @@
 		<!-- BEGIN TOP NAVIGATION BAR -->
 		<div class="header-inner">
 			<!-- BEGIN LOGO -->
-			<span class="navbar-brandText">中共广东省委组织部督察事项管理系统 </span>
+			<span class="navbar-brandText">中共广东省委组织部督察系统 </span>
 			<!-- END LOGO -->
 			<!-- BEGIN RESPONSIVE MENU TOGGLER -->
 			<a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <img src="assets/img/menu-toggler.png" alt="" />
@@ -119,7 +119,7 @@
 
 					<shiro:hasAnyRoles name="admin,1,2">
 						<li class=""><a href="./rest/msg/upload"> <i class="fa fa-upload"></i>
-							<span class="title"> 督查立项 </span>
+							<span class="title"> 督察立项 </span>
 								<span class="selected"> </span>
 						</a></li>
 					</shiro:hasAnyRoles>
@@ -293,7 +293,6 @@
 	</script>
 	<script type="text/javascript" src="assets/scripts/jquery.form.js"></script>
 	<script type="text/javascript" src="assets/scripts/echarts.js"></script>
-	<script type="text/javascript" src="assets/scripts/ajaxfileupload.js"></script>
 
 	<!-- <script data-main="app/js/main" src="app/lib/requirejs/require.js"></script> -->
 </body>

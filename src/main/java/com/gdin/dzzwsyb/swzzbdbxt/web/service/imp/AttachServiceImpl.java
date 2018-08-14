@@ -1,5 +1,6 @@
 package com.gdin.dzzwsyb.swzzbdbxt.web.service.imp;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,11 +90,15 @@ public class AttachServiceImpl extends GenericServiceImpl<Attach, String> implem
 	public List<Attach> upload(MultipartFile[] files, String targetId, int targetType) throws Exception {
 		List<Attach> attachs = new ArrayList<Attach>();
 		for (MultipartFile file : files) {
-			Attach attach = new Attach(ApplicationUtils.newUUID(), targetId, targetType, file.getOriginalFilename(),
-					ApplicationUtils.getTime());
-			insert(attach);
-			HandleFile.save(file, attach.getId());
-			attachs.add(attach);
+				if (file.getSize() < 3 * 1024 * 1024) {
+				Attach attach = new Attach(ApplicationUtils.newUUID(), targetId, targetType, file.getOriginalFilename(),
+						ApplicationUtils.getTime());
+				insert(attach);
+				HandleFile.save(file, attach.getId());
+				attachs.add(attach);
+			} else {
+				throw new IOException("单个文件不能大于3Mb");
+			}
 		}
 		return attachs;
 	}
