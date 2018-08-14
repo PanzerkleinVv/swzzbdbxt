@@ -4,7 +4,6 @@ package com.gdin.dzzwsyb.swzzbdbxt.web.service;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
-
 import com.gdin.dzzwsyb.swzzbdbxt.core.generic.GenericService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Attach;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.MsgExtend;

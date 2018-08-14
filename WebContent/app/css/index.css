@@ -420,3 +420,20 @@
 	border: 1px solid #FEFEFE;
 	padding: 3px 0px;
 }
+
+.freezenWindow {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	display: none;
+	background-color: #EEEEEE;
+	filter:alpha(opacity=50);
+	opacity: .5;
+}
+
+.freezenAlert {
+	position: fixed;
+	width: 150px;
+	height: 80px;
+	background-color: #FFFFFF;
+}

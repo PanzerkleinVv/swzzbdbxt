@@ -3,6 +3,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <div class="mainContent">
+	<div class="freezenWindow">
+		<div class="freezenAlert">文件扫描中……请稍候</div>
+	</div>
 	<form id="uploadForm" enctype="multipart/form-data" method="post"
 		autocomplete="off">
 		<div id="uploadBox">
@@ -204,9 +207,20 @@
 			} else {
 				var fileSize;
 				if (window.navigator.userAgent.indexOf("MSIE")>=1) {
-					var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
-					var file = fileSystem.GetFile(target.value);
-					fileSize = file.size;
+					$(".freezenWindow").show();
+					$.ajaxFileUpload({
+						url: 'rest/attach/checkFileSize',
+						secureuri: false,
+			            fileElementId: $(target).attr("id"),
+						dataType: 'json',
+						success: function(data, status) {
+							fileSize = data;
+							$(".freezenWindow").hide();
+						},
+						error: function(data, status, e) {
+							$(".freezenWindow").hide();
+						}
+					});
 				} else {
 					fileSize = target.files[0].size;
 				}
