@@ -439,3 +439,11 @@
 	height: 80px;
 	background-color: #FFFFFF;
 }
+
+#main-content a {
+	cursor: pointer;
+}
+
+#msg-content a {
+	cursor: pointer;
+}

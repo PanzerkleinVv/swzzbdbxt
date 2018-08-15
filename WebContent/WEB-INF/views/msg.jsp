@@ -29,8 +29,8 @@
 	<div>
 		<span class="msgTitle">附件资料：</span> <span><c:forEach
 				var="attachId" items="${msg.attachIds}" varStatus="status0">
-				<a href="rest/attach/download?id=${attachId}" target="_blank"
-					style="display: block; margin-left: 20px;">${msg.attachs[status0.index]}</a>
+				<div style="margin-left: 20px;"><a href="rest/attach/download?id=${attachId}" target="_blank"
+					>${msg.attachs[status0.index]}</a></div>
 			</c:forEach></span>
 	</div>
 	<div>
@@ -40,11 +40,11 @@
 	<div class="middleTitle">
 		<span class="msgTitle"> <shiro:hasAnyRoles name="admin,1,2">
 				<c:if test="${callbackable}">
-					<button id="callback" type="button" class="btn blue"
+					<button id="callback" type="button" class="btn blue"  style="margin-left: 10px;"
 						onclick="callback()">撤回</button>
 				</c:if>
 			</shiro:hasAnyRoles> <c:if test="${signable}">
-				<button id="sign" type="button" class="btn blue" onclick="sign()">签收</button>
+				<button id="sign" type="button" class="btn blue"  style="margin-left: 10px;" onclick="sign()">签收</button>
 			</c:if>
 		</span>
 	</div>

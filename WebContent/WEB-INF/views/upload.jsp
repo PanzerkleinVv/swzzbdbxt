@@ -111,39 +111,19 @@
 			<div class="uploadButton">
 				<span>
 					<button id="insert" type="button" class="btn blue"
-						onclick="insertMsg()">保存</button>
+						onclick="insertMsg(this)">保存</button>
 				</span> <span>
 					<button id="delete" type="button" class="btn red" onclick="dd()">删除</button>
 				</span> <span>
 					<button id="send" type="button" class="btn blue"
-						onclick="sendMsg()">发布</button>
+						onclick="sendMsg(this)">发布</button>
 				</span>
 			</div>
 		</div>
 	</form>
-
+	<div style="display: none;" id="error">${error}</div>
+	
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$(".form_date").datepicker({
-				format : 'yyyy-mm-dd',
-				language : 'zh-CN',
-				autoclose : true
-			});
-		});
-		$(document).ready(function() {
-			if ($('#msgBasis').val() != null && $('#msgBasis').val() != "") {
-				var array = new Array();
-				$("#basis option").each(function() {
-					array.push($(this).val());
-				});
-				if ($.inArray($('#msgBasis').val(), array) < 0) {
-					$("#basis").val("自定义");
-					basisChange();
-
-				}
-			}
-		});
-
 		var parentTarget = "#" + $(".mainContent").parent().attr("id");
 		function basisChange() {
 			var basis = $("#basis").val();
@@ -234,7 +214,9 @@
 			$(target).parent().remove();
 		}
 
-		function insertMsg() {
+		function insertMsg(target) {
+			debugger;
+			var form = $("#uploadForm");
 			disabledAll();
 			$("#msgStatus").val("0");
 			if (check(0) && check(1) && check(2) && check(3) && check(4)) {
@@ -243,13 +225,17 @@
 						$(n).parent().remove();
 					}
 				});
-				$('form').ajaxSubmit({
+				form.ajaxSubmit({
 					url : 'rest/msg/insert',
 					type : "post",
 					cache : false,
 					success : function(data) {
-						alert("保存成功！");
 						showData(parentTarget, data);
+						if ($("#error").html().length > 0) {
+							alert("保存失败：" + $("#error").html());
+						} else {
+							alert("保存成功！");
+						}
 						$(document).ready(function() {
 							var basis = $("#basis").val();
 							if (basis == "自定义") {
@@ -295,6 +281,7 @@
 		//发布按钮
 
 		function sendMsg() {
+			var form = $(target).parents("form");
 			disabledAll();
 			$("#msgStatus").val("1");
 			if (check(0) && check(1) && check(2) && check(3) && check(4)) {
@@ -303,13 +290,17 @@
 						$(n).parent().remove();
 					}
 				});
-				$('form').ajaxSubmit({
+				form.ajaxSubmit({
 					url : 'rest/msg/insert',
 					type : "post",
 					cache : false,
 					success : function(data) {
-						alert("发布成功");
 						showData(parentTarget, data);
+						if ($("#error").html().length > 0) {
+							alert("保存失败：" + $("#error").html());
+						} else {
+							alert("发布成功");
+						}
 					},
 					error : function(data) {
 						alert("请检查附件大小");
@@ -350,6 +341,10 @@
 				value = $("#basis").val();
 				msg = $('#msg2');
 				if (value == null || value.length < 1) {
+					msg.html("立项依据不能为空");
+					msg.css('color', '#FF0000');
+					return false;
+				} else if (value == "自定义" && $("#msgBasis").val().length < 1) {
 					msg.html("立项依据不能为空");
 					msg.css('color', '#FF0000');
 					return false;
@@ -396,6 +391,26 @@
 		$(function() {
 			$("#index-page-title").html("督察立项");
 			$("#current-page-title").html("督察立项");
+		});
+		
+		$(document).ready(function() {
+			$(".form_date").datepicker({
+				format : 'yyyy-mm-dd',
+				language : 'zh-CN',
+				autoclose : true
+			});
+		});
+		$(document).ready(function() {
+			if ($('#msgBasis').val() != null && $('#msgBasis').val() != "") {
+				var array = new Array();
+				$("#basis option").each(function() {
+					array.push($(this).val());
+				});
+				if ($.inArray($('#msgBasis').val(), array) < 0) {
+					$("#basis").val("自定义");
+					basisChange();
+				}
+			}
 		});
 
 		$(document).ready(
