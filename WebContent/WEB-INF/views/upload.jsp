@@ -280,7 +280,7 @@
 		}
 		//发布按钮
 
-		function sendMsg() {
+		function sendMsg(target) {
 			var form = $(target).parents("form");
 			disabledAll();
 			$("#msgStatus").val("1");
