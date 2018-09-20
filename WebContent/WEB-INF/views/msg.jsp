@@ -6,6 +6,7 @@
 	<div class="freezenWindow">
 		<div class="freezenAlert">文件扫描中……请稍候</div>
 	</div>
+	<div class="msgAlert">${msg1}</div>
 	<div>
 		<span class="msgTitle">立项号&emsp;：</span> <span>${msg.sequence}</span>
 		<input id="id" type="hidden" value="${msg.id}" />
@@ -48,15 +49,34 @@
 			</c:if>
 		</span>
 	</div>
-	<div class="middleTitle">
-		<span id='msg0' style='color: ${msg2 ne null ? msg2 : "#000000"}'>${msg1}</span>
-	</div>
 	<div class="titleEnd">
 		<span class="msgTitle">办理情况：</span>
 	</div>
 
 </div>
 <script type="text/javascript">
+	$(function($) {
+		var content = $(".msgAlert").html();
+		if (content.length > 0) {
+			gtAlert(content)
+		}
+	});
+	
+	function gtAlert(content) {
+		var html = '<style>.gt-alert{position: fixed;height:30px;' +
+			'background: rgba(59,59,59,90);border-radius: 2px;' +
+			'color: #eee;font-size:14px;' +
+			'box-shadow:0px 0px 2px #333;' +
+			'top:45%;  left:46%;  line-height: 28px;  padding:2px 10px;  ' +
+			'font-family: "Courier New", Monospace; }' +
+			'</style>' +
+			'<div class="gt-alert">';
+		html = html + content;
+	    html = html+"</div>"
+	    $("html").append(html);
+	    $(".gt-alert").fadeOut(1600);
+	}
+
 	function sign() {
 		var url = "rest/msg/sign";
 		$.post(url, {
@@ -255,8 +275,7 @@
 				.before(
 						"<div><a class='red' onclick='removeFile(this)'>[删除]</a><label for='file_" + fileBand + "'>请选择文件</label><input type='file' name='files' id='file_"
 								+ fileBand
-								+ "' style='filter: alpha(opacity=0); opacity: 0; height: 0;' onchange='fileChange(this)' /></div>");
-		$(target).parent().attr('for', 'file_' + fileBand);
+								+ "' style='display: none;' onchange='fileChange(this)' /></div>");
 		fileBand++;
 	}
 
@@ -305,5 +324,14 @@
 
 	function removeFile(target) {
 		$(target).parent().remove();
+	}
+	
+	function showAssign() {
+		$(".assignBox").show();
+		return false;
+	}
+	
+	function hideAssign() {
+		$(".assignBox").hide();
 	}
 </script>

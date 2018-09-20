@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <c:forEach var="msgSponsor" items="${msgSponsorExtends}">
 	<div>&emsp;</div>
 	<div id="${msgSponsor.id}" class="msgSponsorContent">
@@ -24,16 +25,37 @@
 			<span class="msgTitle">承&ensp;办&ensp;人：</span>
 			<c:choose>
 				<c:when test="${msgSponsor.assignable}">
-					<span>
-						<c:set var='i' value="0" />
-						<c:forEach var="user" items="${sessionScope.roleUsers}" varStatus="userStatus">
-							<input name="${msgSponsor.id}" id="${msgSponsor.id}${userStatus.index}" type="checkbox" value="${user.id}" <c:if test="${msgSponsor.users[i].id eq user.id}"><c:set var="i" value="${i+1}" /> checked="checked"</c:if>>
-							<label for="${msgSponsor.id}${userStatus.index}">${user.userdesc}</label>
-						</c:forEach>
-					</span>
-					<span>
-						<button id="assign" type="button" class="btn blue" onclick="assign('${msgSponsor.id}')">分派</button>
-					</span>
+					<c:choose>
+						<c:when test="${msgSponsor.users == null || fn:length(msgSponsor.users) == 0}">
+							<span>
+								<c:set var='i' value="0" />
+								<c:forEach var="user" items="${sessionScope.roleUsers}" varStatus="userStatus">
+									<input name="${msgSponsor.id}" id="${msgSponsor.id}${userStatus.index}" type="checkbox" value="${user.id}" <c:if test="${msgSponsor.users[i].id eq user.id}"><c:set var="i" value="${i+1}" /> checked="checked"</c:if>>
+									<label for="${msgSponsor.id}${userStatus.index}">${user.userdesc}</label>
+								</c:forEach>
+							</span>
+							<span>
+								<button id="assign" type="button" class="btn blue" onclick="assign('${msgSponsor.id}')">分派</button>
+							</span>
+						</c:when>
+						<c:otherwise>
+							<c:forEach var="user" items="${msgSponsor.users}">
+								<span>${user.userdesc}</span>
+							</c:forEach>
+							<span><a onclick="showAssign()">（变更承办人）</a></span>
+							<span class="assignBox">
+								<c:set var='i' value="0" />
+								<c:forEach var="user" items="${sessionScope.roleUsers}" varStatus="userStatus">
+									<input name="${msgSponsor.id}" id="${msgSponsor.id}${userStatus.index}" type="checkbox" value="${user.id}" <c:if test="${msgSponsor.users[i].id eq user.id}"><c:set var="i" value="${i+1}" /> checked="checked"</c:if>>
+									<label for="${msgSponsor.id}${userStatus.index}">${user.userdesc}</label>
+								</c:forEach>
+							</span>
+							<span class="assignBox">
+								<button id="assign" type="button" class="btn blue" onclick="assign('${msgSponsor.id}')">分派</button>
+								<button type="button" class="btn red" onclick="hideAssign()">取消</button>
+							</span>
+						</c:otherwise>
+					</c:choose>
 				</c:when>
 				<c:otherwise>
 					<c:forEach var="user" items="${msgSponsor.users}">
@@ -206,7 +228,7 @@
 								</c:if>
 								<div class="middleTitle">
 									<button id="saveSubmission" type="button" class="btn blue" onclick="saveSubmission('${submission.id}','0','${submission.type}')">保存</button>
-									<button id="saveSubmission" type="button" class="btn blue" onclick="saveSubmission('${submission.id}','1','${submission.type}')">发布</button>
+									<button id="saveSubmission" type="button" class="btn blue" onclick="saveSubmission('${submission.id}','1','${submission.type}')">提交</button>
 									<button id="delSubmission" type="button" class="btn red" onclick="delSubmission('${submission.id}')">删除</button>
 								</div>
 							</div>
@@ -321,16 +343,39 @@
 			<span class="msgTitle">承&ensp;办&ensp;人：</span>
 			<c:choose>
 				<c:when test="${msgCoSponsor.assignable}">
-					<span>
-						<c:set var='i' value="0" />
-						<c:forEach var="user" items="${sessionScope.roleUsers}" varStatus="userStatus">
-							<input id="${msgCoSponsor.id}${userStatus.index}" type="checkbox" value="${user.id}" name="${msgCoSponsor.id}" <c:if test="${msgCoSponsor.users[i].id eq user.id}"><c:set var="i" value="${i+1}" /> checked="checked"</c:if>>
-							<label for="${msgCoSponsor.id}${userStatus.index}">${user.userdesc}</label>
-						</c:forEach>
-					</span>
-					<span>
-						<button id="assign" type="button" class="btn blue" onclick="assign('${msgCoSponsor.id}')">分派</button>
-					</span>
+					<c:choose>
+						<c:when test="${msgCoSponsor.users == null || fn:length(msgCoSponsor.users) == 0}">
+							<span>
+								<c:set var='i' value="0" />
+								<c:forEach var="user" items="${sessionScope.roleUsers}" varStatus="userStatus">
+									<input id="${msgCoSponsor.id}${userStatus.index}" type="checkbox" value="${user.id}" name="${msgCoSponsor.id}" <c:if test="${msgCoSponsor.users[i].id eq user.id}"><c:set var="i" value="${i+1}" /> checked="checked"</c:if>>
+									<label for="${msgCoSponsor.id}${userStatus.index}">${user.userdesc}</label>
+								</c:forEach>
+							</span>
+							<span>
+								<button id="assign" type="button" class="btn blue" onclick="assign('${msgCoSponsor.id}')">分派</button>
+							</span>
+						</c:when>
+						<c:otherwise>
+							<c:forEach var="user" items="${msgCoSponsor.users}">
+								<span>${user.userdesc}</span>
+							</c:forEach>
+							<span><a onclick="showAssign()">（变更承办人）</a></span>
+							<span class="assignBox">
+								<br/>
+								<c:set var='i' value="0" />
+								<c:forEach var="user" items="${sessionScope.roleUsers}" varStatus="userStatus">
+									<input id="${msgCoSponsor.id}${userStatus.index}" type="checkbox" value="${user.id}" name="${msgCoSponsor.id}" <c:if test="${msgCoSponsor.users[i].id eq user.id}"><c:set var="i" value="${i+1}" /> checked="checked"</c:if>>
+									<label for="${msgCoSponsor.id}${userStatus.index}">${user.userdesc}</label>
+								</c:forEach>
+							</span>
+							<span class="assignBox">
+								<button id="assign" type="button" class="btn blue" onclick="assign('${msgCoSponsor.id}')">分派</button>
+								<button type="button" class="btn red" onclick="hideAssign()">取消</button>
+							</span>
+						</c:otherwise>
+					</c:choose>
+					
 				</c:when>
 				<c:otherwise>
 					<c:forEach var="user" items="${msgCoSponsor.users}">
@@ -378,7 +423,7 @@
 							<div id='attach_${attach.id}'>
 								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
 						</c:forEach>
-						<label><button id="addFile" type="button" class="btn green" onclick="addAttach(this)">增加</button></label>
+						<button id="addFile" type="button" class="btn green" onclick="addAttach(this)">增加</button>
 						<span id='msg5'></span>
 					</div>
 					<div class="middleTitle">
@@ -503,7 +548,7 @@
 								</c:if>
 								<div class="middleTitle">
 									<button id="saveSubmission" type="button" class="btn blue" onclick="saveSubmission('${submission.id}','0','${submission.type}')">保存</button>
-									<button id="saveSubmission" type="button" class="btn blue" onclick="saveSubmission('${submission.id}','1','${submission.type}')">发布</button>
+									<button id="saveSubmission" type="button" class="btn blue" onclick="saveSubmission('${submission.id}','1','${submission.type}')">提交</button>
 									<button id="delSubmission" type="button" class="btn red" onclick="delSubmission('${submission.id}')">删除</button>
 								</div>
 							</div>

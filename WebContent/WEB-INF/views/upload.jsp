@@ -102,8 +102,8 @@
 							items="${attachs}">
 							<div id='attach_${attach.id}'>
 								<a class="red" onclick="deleteFile('${attach.id}')">[删除]</a>${attach.attachFileName}</div>
-						</c:forEach> <label><button id="addFile" type="button"
-								class="btn green" onclick="addAttach(this)">增加</button></label>
+						</c:forEach> <button id="addFile" type="button"
+								class="btn green" onclick="addAttach(this)">增加</button>
 					</span> <span id='msg5'></span>
 				</div>
 			</div>
@@ -116,7 +116,7 @@
 					<button id="delete" type="button" class="btn red" onclick="dd()">删除</button>
 				</span> <span>
 					<button id="send" type="button" class="btn blue"
-						onclick="sendMsg(this)">发布</button>
+						onclick="sendMsg(this)">提交</button>
 				</span>
 			</div>
 		</div>
@@ -162,8 +162,7 @@
 					.before(
 							"<div><a class='red' onclick='removeFile(this)'>[删除]</a><label for='file_" + fileBand + "'>请选择文件</label><input type='file' name='files' id='file_"
 									+ fileBand
-									+ "' style='filter:alpha(opacity=0);opacity:0;height:0;' onchange='fileChange(this)' /></div>");
-			$(target).parent().attr('for', 'file_' + fileBand);
+									+ "' style='display: none;' onchange='fileChange(this)' /></div>");
 			fileBand++;
 		}
 
@@ -215,7 +214,6 @@
 		}
 
 		function insertMsg(target) {
-			debugger;
 			var form = $("#uploadForm");
 			disabledAll();
 			$("#msgStatus").val("0");
@@ -278,7 +276,7 @@
 				});
 			}
 		}
-		//发布按钮
+		//提交按钮
 
 		function sendMsg(target) {
 			var form = $(target).parents("form");
@@ -299,7 +297,7 @@
 						if ($("#error").html().length > 0) {
 							alert("保存失败：" + $("#error").html());
 						} else {
-							alert("发布成功");
+							alert("提交成功");
 						}
 					},
 					error : function(data) {

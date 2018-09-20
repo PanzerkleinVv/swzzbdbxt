@@ -207,7 +207,10 @@
 										data : xText,
 										axisLabel : {
 											interval : 0,
-											rotate : -30
+											rotate : -30,
+											textStyle: {
+											    fontWeight: 700
+											}
 										}
 									}
 								],
@@ -316,7 +319,10 @@
 											data : xText,
 											axisLabel : {
 												interval : 0,
-												rotate : -30
+												rotate : -30,
+												textStyle: {
+												    fontWeight: 700
+												}
 											}
 										}
 									],

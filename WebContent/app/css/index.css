@@ -447,3 +447,15 @@
 #msg-content a {
 	cursor: pointer;
 }
+
+.index-info li {
+	font-size: medium;
+}
+
+.msgAlert {
+	display: none;
+}
+
+.assignBox {
+	display: none;
+}

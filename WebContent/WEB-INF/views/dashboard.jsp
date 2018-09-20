@@ -4,7 +4,7 @@
 <div class="mainContent">
 	<div class="toolbarBox">
 		<div>
-			<ul>
+			<ul class="index-info">
 				<li>经办事项<font size="5">共</font><font size="6"><a style="cursor: pointer;color: blue;" onclick="goQuery('0')">${statistics.total}</a></font>件，其中<font size="5">在办</font><font size="6"><a style="cursor: pointer;color: deepskyblue;" onclick="goQuery('1')">${statistics.onwork}</a></font>件，<font size="5">不在办</font><font size="6"><a style="cursor: pointer;color: gray;" onclick="goQuery('2')">${statistics.stop}</a></font>件。</li>
 				<li>经办事项将在<font size="5">一月内逾期</font><font size="6"><a style="cursor: pointer;color: goldenrod;" onclick="goQuery('3')">${statistics.month}</a></font>件，<font size="5">一周内逾期</font><font size="6"><a style="cursor: pointer;color: #ff6969;" onclick="goQuery('4')">${statistics.week}</a></font>件，<font size="5">已逾期</font><font size="6"><a style="cursor: pointer;color: #FF0000;" onclick="goQuery('5')">${statistics.overtime}</a></font>件。</li>
 				<c:if test="${empty noticeCounts}">暂无提醒信息预览</c:if>
