@@ -20,6 +20,9 @@
 				<!-- 登录页允许访问 -->
 				/rest/user/login = anon
 				/rest/page/singleLogin = anon
+				<!-- 用户绑定页面允许访问 -->
+				/rest/user/bond = anon
+				/rest/user/bondList = anon
 				<!-- 其他资源需要认证 -->
 				/** = authc
 			</value>

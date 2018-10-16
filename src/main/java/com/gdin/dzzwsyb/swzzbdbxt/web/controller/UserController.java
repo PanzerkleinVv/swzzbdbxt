@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
@@ -29,6 +30,7 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Permission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
+import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserBond;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.PermissionService;
@@ -74,9 +76,9 @@ public class UserController {
 			subject.login(new UsernamePasswordToken(user.getUsername(), user.getPassword()));
 			// 验证成功在Session中保存用户信息
 			final User authUserInfo = userService.selectByUsername(user.getUsername());
-			//计算提醒信息
+			// 计算提醒信息
 			List<NoticeCount> noticeCounts = noticeService.countNotice(1L);
-			request.getSession().setAttribute("noticeCounts",noticeCounts);
+			request.getSession().setAttribute("noticeCounts", noticeCounts);
 			request.getSession().setAttribute("userInfo", authUserInfo);
 			request.getSession().setAttribute("userId", authUserInfo.getId());
 			request.getSession().setAttribute("roleId", authUserInfo.getRoleId());
@@ -92,13 +94,13 @@ public class UserController {
 				permissionMap.put(permission0.getId(), permission0.getPermissionName());
 			}
 			final List<User> roleUsers = userService.selectByRoleId(authUserInfo.getRoleId());
-			request.getSession().setAttribute("roles", roles); //处室下拉菜单
-			request.getSession().setAttribute("permissions", permissions); //权限下拉菜单
-			request.getSession().setAttribute("roleMap", roleMap); //处室名显示映射
-			request.getSession().setAttribute("permissionMap", permissionMap); //权限名显示映射
-			request.getSession().setAttribute("userState", SelectArray.getUserState()); //用户状态下拉菜单
-			request.getSession().setAttribute("roleUsers", roleUsers); //本处室用户下拉菜单
-			request.getSession().setAttribute("msgStatus", SelectArray.getMsgStatus()); //信息状态
+			request.getSession().setAttribute("roles", roles); // 处室下拉菜单
+			request.getSession().setAttribute("permissions", permissions); // 权限下拉菜单
+			request.getSession().setAttribute("roleMap", roleMap); // 处室名显示映射
+			request.getSession().setAttribute("permissionMap", permissionMap); // 权限名显示映射
+			request.getSession().setAttribute("userState", SelectArray.getUserState()); // 用户状态下拉菜单
+			request.getSession().setAttribute("roleUsers", roleUsers); // 本处室用户下拉菜单
+			request.getSession().setAttribute("msgStatus", SelectArray.getMsgStatus()); // 信息状态
 			request.getSession().setAttribute("Basis", SelectArray.getMsgBasis()); // 立法依据
 			request.getSession().setAttribute("submissionStatus", SelectArray.getSubmissionStatus());
 			request.getSession().setAttribute("submissionType", SelectArray.getSubmissionType());
@@ -302,5 +304,35 @@ public class UserController {
 			}
 		}
 		return user0;
+	}
+
+	@RequestMapping(value = "/bond")
+	public String bond(@RequestParam(required = false) UserBond userBond, Model model) {
+		List<User> users = null;
+		if (userBond != null) {
+			if (userBond.getName() != null && !userBond.getName().isEmpty()) {
+				users = userService.searchUser(userBond.getName());
+			}
+		} else {
+			userBond = new UserBond();
+		}
+		model.addAttribute("userBond", userBond);
+		model.addAttribute("users", users);
+		return "userbond";
+	}
+	
+	@RequestMapping(value = "/bondList")
+	@ResponseBody
+	public List<User> bondList(User user) {
+		List<User> users = null;
+		if (user != null && user.getUserdesc() != null && !user.getUserdesc().isEmpty()) {
+			users = userService.searchUser(user.getUserdesc());
+		}
+		if (users != null && !user.isEmpty()) {
+			for (User user0 : users) {
+				user0.setPassword("");
+			}
+		}
+		return users;
 	}
 }
