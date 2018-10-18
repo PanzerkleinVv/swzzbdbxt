@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -21,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdin.dzzwsyb.swzzbdbxt.core.util.SelectArray;
@@ -30,7 +30,6 @@ import com.gdin.dzzwsyb.swzzbdbxt.web.model.NoticeCount;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Permission;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.Role;
 import com.gdin.dzzwsyb.swzzbdbxt.web.model.User;
-import com.gdin.dzzwsyb.swzzbdbxt.web.model.UserBond;
 import com.gdin.dzzwsyb.swzzbdbxt.web.security.RoleSign;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.NoticeService;
 import com.gdin.dzzwsyb.swzzbdbxt.web.service.PermissionService;
@@ -306,33 +305,19 @@ public class UserController {
 		return user0;
 	}
 
-	@RequestMapping(value = "/bond")
-	public String bond(@RequestParam(required = false) UserBond userBond, Model model) {
-		List<User> users = null;
-		if (userBond != null) {
-			if (userBond.getName() != null && !userBond.getName().isEmpty()) {
-				users = userService.searchUser(userBond.getName());
-			}
-		} else {
-			userBond = new UserBond();
-		}
-		model.addAttribute("userBond", userBond);
-		model.addAttribute("users", users);
-		return "userbond";
-	}
-	
 	@RequestMapping(value = "/bondList")
 	@ResponseBody
-	public List<User> bondList(User user) {
+	public List<User> bondList(String name, HttpServletResponse response) {
 		List<User> users = null;
-		if (user != null && user.getUserdesc() != null && !user.getUserdesc().isEmpty()) {
-			users = userService.searchUser(user.getUserdesc());
+		if (name != null && !name.isEmpty()) {
+			users = userService.searchUser(name);
 		}
-		if (users != null && !user.isEmpty()) {
+		if (users != null && !users.isEmpty()) {
 			for (User user0 : users) {
 				user0.setPassword("");
 			}
 		}
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		return users;
 	}
 }
